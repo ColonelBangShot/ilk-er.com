@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>İlker DEGE — Front Office Manager</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Barlow:wght@300;400;500&family=Barlow+Condensed:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #141414;
+      --surface: #1c1c1c;
+      --surface2: #242424;
+      --border: #2e2e2e;
+      --champagne: #c9a96e;
+      --champagne-light: #e8d5b0;
+      --champagne-dim: rgba(201,169,110,0.12);
+      --text: #e8e2d9;
+      --text-muted: #8a8278;
+      --text-dim: #5a5450;
+      --white: #f5f0eb;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Barlow', sans-serif;
+      font-weight: 300;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* ── NOISE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.03;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* ── LANG SWITCHER ── */
+    #lang-bar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      padding: 14px 40px;
+      background: rgba(20,20,20,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .lang-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      cursor: pointer;
+      padding: 4px 10px;
+      transition: color 0.2s;
+    }
+    .lang-btn:hover, .lang-btn.active { color: var(--champagne); }
+    .lang-btn + .lang-btn { border-left: 1px solid var(--border); }
+
+    /* ── HERO ── */
+    #hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      position: relative;
+    }
+
+    .hero-left {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 120px 60px 80px 80px;
+      position: relative;
+    }
+
+    .hero-left::after {
+      content: '';
+      position: absolute;
+      right: 0; top: 10%; bottom: 10%;
+      width: 1px;
+      background: linear-gradient(to bottom, transparent, var(--border), transparent);
+    }
+
+    .eyebrow {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--champagne);
+      margin-bottom: 24px;
+    }
+
+    h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(52px, 6vw, 88px);
+      font-weight: 300;
+      line-height: 1.0;
+      color: var(--white);
+      margin-bottom: 8px;
+    }
+
+    h1 span {
+      color: var(--champagne);
+      font-weight: 500;
+    }
+
+    .hero-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: clamp(14px, 1.5vw, 18px);
+      font-weight: 400;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 40px;
+    }
+
+    .hero-desc {
+      font-size: 15px;
+      color: var(--text-muted);
+      max-width: 420px;
+      margin-bottom: 48px;
+      line-height: 1.8;
+    }
+
+    .hero-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      background: none;
+      border: 1px solid var(--champagne);
+      color: var(--champagne);
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 14px 28px;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-decoration: none;
+    }
+    .hero-cta:hover {
+      background: var(--champagne);
+      color: var(--bg);
+    }
+    .hero-cta svg { width: 16px; height: 16px; transition: transform 0.3s; }
+    .hero-cta:hover svg { transform: translateX(4px); }
+
+    .hero-right {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 120px 80px 80px 60px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      margin-bottom: 48px;
+    }
+
+    .stat-box {
+      background: var(--surface);
+      padding: 32px 28px;
+      transition: background 0.3s;
+    }
+    .stat-box:hover { background: var(--surface2); }
+
+    .stat-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 52px;
+      font-weight: 300;
+      color: var(--champagne);
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .stat-label {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .brands {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .brands-label {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 4px;
+    }
+
+    .brands-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .brand-tag {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      padding: 5px 12px;
+      transition: all 0.2s;
+    }
+    .brand-tag:hover {
+      border-color: var(--champagne);
+      color: var(--champagne);
+    }
+
+    /* ── DIVIDER ── */
+    .section-divider {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 0 80px;
+      margin: 0;
+    }
+    .section-divider::before, .section-divider::after {
+      content: ''; flex: 1; height: 1px; background: var(--border);
+    }
+    .divider-text {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 10px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      white-space: nowrap;
+    }
+
+    /* ── ABOUT ── */
+    #about {
+      padding: 100px 80px;
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 80px;
+      align-items: start;
+    }
+
+    .section-label {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--champagne);
+      margin-bottom: 16px;
+    }
+
+    h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(32px, 4vw, 52px);
+      font-weight: 300;
+      color: var(--white);
+      line-height: 1.1;
+    }
+
+    .about-text {
+      font-size: 15px;
+      color: var(--text-muted);
+      line-height: 1.9;
+      margin-bottom: 32px;
+    }
+
+    .achievements {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .achievement {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 2px solid var(--champagne);
+      padding: 20px 20px;
+    }
+
+    .achievement-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 28px;
+      font-weight: 500;
+      color: var(--champagne);
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .achievement-text {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* ── EXPERIENCE ── */
+    #experience {
+      padding: 100px 80px;
+      background: var(--surface);
+    }
+
+    .exp-header {
+      margin-bottom: 60px;
+    }
+
+    .timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .timeline-item {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      gap: 40px;
+      padding: 40px 0;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+    }
+    .timeline-item:last-child { border-bottom: none; }
+
+    .timeline-date {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      color: var(--text-dim);
+      padding-top: 4px;
+    }
+
+    .timeline-company {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px;
+      font-weight: 500;
+      color: var(--champagne);
+      margin-bottom: 4px;
+    }
+
+    .timeline-role {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+
+    .timeline-desc {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.8;
+    }
+
+    /* ── SKILLS ── */
+    #skills {
+      padding: 100px 80px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+    }
+
+    .skills-group { margin-bottom: 40px; }
+
+    .skills-group-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .skill-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(46,46,46,0.5);
+    }
+
+    .skill-name {
+      font-size: 14px;
+      color: var(--text);
+    }
+
+    .skill-level {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--champagne);
+    }
+
+    .lang-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 14px 0;
+      border-bottom: 1px solid rgba(46,46,46,0.5);
+    }
+
+    .lang-flag {
+      font-size: 20px;
+      width: 28px;
+      text-align: center;
+    }
+
+    .lang-name {
+      font-size: 14px;
+      color: var(--text);
+      flex: 1;
+    }
+
+    .lang-level {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    /* ── CHAT SECTION ── */
+    #contact {
+      padding: 100px 80px;
+      background: var(--surface);
+    }
+
+    .contact-intro {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: start;
+    }
+
+    .contact-text {
+      font-size: 15px;
+      color: var(--text-muted);
+      line-height: 1.9;
+      margin-bottom: 32px;
+    }
+
+    .contact-note {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      border: 1px solid var(--border);
+      border-left: 2px solid var(--champagne);
+      padding: 12px 16px;
+    }
+
+    /* ── CHAT WIDGET ── */
+    #chat-widget {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      height: 520px;
+    }
+
+    .chat-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .chat-status {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: #4caf50;
+      box-shadow: 0 0 8px rgba(76,175,80,0.6);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .chat-header-text {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    #chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) transparent;
+    }
+
+    .msg {
+      max-width: 85%;
+      padding: 12px 16px;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .msg.assistant {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-left: 2px solid var(--champagne);
+      color: var(--text);
+      align-self: flex-start;
+    }
+
+    .msg.user {
+      background: var(--champagne-dim);
+      border: 1px solid rgba(201,169,110,0.2);
+      color: var(--text);
+      align-self: flex-end;
+    }
+
+    .msg.typing {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-left: 2px solid var(--champagne);
+      align-self: flex-start;
+      color: var(--text-muted);
+      font-style: italic;
+      font-size: 12px;
+    }
+
+    .chat-input-area {
+      padding: 16px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 10px;
+    }
+
+    #chat-input {
+      flex: 1;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: 'Barlow', sans-serif;
+      font-size: 13px;
+      padding: 10px 14px;
+      outline: none;
+      transition: border-color 0.2s;
+      resize: none;
+      height: 42px;
+    }
+    #chat-input:focus { border-color: var(--champagne); }
+    #chat-input::placeholder { color: var(--text-dim); }
+
+    #chat-send {
+      background: var(--champagne);
+      border: none;
+      color: var(--bg);
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 0 20px;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    #chat-send:hover { opacity: 0.85; }
+    #chat-send:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 40px 80px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 20px;
+      font-weight: 300;
+      color: var(--text-muted);
+    }
+
+    .footer-copy {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.15em;
+      color: var(--text-dim);
+    }
+
+    /* ── ANIMATIONS ── */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .fade-in.visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      #hero { grid-template-columns: 1fr; }
+      .hero-left { padding: 100px 32px 40px; }
+      .hero-left::after { display: none; }
+      .hero-right { padding: 40px 32px 80px; }
+      #about, #skills, .contact-intro { grid-template-columns: 1fr; gap: 40px; padding: 60px 32px; }
+      #experience, #contact { padding: 60px 32px; }
+      .timeline-item { grid-template-columns: 1fr; gap: 8px; }
+      .section-divider { padding: 0 32px; }
+      footer { flex-direction: column; gap: 12px; padding: 32px; }
+      #lang-bar { padding: 12px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- LANG BAR -->
+  <nav id="lang-bar">
+    <button class="lang-btn active" onclick="setLang('en')">EN</button>
+    <button class="lang-btn" onclick="setLang('tr')">TR</button>
+    <button class="lang-btn" onclick="setLang('de')">DE</button>
+    <button class="lang-btn" onclick="setLang('ru')">RU</button>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-left fade-in">
+      <p class="eyebrow" data-i18n="eyebrow">Hospitality Leadership · Antalya</p>
+      <h1>İlker<br/><span>DEGE</span></h1>
+      <p class="hero-title" data-i18n="hero-title">Front Office Manager</p>
+      <p class="hero-desc" data-i18n="hero-desc">
+        25 years shaping luxury guest experiences across Antalya's finest 5-star resorts. From Crowne Plaza to Radisson Blu — precision, presence, and performance.
+      </p>
+      <a href="#contact" class="hero-cta">
+        <span data-i18n="cta">Connect with My Assistant</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+
+    <div class="hero-right fade-in" style="transition-delay:0.15s">
+      <div class="stats-grid">
+        <div class="stat-box">
+          <div class="stat-num">25+</div>
+          <div class="stat-label" data-i18n="stat1">Years Experience</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num">10+</div>
+          <div class="stat-label" data-i18n="stat2">5★ Properties</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num">4</div>
+          <div class="stat-label" data-i18n="stat3">Languages</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num">30%</div>
+          <div class="stat-label" data-i18n="stat4">Check-in Time Reduced</div>
+        </div>
+      </div>
+
+      <div class="brands">
+        <div class="brands-label" data-i18n="brands-label">Career Highlights</div>
+        <div class="brands-list">
+          <span class="brand-tag">Crowne Plaza · IHG</span>
+          <span class="brand-tag">Radisson Blu</span>
+          <span class="brand-tag">Venezia Palace</span>
+          <span class="brand-tag">Avantgarde</span>
+          <span class="brand-tag">Siam Elegance</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"><span class="divider-text" data-i18n="div1">Profile</span></div>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="fade-in">
+      <p class="section-label" data-i18n="about-label">About</p>
+      <h2 data-i18n="about-title">The front desk is where every guest story begins.</h2>
+    </div>
+    <div class="fade-in" style="transition-delay:0.1s">
+      <p class="about-text" data-i18n="about-text">
+        I started as a reception clerk at a Kemer resort in 1998. Over 25 years, I have built and led front office teams at more than 10 luxury properties in Antalya — each one teaching me something new about what genuine hospitality means. My approach combines operational precision with a deep understanding of the international guest experience.
+      </p>
+      <div class="achievements">
+        <div class="achievement">
+          <div class="achievement-num">+20%</div>
+          <div class="achievement-text" data-i18n="ach1">Guest satisfaction score improvement through targeted team training</div>
+        </div>
+        <div class="achievement">
+          <div class="achievement-num">95%</div>
+          <div class="achievement-text" data-i18n="ach2">Average occupancy achieved through strategic rate management</div>
+        </div>
+        <div class="achievement">
+          <div class="achievement-num">−30%</div>
+          <div class="achievement-text" data-i18n="ach3">Booking error reduction via PMS implementation & staff protocols</div>
+        </div>
+        <div class="achievement">
+          <div class="achievement-num">−30%</div>
+          <div class="achievement-text" data-i18n="ach4">Employee turnover reduction through comprehensive onboarding</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"><span class="divider-text" data-i18n="div2">Career</span></div>
+
+  <!-- EXPERIENCE -->
+  <section id="experience">
+    <div class="exp-header fade-in">
+      <p class="section-label" data-i18n="exp-label">Experience</p>
+      <h2 data-i18n="exp-title">A career built on excellence.</h2>
+    </div>
+    <div class="timeline">
+      <div class="timeline-item fade-in">
+        <div class="timeline-date">2025 — Present</div>
+        <div>
+          <div class="timeline-company">Siam Elegance Hotels & SPA</div>
+          <div class="timeline-role" data-i18n="role-fom">Front Office Manager</div>
+          <div class="timeline-desc" data-i18n="exp1-desc">Leading front office operations at this luxury resort. Overseeing guest services, reception, and concierge teams. Implementing guest feedback systems and managing room inventory for revenue optimization.</div>
+        </div>
+      </div>
+      <div class="timeline-item fade-in">
+        <div class="timeline-date">2021 — 2022</div>
+        <div>
+          <div class="timeline-company">Venezia Palace Deluxe Resort</div>
+          <div class="timeline-role" data-i18n="role-fom">Front Office Manager</div>
+          <div class="timeline-desc" data-i18n="exp2-desc">Directed operations at this prestigious 5-star resort in Kundu. Achieved 95% average occupancy. Managed a team of 25+ staff across reception, reservations, concierge, and bell services.</div>
+        </div>
+      </div>
+      <div class="timeline-item fade-in">
+        <div class="timeline-date">2020 — 2021</div>
+        <div>
+          <div class="timeline-company">Crowne Plaza Antalya · IHG</div>
+          <div class="timeline-role" data-i18n="role-fom">Front Office Manager</div>
+          <div class="timeline-desc" data-i18n="exp3-desc">Maintained Crowne Plaza's global IHG standards. Increased guest satisfaction scores by 20% and reduced check-in wait time by 30% through optimized staffing and express check-in protocols.</div>
+        </div>
+      </div>
+      <div class="timeline-item fade-in">
+        <div class="timeline-date">2010 — 2019</div>
+        <div>
+          <div class="timeline-company">Radisson Blu & Further Properties</div>
+          <div class="timeline-role" data-i18n="role-fom">Front Office Manager</div>
+          <div class="timeline-desc" data-i18n="exp4-desc">A decade of leadership across multiple 5-star luxury resorts in Antalya, including Radisson Blu Kaş and Avantgarde Collection. Built deep expertise in Opera PMS, Fidelio, and Sejour systems.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"><span class="divider-text" data-i18n="div3">Expertise</span></div>
+
+  <!-- SKILLS -->
+  <section id="skills">
+    <div class="fade-in">
+      <p class="section-label" data-i18n="skills-label">Technical Skills</p>
+      <h2 style="margin-bottom:40px" data-i18n="skills-title">Systems & Competencies</h2>
+      <div class="skills-group">
+        <div class="skills-group-title" data-i18n="pms-title">Property Management Systems</div>
+        <div class="skill-item"><span class="skill-name">Opera PMS</span><span class="skill-level" data-i18n="expert">Expert</span></div>
+        <div class="skill-item"><span class="skill-name">Fidelio</span><span class="skill-level" data-i18n="expert">Expert</span></div>
+        <div class="skill-item"><span class="skill-name">Sejour</span><span class="skill-level" data-i18n="expert">Expert</span></div>
+      </div>
+      <div class="skills-group">
+        <div class="skills-group-title" data-i18n="core-title">Core Competencies</div>
+        <div class="skill-item"><span class="skill-name" data-i18n="sk1">Revenue Management</span><span class="skill-level" data-i18n="advanced">Advanced</span></div>
+        <div class="skill-item"><span class="skill-name" data-i18n="sk2">Team Leadership (25+ staff)</span><span class="skill-level" data-i18n="advanced">Advanced</span></div>
+        <div class="skill-item"><span class="skill-name" data-i18n="sk3">Guest Experience Design</span><span class="skill-level" data-i18n="advanced">Advanced</span></div>
+        <div class="skill-item"><span class="skill-name" data-i18n="sk4">Process Optimization</span><span class="skill-level" data-i18n="advanced">Advanced</span></div>
+      </div>
+    </div>
+
+    <div class="fade-in" style="transition-delay:0.1s">
+      <p class="section-label" data-i18n="lang-label">Languages</p>
+      <h2 style="margin-bottom:40px" data-i18n="lang-title">Communication</h2>
+      <div class="lang-item"><span class="lang-flag">🇹🇷</span><span class="lang-name" data-i18n="lang-tr">Turkish</span><span class="lang-level" data-i18n="native">Native</span></div>
+      <div class="lang-item"><span class="lang-flag">🇬🇧</span><span class="lang-name" data-i18n="lang-en">English</span><span class="lang-level" data-i18n="prof">Professional</span></div>
+      <div class="lang-item"><span class="lang-flag">🇩🇪</span><span class="lang-name" data-i18n="lang-de">German</span><span class="lang-level" data-i18n="prof">Professional</span></div>
+      <div class="lang-item"><span class="lang-flag">🇷🇺</span><span class="lang-name" data-i18n="lang-ru">Russian</span><span class="lang-level" data-i18n="conv">Conversational</span></div>
+    </div>
+  </section>
+
+  <div class="section-divider"><span class="divider-text" data-i18n="div4">Contact</span></div>
+
+  <!-- CONTACT + CHAT -->
+  <section id="contact">
+    <div class="contact-intro">
+      <div class="fade-in">
+        <p class="section-label" data-i18n="contact-label">Get in Touch</p>
+        <h2 style="margin-bottom:24px" data-i18n="contact-title">Speak with my assistant.</h2>
+        <p class="contact-text" data-i18n="contact-text">
+          I am currently open to senior leadership opportunities at 5-star international hotel brands. My assistant is available 24/7 to answer your questions and evaluate your proposal.
+        </p>
+        <div class="contact-note" data-i18n="contact-note">
+          Serious inquiries only · Corporate email required · CV shared upon approval
+        </div>
+      </div>
+
+      <div class="fade-in" style="transition-delay:0.1s">
+        <div id="chat-widget">
+          <div class="chat-header">
+            <div class="chat-status"></div>
+            <div class="chat-header-text" data-i18n="chat-header">İlker DEGE · Personal Assistant · Online</div>
+          </div>
+          <div id="chat-messages"></div>
+          <div class="chat-input-area">
+            <textarea id="chat-input" placeholder="" data-i18n-placeholder="chat-placeholder" rows="1"></textarea>
+            <button id="chat-send" data-i18n="chat-send">Send</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-name">İlker DEGE</div>
+    <div class="footer-copy">© 2026 · ilk-er.com · Antalya, Turkey</div>
+  </footer>
+
+  <script>
+    // ── TRANSLATIONS ──
+    const i18n = {
+      en: {
+        eyebrow: "Hospitality Leadership · Antalya",
+        "hero-title": "Front Office Manager",
+        "hero-desc": "25 years shaping luxury guest experiences across Antalya's finest 5-star resorts. From Crowne Plaza to Radisson Blu — precision, presence, and performance.",
+        cta: "Connect with My Assistant",
+        stat1: "Years Experience", stat2: "5★ Properties", stat3: "Languages", stat4: "Check-in Time Reduced",
+        "brands-label": "Career Highlights",
+        div1: "Profile", div2: "Career", div3: "Expertise", div4: "Contact",
+        "about-label": "About",
+        "about-title": "The front desk is where every guest story begins.",
+        "about-text": "I started as a reception clerk at a Kemer resort in 1998. Over 25 years, I have built and led front office teams at more than 10 luxury properties in Antalya — each one teaching me something new about what genuine hospitality means.",
+        ach1: "Guest satisfaction improvement through targeted training", ach2: "Average occupancy via strategic rate management", ach3: "Booking error reduction via PMS implementation", ach4: "Employee turnover reduction through onboarding",
+        "exp-label": "Experience", "exp-title": "A career built on excellence.", "role-fom": "Front Office Manager",
+        exp1desc: "Leading front office operations at this luxury resort. Overseeing guest services, reception, and concierge teams.",
+        exp2desc: "Directed operations at this prestigious 5-star resort in Kundu. Achieved 95% average occupancy. Managed 25+ staff.",
+        exp3desc: "Maintained Crowne Plaza's global IHG standards. Increased guest satisfaction by 20%, reduced check-in time by 30%.",
+        exp4desc: "A decade of leadership across multiple 5-star luxury resorts including Radisson Blu Kaş and Avantgarde Collection.",
+        "skills-label": "Technical Skills", "skills-title": "Systems & Competencies",
+        "pms-title": "Property Management Systems", "core-title": "Core Competencies",
+        expert: "Expert", advanced: "Advanced",
+        sk1: "Revenue Management", sk2: "Team Leadership (25+ staff)", sk3: "Guest Experience Design", sk4: "Process Optimization",
+        "lang-label": "Languages", "lang-title": "Communication",
+        "lang-tr": "Turkish", "lang-en": "English", "lang-de": "German", "lang-ru": "Russian",
+        native: "Native", prof: "Professional", conv: "Conversational",
+        "contact-label": "Get in Touch", "contact-title": "Speak with my assistant.",
+        "contact-text": "I am currently open to senior leadership opportunities at 5-star international hotel brands. My assistant is available 24/7 to answer your questions and evaluate your proposal.",
+        "contact-note": "Serious inquiries only · Corporate email required · CV shared upon approval",
+        "chat-header": "İlker DEGE · Personal Assistant · Online",
+        "chat-placeholder": "Introduce yourself and your property...",
+        "chat-send": "Send",
+        "chat-welcome": "Good day. I am İlker DEGE's personal assistant. I am here to evaluate career opportunities on his behalf. Could you please share your property name, location, and the position you are looking to fill?"
+      },
+      tr: {
+        eyebrow: "Konaklama Liderliği · Antalya",
+        "hero-title": "Ön Büro Müdürü",
+        "hero-desc": "Antalya'nın en prestijli 5 yıldızlı tesislerinde 25 yıllık lüks misafir deneyimi. Crowne Plaza'dan Radisson Blu'ya — hassasiyet, varlık ve performans.",
+        cta: "Asistanımla İletişime Geçin",
+        stat1: "Yıl Deneyim", stat2: "5★ Tesis", stat3: "Dil", stat4: "Check-in Süresi Azaltıldı",
+        "brands-label": "Kariyer Öne Çıkanları",
+        div1: "Profil", div2: "Kariyer", div3: "Uzmanlık", div4: "İletişim",
+        "about-label": "Hakkında",
+        "about-title": "Resepsiyon, her misafir hikayesinin başladığı yerdir.",
+        "about-text": "1998 yılında Kemer'deki bir tesiste resepsiyon görevlisi olarak başladım. 25 yıl boyunca Antalya'nın 10'dan fazla lüks tesisinde ön büro ekiplerini kurdum ve yönettim.",
+        ach1: "Hedefli eğitimlerle misafir memnuniyeti artışı", ach2: "Stratejik fiyat yönetimiyle ortalama doluluk oranı", ach3: "PMS uygulamasıyla rezervasyon hatası azaltımı", ach4: "Kapsamlı oryantasyonla çalışan devir hızı azaltımı",
+        "exp-label": "Deneyim", "exp-title": "Mükemmellik üzerine kurulu bir kariyer.", "role-fom": "Ön Büro Müdürü",
+        "skills-label": "Teknik Beceriler", "skills-title": "Sistemler ve Yetkinlikler",
+        "pms-title": "Tesis Yönetim Sistemleri", "core-title": "Temel Yetkinlikler",
+        expert: "Uzman", advanced: "İleri",
+        sk1: "Gelir Yönetimi", sk2: "Takım Liderliği (25+ kişi)", sk3: "Misafir Deneyimi Tasarımı", sk4: "Süreç Optimizasyonu",
+        "lang-label": "Diller", "lang-title": "İletişim",
+        "lang-tr": "Türkçe", "lang-en": "İngilizce", "lang-de": "Almanca", "lang-ru": "Rusça",
+        native: "Anadil", prof: "Profesyonel", conv: "Konuşma Düzeyi",
+        "contact-label": "İletişim", "contact-title": "Asistanımla görüşün.",
+        "contact-text": "Uluslararası 5 yıldızlı otel markalarında üst düzey liderlik fırsatlarına açığım. Asistanım 7/24 sorularınızı yanıtlamak ve teklifinizi değerlendirmek için burada.",
+        "contact-note": "Yalnızca ciddi teklifler · Kurumsal e-posta zorunlu · CV onay sonrası iletilir",
+        "chat-header": "İlker DEGE · Kişisel Asistan · Çevrimiçi",
+        "chat-placeholder": "Kendinizi ve otelinizi tanıtın...",
+        "chat-send": "Gönder",
+        "chat-welcome": "İyi günler. Ben İlker DEGE'nin kişisel asistanıyım. Kariyer fırsatlarını onun adına değerlendirmek için buradayım. Lütfen tesisinizin adını, lokasyonunu ve doldurmak istediğiniz pozisyonu paylaşır mısınız?"
+      },
+      de: {
+        eyebrow: "Hospitality Leadership · Antalya",
+        "hero-title": "Front Office Manager",
+        "hero-desc": "25 Jahre Luxus-Gasterlebnisse in Antalyas besten 5-Sterne-Resorts. Von Crowne Plaza bis Radisson Blu — Präzision, Präsenz und Performance.",
+        cta: "Mit meinem Assistenten verbinden",
+        stat1: "Jahre Erfahrung", stat2: "5★ Häuser", stat3: "Sprachen", stat4: "Check-in Zeit reduziert",
+        "brands-label": "Karriere-Highlights",
+        div1: "Profil", div2: "Karriere", div3: "Fachkenntnisse", div4: "Kontakt",
+        "about-label": "Über mich",
+        "about-title": "Die Rezeption ist der Ort, wo jede Gästgeschichte beginnt.",
+        "about-text": "1998 begann ich als Rezeptionist in einem Kemer-Resort. In 25 Jahren habe ich Front-Office-Teams in mehr als 10 Luxushotels in Antalya aufgebaut und geleitet.",
+        ach1: "Steigerung der Gästezufriedenheit durch gezielte Schulungen", ach2: "Durchschnittliche Auslastung durch strategisches Revenue Management", ach3: "Reduzierung von Buchungsfehlern durch PMS-Implementierung", ach4: "Senkung der Mitarbeiterfluktuation durch umfassendes Onboarding",
+        "exp-label": "Erfahrung", "exp-title": "Eine Karriere, die auf Exzellenz aufgebaut ist.", "role-fom": "Front Office Manager",
+        "skills-label": "Technische Kenntnisse", "skills-title": "Systeme & Kompetenzen",
+        "pms-title": "Property Management Systeme", "core-title": "Kernkompetenzen",
+        expert: "Experte", advanced: "Fortgeschritten",
+        sk1: "Revenue Management", sk2: "Teamführung (25+ Mitarbeiter)", sk3: "Guest Experience Design", sk4: "Prozessoptimierung",
+        "lang-label": "Sprachen", "lang-title": "Kommunikation",
+        "lang-tr": "Türkisch", "lang-en": "Englisch", "lang-de": "Deutsch", "lang-ru": "Russisch",
+        native: "Muttersprache", prof: "Professionell", conv: "Konversationsniveau",
+        "contact-label": "Kontakt", "contact-title": "Sprechen Sie mit meinem Assistenten.",
+        "contact-text": "Ich bin offen für Führungspositionen bei internationalen 5-Sterne-Hotelmarken. Mein Assistent steht 24/7 zur Verfügung, um Ihre Anfragen zu beantworten.",
+        "contact-note": "Nur ernsthafte Anfragen · Geschäftliche E-Mail erforderlich · Lebenslauf nach Genehmigung",
+        "chat-header": "İlker DEGE · Persönlicher Assistent · Online",
+        "chat-placeholder": "Stellen Sie sich und Ihr Haus vor...",
+        "chat-send": "Senden",
+        "chat-welcome": "Guten Tag. Ich bin der persönliche Assistent von Herrn İlker DEGE. Ich bin hier, um Karrieremöglichkeiten in seinem Namen zu bewerten. Könnten Sie bitte Ihren Hotelnamen, Standort und die zu besetzende Position mitteilen?"
+      },
+      ru: {
+        eyebrow: "Руководство в гостиничном бизнесе · Анталья",
+        "hero-title": "Руководитель службы приёма",
+        "hero-desc": "25 лет формирования люксовых впечатлений гостей в лучших 5-звёздочных курортах Антальи. От Crowne Plaza до Radisson Blu — точность, присутствие, результат.",
+        cta: "Связаться с моим ассистентом",
+        stat1: "Лет опыта", stat2: "5★ Отелей", stat3: "Языка", stat4: "Сокращение времени регистрации",
+        "brands-label": "Карьерные достижения",
+        div1: "Профиль", div2: "Карьера", div3: "Экспертиза", div4: "Контакт",
+        "about-label": "Обо мне",
+        "about-title": "Ресепшн — это место, где начинается каждая история гостя.",
+        "about-text": "В 1998 году я начал карьеру администратором в курортном отеле в Кемере. За 25 лет я создавал и возглавлял службы приёма в более чем 10 роскошных отелях Антальи.",
+        ach1: "Повышение удовлетворённости гостей через целевые тренинги", ach2: "Средняя загрузка через стратегическое управление доходами", ach3: "Снижение ошибок бронирования через внедрение PMS", ach4: "Снижение текучести кадров через комплексный онбординг",
+        "exp-label": "Опыт", "exp-title": "Карьера, построенная на совершенстве.", "role-fom": "Руководитель службы приёма",
+        "skills-label": "Технические навыки", "skills-title": "Системы и компетенции",
+        "pms-title": "Системы управления отелем", "core-title": "Ключевые компетенции",
+        expert: "Эксперт", advanced: "Продвинутый",
+        sk1: "Управление доходами", sk2: "Руководство командой (25+)", sk3: "Дизайн гостевого опыта", sk4: "Оптимизация процессов",
+        "lang-label": "Языки", "lang-title": "Коммуникация",
+        "lang-tr": "Турецкий", "lang-en": "Английский", "lang-de": "Немецкий", "lang-ru": "Русский",
+        native: "Родной", prof: "Профессиональный", conv: "Разговорный",
+        "contact-label": "Контакт", "contact-title": "Поговорите с моим ассистентом.",
+        "contact-text": "Я открыт для руководящих должностей в международных 5-звёздочных отельных брендах. Мой ассистент доступен круглосуточно.",
+        "contact-note": "Только серьёзные запросы · Корпоративный email обязателен · Резюме после подтверждения",
+        "chat-header": "İlker DEGE · Личный ассистент · Онлайн",
+        "chat-placeholder": "Представьтесь и расскажите об отеле...",
+        "chat-send": "Отправить",
+        "chat-welcome": "Добрый день. Я личный ассистент Илькера ДЕГЕ. Я здесь для оценки карьерных возможностей от его имени. Не могли бы вы поделиться названием вашего отеля, местоположением и вакантной должностью?"
+      }
+    };
+
+    let currentLang = 'en';
+    let chatHistory = [];
+    const API_KEY = 'sk-ant-api03-Ej3l0dRLByAqz2Y-NF6dckwvz1-ATcIUHazaSUuX3erUmp6E4kyTqsp8rx7pMECL3BuM18dg2rqQX49MuZ-SCA-t2yaLgAA'; // <-- buraya API key gelecek
+
+    const SYSTEM_PROMPT = `Sen İlker DEGE'nin kişisel kariyer asistanısın. İlker DEGE şu anda yeni bir kariyer fırsatı arıyor ve sen onun profesyonel ilk filtresi, 7/24 çalışan asistanısın.
+
+Kişilik ve üslup:
+- Son derece profesyonel, kibar ama mesafeli ve seçici
+- Asla samimi ifadeler kullanma ("abi, kardeşim, dostum" vb. tamamen yasak)
+- Karşı tarafın diline otomatik geç (Türkçe, İngilizce, Almanca, Rusça)
+
+Temel Filtreler:
+- Sadece 5 yıldızlı tesisler veya dünyaca tanınmış zincir oteller kabul edilir (Accor, IHG, Radisson, MGM, Marriott, Hilton, Hyatt vb.)
+- Yalnızca yönetici pozisyonları: Front Office Manager, Operations Manager, Assistant General Manager
+- @gmail, @hotmail, @yahoo, @outlook gibi genel e-posta uzantıları kesinlikle kabul edilmez
+- Kurumsal e-posta + LinkedIn profil linki ikisi birlikte zorunlu
+- CV asistan tarafından direkt gönderilmez, İlker Bey onayladıktan sonra iletilir
+- Türkiye'deki sezonluk teklifler kabul edilmez, sadece yurt dışı sezonluk olabilir
+
+Maaş beklentileri (karşı taraf söylemeden ASLA sen açma):
+Türkiye: FOM → min 95.000 ₺ net | Operations Manager → min 120.000 ₺ net | AGM → min 150.000 ₺ net
+Yurt dışı USA/Canada → min 4.000 $ net + konaklama + uçak + sosyal paket zorunlu
+Yurt dışı Avrupa → min 4.000 € net + konaklama + uçak + sosyal paket zorunlu
+
+İş akışı:
+1. Selam ver, pozisyon + otel adı + lokasyon sor
+2. Ücret aralığını sor (net mi brüt mü belirtmelerini iste)
+3. Filtreler geçilirse kısa tanıtım paylaş
+4. Ücret uygunsa: "Bu pozisyonda daha önce çalışan kişinin neden ayrıldığını öğrenmek ister misiniz?" diye sor
+5. Tatmin edici cevap gelirse kurumsal e-posta + LinkedIn iste
+6. "Bilgileriniz alınmıştır. İlker Bey'in değerlendirmesinin ardından CV iletilecektir." de
+
+Ücret beklentiyi karşılamıyorsa: "Teşekkür ederim ilginiz için. Maalesef belirttiğiniz bütçe İlker Bey'in mevcut kariyer seviyesiyle uyumlu görünmüyor." de.
+
+Takip (48 saat sessizlik): "Daha önce paylaşılan bilgilere ilişkin henüz dönüş alınamadı. 48 saat içinde geri bildirim alınamazsa bu pozisyon için süreç kapatılacaktır."
+
+ASLA yapma:
+- İlk mesajda maaş beklentisi paylaşma
+- İlk mesajda CV gönderme  
+- Kurumsal kimlik doğrulanmadan CV gönderme
+- Genel e-posta uzantılarını kabul etme`;
+
+    function setLang(lang) {
+      currentLang = lang;
+      document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+      document.querySelector(`.lang-btn[onclick="setLang('${lang}')"]`).classList.add('active');
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (i18n[lang][key]) el.textContent = i18n[lang][key];
+      });
+      document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+        const key = el.getAttribute('data-i18n-placeholder');
+        if (i18n[lang][key]) el.placeholder = i18n[lang][key];
+      });
+      // Reset chat with new lang welcome
+      const msgs = document.getElementById('chat-messages');
+      msgs.innerHTML = '';
+      chatHistory = [];
+      addMessage('assistant', i18n[lang]['chat-welcome']);
+    }
+
+    function addMessage(role, text) {
+      const msgs = document.getElementById('chat-messages');
+      const div = document.createElement('div');
+      div.className = `msg ${role}`;
+      div.textContent = text;
+      msgs.appendChild(div);
+      msgs.scrollTop = msgs.scrollHeight;
+      if (role !== 'typing') {
+        chatHistory.push({ role: role === 'assistant' ? 'assistant' : 'user', content: text });
+      }
+      return div;
+    }
+
+    async function sendMessage() {
+      const input = document.getElementById('chat-input');
+      const btn = document.getElementById('chat-send');
+      const text = input.value.trim();
+      if (!text) return;
+
+      input.value = '';
+      btn.disabled = true;
+      addMessage('user', text);
+
+      const typing = document.createElement('div');
+      typing.className = 'msg typing';
+      typing.textContent = '...';
+      document.getElementById('chat-messages').appendChild(typing);
+      document.getElementById('chat-messages').scrollTop = 9999;
+
+      try {
+        const res = await fetch('https://api.anthropic.com/v1/messages', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': API_KEY,
+            'anthropic-version': '2023-06-01',
+            'anthropic-dangerous-allow-browser': 'true'
+          },
+          body: JSON.stringify({
+            model: 'claude-sonnet-4-6',
+            max_tokens: 1024,
+            system: SYSTEM_PROMPT,
+            messages: chatHistory.filter(m => m.role === 'user' || m.role === 'assistant')
+          })
+        });
+        const data = await res.json();
+        typing.remove();
+        const reply = data.content?.[0]?.text || 'An error occurred. Please try again.';
+        addMessage('assistant', reply);
+      } catch(e) {
+        typing.remove();
+        addMessage('assistant', 'Connection error. Please try again.');
+      }
+      btn.disabled = false;
+      input.focus();
+    }
+
+    document.getElementById('chat-send').addEventListener('click', sendMessage);
+    document.getElementById('chat-input').addEventListener('keydown', e => {
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+    });
+
+    // SCROLL ANIMATIONS
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+    // INIT
+    setLang('en');
+  </script>
+</body>
+</html>
