@@ -990,7 +990,7 @@
 
     let currentLang = 'en';
     let chatHistory = [];
-    const API_KEY = 'sk-ant-api03-Ej3l0dRLByAqz2Y-NF6dckwvz1-ATcIUHazaSUuX3erUmp6E4kyTqsp8rx7pMECL3BuM18dg2rqQX49MuZ-SCA-t2yaLgAA'; // <-- buraya API key gelecek
+    // API key sunucu tarafında güvende - /api/chat proxy kullanılıyor
 
     const SYSTEM_PROMPT = `Sen İlker DEGE'nin kişisel kariyer asistanısın. İlker DEGE şu anda yeni bir kariyer fırsatı arıyor ve sen onun profesyonel ilk filtresi, 7/24 çalışan asistanısın.
 
@@ -1079,13 +1079,10 @@ ASLA yapma:
       document.getElementById('chat-messages').scrollTop = 9999;
 
       try {
-        const res = await fetch('https://api.anthropic.com/v1/messages', {
+        const res = await fetch('/api/chat', {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
-            'x-api-key': API_KEY,
-            'anthropic-version': '2023-06-01',
-            'anthropic-dangerous-allow-browser': 'true'
+            'Content-Type': 'application/json'
           },
           body: JSON.stringify({
             model: 'claude-sonnet-4-6',
