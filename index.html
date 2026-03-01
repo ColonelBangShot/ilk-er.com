@@ -612,6 +612,54 @@
     #chat-send:hover { opacity: 0.85; }
     #chat-send:disabled { opacity: 0.4; cursor: not-allowed; }
 
+    /* ── CV REQUEST ── */
+    .cv-request-btn {
+      display: inline-block;
+      margin-top: 10px;
+      background: transparent;
+      border: 1px solid var(--champagne);
+      color: var(--champagne);
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 7px 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .cv-request-btn:hover { background: var(--champagne); color: var(--bg); }
+
+    .cv-email-form {
+      margin-top: 10px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .cv-email-form input {
+      flex: 1;
+      min-width: 180px;
+      background: var(--surface2);
+      border: 1px solid var(--champagne);
+      color: var(--text);
+      font-family: 'Barlow', sans-serif;
+      font-size: 12px;
+      padding: 7px 12px;
+      outline: none;
+    }
+    .cv-email-form button {
+      background: var(--champagne);
+      border: none;
+      color: var(--bg);
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 7px 16px;
+      cursor: pointer;
+    }
+
     /* ── FOOTER ── */
     footer {
       padding: 40px 80px;
@@ -1049,17 +1097,71 @@ ASLA yapma:
       addMessage('assistant', i18n[lang]['chat-welcome']);
     }
 
+    let cvRequestShown = false;
+
     function addMessage(role, text) {
       const msgs = document.getElementById('chat-messages');
+      const wrapper = document.createElement('div');
+      wrapper.style.display = 'flex';
+      wrapper.style.flexDirection = 'column';
+      wrapper.style.alignItems = role === 'user' ? 'flex-end' : 'flex-start';
+
       const div = document.createElement('div');
       div.className = `msg ${role}`;
       div.textContent = text;
-      msgs.appendChild(div);
+      wrapper.appendChild(div);
+
+      // CV butonu: asistan 2. kez cevap verince göster
+      if (role === 'assistant' && !cvRequestShown && chatHistory.filter(m => m.role === 'assistant').length >= 1) {
+        cvRequestShown = true;
+        const btn = document.createElement('button');
+        btn.className = 'cv-request-btn';
+        btn.textContent = '📄 Request CV';
+        btn.onclick = () => showCvForm(wrapper, btn);
+        wrapper.appendChild(btn);
+      }
+
+      msgs.appendChild(wrapper);
       msgs.scrollTop = msgs.scrollHeight;
       if (role !== 'typing') {
         chatHistory.push({ role: role === 'assistant' ? 'assistant' : 'user', content: text });
       }
       return div;
+    }
+
+    function showCvForm(wrapper, btn) {
+      btn.remove();
+      const form = document.createElement('div');
+      form.className = 'cv-email-form';
+      form.innerHTML = `
+        <input type="email" id="cv-email-input" placeholder="your@company.com" />
+        <button onclick="submitCvRequest()">Send Request</button>
+      `;
+      wrapper.appendChild(form);
+      document.getElementById('cv-email-input').focus();
+    }
+
+    async function submitCvRequest() {
+      const emailInput = document.getElementById('cv-email-input');
+      const email = emailInput ? emailInput.value.trim() : '';
+      if (!email || !email.includes('@')) {
+        emailInput.style.borderColor = 'red';
+        return;
+      }
+      const btn = emailInput.nextElementSibling;
+      btn.disabled = true;
+      btn.textContent = 'Sending...';
+      try {
+        await fetch('/api/cv-request', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, conversation: chatHistory.slice(-6).map(m => `${m.role}: ${m.content}`).join('\n') })
+        });
+        emailInput.parentElement.innerHTML = '<span style="color:var(--champagne);font-size:12px;">✓ Request sent. İlker will review and respond shortly.</span>';
+      } catch(e) {
+        btn.disabled = false;
+        btn.textContent = 'Send Request';
+      }
     }
 
     async function sendMessage() {
