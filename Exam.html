@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Front Office Assessment — İlker DEGE</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0a0f;--bg2:#111118;--bg3:#1a1a24;
+  --gold:#c8a24e;--gold-light:#e0c06a;--gold-dim:rgba(200,162,78,.12);
+  --text:#e8e6e1;--text-dim:#8a8a95;--text-muted:#55556a;
+  --green:#4ecb71;--red:#e74c5e;--blue:#5b8def;
+  --radius:12px;--radius-sm:8px;
+}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;line-height:1.6}
+
+/* ── Noise overlay ── */
+body::before{content:’’;position:fixed;inset:0;background:url(“data:image/svg+xml,%3Csvg viewBox=‘0 0 256 256’ xmlns=‘http://www.w3.org/2000/svg’%3E%3Cfilter id=‘noise’%3E%3CfeTurbulence baseFrequency=‘0.85’ numOctaves=‘4’ stitchTiles=‘stitch’/%3E%3C/filter%3E%3Crect width=‘100%25’ height=‘100%25’ filter=‘url(%23noise)’ opacity=‘0.03’/%3E%3C/svg%3E”);pointer-events:none;z-index:9999}
+
+/* ── Hero ── */
+.hero{position:relative;padding:4rem 2rem 3rem;text-align:center;overflow:hidden}
+.hero::before{content:’’;position:absolute;top:-40%;left:50%;transform:translateX(-50%);width:600px;height:600px;background:radial-gradient(circle,rgba(200,162,78,.08) 0%,transparent 70%);pointer-events:none}
+.hero-badge{display:inline-flex;align-items:center;gap:.5rem;padding:.4rem 1rem;border:1px solid var(–gold-dim);border-radius:50px;font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(–gold);margin-bottom:1.5rem;backdrop-filter:blur(10px);background:rgba(200,162,78,.04)}
+.hero h1{font-family:‘Cormorant Garamond’,serif;font-size:clamp(2rem,5vw,3.2rem);font-weight:300;letter-spacing:.02em;color:var(–text);margin-bottom:.5rem}
+.hero h1 span{color:var(–gold);font-weight:500}
+.hero p{color:var(–text-dim);max-width:520px;margin:0 auto;font-size:.95rem}
+.back-link{position:absolute;top:1.5rem;left:2rem;color:var(–text-dim);text-decoration:none;font-size:.85rem;display:flex;align-items:center;gap:.4rem;transition:color .3s}
+.back-link:hover{color:var(–gold)}
+
+/* ── Container ── */
+.container{max-width:720px;margin:0 auto;padding:0 1.5rem 4rem}
+
+/* ── Setup Card ── */
+.setup-card{background:var(–bg2);border:1px solid rgba(255,255,255,.06);border-radius:var(–radius);padding:2.5rem;margin-bottom:2rem;animation:fadeUp .6s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+.setup-card h2{font-family:‘Cormorant Garamond’,serif;font-size:1.5rem;font-weight:400;margin-bottom:.3rem}
+.setup-card .subtitle{color:var(–text-dim);font-size:.85rem;margin-bottom:2rem}
+
+.form-group{margin-bottom:1.5rem}
+.form-group label{display:block;font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;color:var(–text-dim);margin-bottom:.6rem}
+.form-group input,.form-group select{width:100%;padding:.75rem 1rem;background:var(–bg3);border:1px solid rgba(255,255,255,.08);border-radius:var(–radius-sm);color:var(–text);font-family:inherit;font-size:.9rem;transition:border-color .3s}
+.form-group input:focus,.form-group select:focus{outline:none;border-color:var(–gold)}
+.form-group select option{background:var(–bg2);color:var(–text)}
+
+.lang-select{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin-bottom:1.5rem}
+.lang-option{position:relative;cursor:pointer}
+.lang-option input{position:absolute;opacity:0;pointer-events:none}
+.lang-option .lang-card{display:flex;flex-direction:column;align-items:center;gap:.4rem;padding:1.2rem .8rem;background:var(–bg3);border:1.5px solid rgba(255,255,255,.06);border-radius:var(–radius-sm);transition:all .3s;text-align:center}
+.lang-option .lang-card .flag{font-size:1.8rem}
+.lang-option .lang-card .lang-name{font-size:.8rem;color:var(–text-dim);transition:color .3s}
+.lang-option input:checked + .lang-card{border-color:var(–gold);background:var(–gold-dim)}
+.lang-option input:checked + .lang-card .lang-name{color:var(–gold)}
+.lang-option .lang-card:hover{border-color:rgba(200,162,78,.4)}
+
+.btn-start{display:block;width:100%;padding:1rem;background:linear-gradient(135deg,var(–gold),var(–gold-light));color:var(–bg);font-family:inherit;font-weight:600;font-size:.9rem;letter-spacing:.05em;border:none;border-radius:var(–radius-sm);cursor:pointer;transition:all .3s;text-transform:uppercase}
+.btn-start:hover{transform:translateY(-1px);box-shadow:0 8px 30px rgba(200,162,78,.25)}
+.btn-start:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none}
+
+/* ── Exam Area ── */
+#exam-area{display:none}
+
+.progress-bar{position:relative;height:3px;background:var(–bg3);border-radius:3px;margin-bottom:2.5rem;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(–gold),var(–gold-light));border-radius:3px;transition:width .5s ease}
+
+.exam-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:.5rem}
+.section-badge{display:inline-flex;align-items:center;gap:.4rem;padding:.3rem .8rem;border-radius:50px;font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;font-weight:600}
+.section-badge.lang{background:rgba(91,141,239,.12);color:var(–blue)}
+.section-badge.prof{background:rgba(200,162,78,.12);color:var(–gold)}
+.question-count{font-size:.8rem;color:var(–text-muted)}
+
+.question-card{background:var(–bg2);border:1px solid rgba(255,255,255,.06);border-radius:var(–radius);padding:2rem;margin-bottom:1.5rem;animation:fadeUp .4s ease}
+.question-card .q-number{font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(–text-muted);margin-bottom:.6rem}
+.question-card .q-text{font-family:‘Cormorant Garamond’,serif;font-size:1.2rem;font-weight:400;line-height:1.5;margin-bottom:.4rem}
+.question-card .q-context{font-size:.8rem;color:var(–text-dim);font-style:italic;margin-bottom:1.5rem}
+
+.options{display:flex;flex-direction:column;gap:.6rem}
+.option{position:relative;cursor:pointer}
+.option input{position:absolute;opacity:0;pointer-events:none}
+.option .opt-label{display:block;padding:.9rem 1.1rem;background:var(–bg3);border:1.5px solid rgba(255,255,255,.06);border-radius:var(–radius-sm);font-size:.9rem;transition:all .25s;line-height:1.4}
+.option .opt-label:hover{border-color:rgba(255,255,255,.15);background:rgba(255,255,255,.03)}
+.option input:checked + .opt-label{border-color:var(–gold);background:var(–gold-dim);color:var(–text)}
+.option.correct .opt-label{border-color:var(–green)!important;background:rgba(78,203,113,.1)!important}
+.option.incorrect .opt-label{border-color:var(–red)!important;background:rgba(231,76,94,.08)!important}
+
+/* textarea for open questions */
+.open-answer{width:100%;min-height:100px;padding:.9rem 1.1rem;background:var(–bg3);border:1.5px solid rgba(255,255,255,.06);border-radius:var(–radius-sm);color:var(–text);font-family:inherit;font-size:.9rem;resize:vertical;transition:border-color .3s}
+.open-answer:focus{outline:none;border-color:var(–gold)}
+
+.btn-next{display:block;width:100%;padding:.9rem;margin-top:.5rem;background:transparent;border:1.5px solid var(–gold);color:var(–gold);font-family:inherit;font-weight:600;font-size:.85rem;letter-spacing:.05em;border-radius:var(–radius-sm);cursor:pointer;transition:all .3s;text-transform:uppercase}
+.btn-next:hover{background:var(–gold);color:var(–bg)}
+
+/* ── Timer ── */
+.timer{display:flex;align-items:center;gap:.4rem;font-size:.85rem;font-variant-numeric:tabular-nums}
+.timer svg{width:16px;height:16px}
+.timer.warning{color:var(–red)}
+
+/* ── Results ── */
+#results-area{display:none}
+.results-card{background:var(–bg2);border:1px solid rgba(255,255,255,.06);border-radius:var(–radius);padding:2.5rem;animation:fadeUp .6s ease;text-align:center}
+.results-card h2{font-family:‘Cormorant Garamond’,serif;font-size:2rem;font-weight:300;margin-bottom:.4rem}
+.results-card .candidate-name{color:var(–gold);font-size:1rem;margin-bottom:2rem}
+
+.score-ring{position:relative;width:160px;height:160px;margin:0 auto 2rem}
+.score-ring svg{transform:rotate(-90deg)}
+.score-ring .score-text{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.score-ring .score-text .pct{font-family:‘Cormorant Garamond’,serif;font-size:2.5rem;font-weight:600;line-height:1}
+.score-ring .score-text .lbl{font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(–text-dim);margin-top:.2rem}
+
+.score-breakdown{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:2rem;text-align:left}
+.score-item{padding:1rem;background:var(–bg3);border-radius:var(–radius-sm)}
+.score-item .si-label{font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(–text-dim);margin-bottom:.3rem}
+.score-item .si-value{font-size:1.3rem;font-weight:600}
+.score-item .si-value.high{color:var(–green)}
+.score-item .si-value.mid{color:var(–gold)}
+.score-item .si-value.low{color:var(–red)}
+
+.verdict{padding:1.2rem;border-radius:var(–radius-sm);font-size:.9rem;margin-bottom:1.5rem;line-height:1.5}
+.verdict.pass{background:rgba(78,203,113,.08);border:1px solid rgba(78,203,113,.2);color:var(–green)}
+.verdict.conditional{background:rgba(200,162,78,.08);border:1px solid rgba(200,162,78,.2);color:var(–gold)}
+.verdict.fail{background:rgba(231,76,94,.08);border:1px solid rgba(231,76,94,.2);color:var(–red)}
+
+.btn-restart{display:inline-block;padding:.7rem 2rem;background:transparent;border:1px solid rgba(255,255,255,.15);color:var(–text-dim);font-family:inherit;font-size:.8rem;border-radius:var(–radius-sm);cursor:pointer;transition:all .3s;text-transform:uppercase;letter-spacing:.08em}
+.btn-restart:hover{border-color:var(–gold);color:var(–gold)}
+
+.watermark{margin-top:2rem;font-size:.7rem;color:var(–text-muted);letter-spacing:.05em}
+
+/* ── Responsive ── */
+@media(max-width:600px){
+.hero{padding:3rem 1.5rem 2rem}
+.setup-card,.question-card,.results-card{padding:1.5rem}
+.score-breakdown{grid-template-columns:1fr}
+.lang-select{grid-template-columns:repeat(3,1fr);gap:.5rem}
+.back-link{top:1rem;left:1rem}
+}
+</style>
+
+</head>
+<body>
+
+<!-- ─── HERO ─── -->
+
+<section class="hero">
+  <a href="https://ilk-er.com" class="back-link">← ilk-er.com</a>
+  <div class="hero-badge">✦ Candidate Assessment</div>
+  <h1>Front Office <span>Exam</span></h1>
+  <p>Language proficiency & professional knowledge evaluation for Front Office candidates.</p>
+</section>
+
+<!-- ─── SETUP ─── -->
+
+<div class="container">
+  <div id="setup-area">
+    <div class="setup-card">
+      <h2>Candidate Information</h2>
+      <p class="subtitle">Fill in your details to begin the assessment</p>
+
+```
+  <div class="form-group">
+    <label>Full Name</label>
+    <input type="text" id="cand-name" placeholder="Enter your full name" autocomplete="off">
+  </div>
+
+  <div class="form-group">
+    <label>Position Applied</label>
+    <select id="cand-position">
+      <option value="">Select position...</option>
+      <option value="Receptionist">Receptionist</option>
+      <option value="Night Auditor">Night Auditor</option>
+      <option value="Guest Relations Officer">Guest Relations Officer</option>
+      <option value="Concierge">Concierge</option>
+      <option value="Reservation Agent">Reservation Agent</option>
+      <option value="FO Supervisor">Front Office Supervisor</option>
+      <option value="Bellboy / Porter">Bellboy / Porter</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label>Select Languages to be Tested</label>
+    <div class="lang-select">
+      <label class="lang-option">
+        <input type="checkbox" value="en" checked>
+        <div class="lang-card">
+          <span class="flag">🇬🇧</span>
+          <span class="lang-name">English</span>
+        </div>
+      </label>
+      <label class="lang-option">
+        <input type="checkbox" value="de">
+        <div class="lang-card">
+          <span class="flag">🇩🇪</span>
+          <span class="lang-name">Deutsch</span>
+        </div>
+      </label>
+      <label class="lang-option">
+        <input type="checkbox" value="ru">
+        <div class="lang-card">
+          <span class="flag">🇷🇺</span>
+          <span class="lang-name">Русский</span>
+        </div>
+      </label>
+    </div>
+  </div>
+
+  <button class="btn-start" id="btn-start" disabled>Begin Assessment</button>
+</div>
+```
+
+  </div>
+
+  <!-- ─── EXAM ─── -->
+
+  <div id="exam-area">
+    <div class="exam-header">
+      <span class="section-badge lang" id="section-badge">◆ Language</span>
+      <div class="timer" id="timer">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <span id="timer-display">25:00</span>
+      </div>
+      <span class="question-count" id="q-count">1 / 20</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+    <div id="question-container"></div>
+    <button class="btn-next" id="btn-next">Next →</button>
+  </div>
+
+  <!-- ─── RESULTS ─── -->
+
+  <div id="results-area">
+    <div class="results-card" id="results-card"></div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════
+// QUESTION BANK
+// ═══════════════════════════════════════
+
+const questionBank = {
+
+// ── ENGLISH ──
+en_lang: [
+  {q:"A guest calls to say they'll arrive after midnight. Which response is most appropriate?",
+   opts:["We close at midnight, call back tomorrow","No worries, I'll note your late arrival and ensure your room is ready","You need to pay extra for late check-in","Our night shift doesn't handle check-ins"],
+   ans:1, ctx:"Guest communication — English"},
+  {q:"Choose the correct sentence:",
+   opts:["The guest have been waiting since 30 minutes","The guest has been waiting for 30 minutes","The guest is waiting since 30 minutes","The guest was waiting for 30 minutes ago"],
+   ans:1, ctx:"Grammar — Present perfect continuous"},
+  {q:"What does 'complimentary upgrade' mean?",
+   opts:["A paid room upgrade","A free room upgrade offered by the hotel","A guest complaint about the room","A mandatory room change"],
+   ans:1, ctx:"Hospitality vocabulary"},
+  {q:"A guest says: 'I'd like a room with a sea view, preferably on a higher floor.' What is the best reply?",
+   opts:["We don't guarantee views","Let me check availability for a high-floor sea-view room right away","All our rooms are the same","You need to book that online"],
+   ans:1, ctx:"Guest request handling — English"},
+  {q:"Fill in the blank: 'I _____ like to confirm your reservation for three nights.'",
+   opts:["would","will","am","can"],
+   ans:0, ctx:"Professional register — Polite forms"},
+  {q:"What is the correct meaning of 'no-show'?",
+   opts:["A cancelled reservation","A guest who reserved but never arrived","A walk-in guest","An early departure"],
+   ans:1, ctx:"Front office terminology"},
+  {q:"Which phrase is MOST professional for declining a request?",
+   opts:["No, we can't do that","Unfortunately that won't be possible, but I can offer...","That's not my job","You should have asked earlier"],
+   ans:1, ctx:"Professional communication"},
+],
+
+// ── GERMAN ──
+de_lang: [
+  {q:"Ein Gast fragt: 'Können Sie mir ein Taxi zum Flughafen bestellen?' Was antworten Sie?",
+   opts:["Das mache ich nicht","Selbstverständlich, wann möchten Sie abgeholt werden?","Fragen Sie bitte an der Bar","Taxis sind sehr teuer"],
+   ans:1, ctx:"Gästekommunikation — Deutsch"},
+  {q:"Welcher Satz ist richtig?",
+   opts:["Der Gast haben um 14 Uhr eingecheckt","Der Gast hat um 14 Uhr eingecheckt","Der Gast ist um 14 Uhr eingecheckt","Der Gast wird um 14 Uhr eingecheckt haben"],
+   ans:1, ctx:"Grammatik — Perfekt"},
+  {q:"Was bedeutet 'Halbpension'?",
+   opts:["Nur Frühstück","Frühstück und Abendessen","Vollpension ohne Getränke","All-Inclusive ohne Alkohol"],
+   ans:1, ctx:"Hotelfachvokabular"},
+  {q:"Ein Gast beschwert sich über den Lärm. Die beste Antwort ist:",
+   opts:["Das kann ich leider nicht ändern","Es tut mir sehr leid. Ich kümmere mich sofort darum. Darf ich Ihnen ein ruhigeres Zimmer anbieten?","Andere Gäste haben sich nicht beschwert","Versuchen Sie Ohrstöpsel"],
+   ans:1, ctx:"Beschwerdemanagement — Deutsch"},
+  {q:"Ergänzen Sie: 'Ich _____ Ihnen gerne bei der Buchung.'",
+   opts:["helfe","helfen","hilfe","geholfen"],
+   ans:0, ctx:"Konjugation — Präsens"},
+  {q:"Was ist ein 'Meldeschein'?",
+   opts:["Eine Hotelrechnung","Ein Registrierungsformular für Gäste","Ein Beschwerdeformular","Eine Zimmerservicekarte"],
+   ans:1, ctx:"Hotelfachbegriffe"},
+  {q:"Welche Begrüßung ist um 15 Uhr korrekt?",
+   opts:["Guten Morgen","Guten Abend","Guten Tag","Gute Nacht"],
+   ans:2, ctx:"Professionelle Begrüßung"},
+],
+
+// ── RUSSIAN ──
+ru_lang: [
+  {q:"Гость спрашивает: 'Можно ли продлить проживание на одну ночь?' Лучший ответ:",
+   opts:["Нет, это невозможно","Конечно, позвольте мне проверить наличие свободных номеров","Вам нужно забронировать онлайн","Обратитесь в турагентство"],
+   ans:1, ctx:"Общение с гостями — Русский"},
+  {q:"Какое предложение грамматически правильное?",
+   opts:["Гость ждёт в лобби уже час","Гость ждёт в лобби уже часа","Гость ждал в лобби уже час назад","Гость будет ждать в лобби час"],
+   ans:0, ctx:"Грамматика — Настоящее время"},
+  {q:"Что означает 'ранний заезд'?",
+   opts:["Заезд раньше стандартного времени","Бронирование заранее","Ранний завтрак","Скидка на первый день"],
+   ans:0, ctx:"Гостиничная терминология"},
+  {q:"Гость жалуется на кондиционер. Правильный ответ:",
+   opts:["Это не наша проблема","Приношу извинения за неудобства. Я сейчас же отправлю техника в ваш номер","Попробуйте открыть окно","Вы уверены, что правильно его включили?"],
+   ans:1, ctx:"Работа с жалобами — Русский"},
+  {q:"Вставьте правильное слово: 'Добро _____ в наш отель!'",
+   opts:["пожаловать","пожалуйте","прийти","приходите"],
+   ans:0, ctx:"Стандартные фразы приветствия"},
+  {q:"Что такое 'фолио'?",
+   opts:["Меню ресторана","Счёт гостя в гостинице","Бланк бронирования","План этажа"],
+   ans:1, ctx:"Профессиональная терминология"},
+  {q:"Как правильно предложить помощь гостю?",
+   opts:["Вам что-нибудь нужно?","Чем я могу вам помочь?","Что вы хотите?","Зачем вы пришли?"],
+   ans:1, ctx:"Профессиональное общение"},
+],
+
+// ── PROFESSIONAL KNOWLEDGE ──
+professional: [
+  {q:"A guest presents a credit card that is declined at check-in. What is the correct procedure?",
+   opts:["Tell the guest loudly that their card was declined","Discreetly inform the guest, offer to try again, and suggest an alternative payment method","Refuse to check them in and ask them to leave","Call the police"],
+   ans:1, ctx:"Payment handling procedure"},
+  {q:"What does ADR stand for in hotel revenue management?",
+   opts:["Average Daily Rate","Advance Deposit Required","Arrival Departure Record","Automated Daily Report"],
+   ans:0, ctx:"Revenue management terminology"},
+  {q:"A VIP guest arrives 3 hours before the standard check-in time. The hotel is fully booked from last night. What do you do?",
+   opts:["Tell them to wait in the lobby","Offer luggage storage, invite them to the lounge, and prioritize their room in housekeeping coordination","Give them any available dirty room","Suggest they go sightseeing and come back later"],
+   ans:1, ctx:"VIP guest handling & problem solving"},
+  {q:"What is the purpose of a 'bucket check'?",
+   opts:["Checking cleaning supplies inventory","Verifying room status between front office and housekeeping records","Counting cash in the till","Inspecting fire safety equipment"],
+   ans:1, ctx:"Front office operations"},
+  {q:"A walk-in guest requests the best available rate. Your hotel uses dynamic pricing. What should you do?",
+   opts:["Quote the rack rate only","Offer the best available rate for that night and mention any applicable packages or promotions","Direct them to online booking sites for better rates","Say you can't give discounts to walk-ins"],
+   ans:1, ctx:"Rate management & sales"},
+  {q:"Which PMS action is performed during Night Audit?",
+   opts:["Checking guests out early","Posting room charges, running daily reports, and rolling the business date","Updating the hotel's website","Ordering breakfast supplies"],
+   ans:1, ctx:"Night audit procedures"},
+  {q:"A guest reports a lost passport. What is the correct first step?",
+   opts:["Tell them to call their embassy","Complete a lost item report, check with housekeeping, and assist the guest in contacting their consulate","Ignore it — it's not the hotel's responsibility","Search the guest's previous room without permission"],
+   ans:1, ctx:"Emergency & security procedures"},
+  {q:"What is RevPAR and how is it calculated?",
+   opts:["Revenue Per Available Room = ADR × Occupancy Rate","Revenue Per Arriving guest = Total revenue ÷ arrivals","Room Efficiency Value = rooms sold ÷ total rooms","Rate Per Actual Reservation = total rate ÷ reservations"],
+   ans:0, ctx:"Revenue management KPIs"},
+  {q:"GDPR requires hotels to protect guest data. Which practice is correct?",
+   opts:["Share guest preferences with any third party for marketing","Only collect necessary data, store securely, and delete when no longer needed","Keep all guest data indefinitely for future marketing","Post guest lists in public areas for staff convenience"],
+   ans:1, ctx:"Data protection & privacy"},
+  {q:"An overbooking situation occurs: more confirmed reservations than available rooms. What is the priority order for 'walking' guests?",
+   opts:["Walk the VIP guests first since they'll get better service elsewhere","Walk the lowest-rate, single-night, non-loyalty guests first; never walk VIPs, repeat guests, or long stays","Walk guests randomly — first come, first served","Walk all guests equally regardless of status"],
+   ans:1, ctx:"Overbooking management"},
+  {q:"What information must be included on a hotel registration card?",
+   opts:["Only the guest's name","Guest name, address, nationality, passport/ID number, signature, arrival/departure dates","Just the credit card number","Room number and rate only"],
+   ans:1, ctx:"Check-in procedures & legal compliance"},
+  {q:"A guest claims they booked a suite but the reservation shows a standard room. There is no suite available. Best course of action?",
+   opts:["Tell the guest they are wrong","Apologize, verify the booking confirmation, upgrade to the best available room, offer a complimentary amenity, and follow up with reservations to investigate","Just give them the standard room","Blame the booking website"],
+   ans:1, ctx:"Complaint resolution & service recovery"},
+]
+};
+
+// ═══════════════════════════════════════
+// ENGINE
+// ═══════════════════════════════════════
+
+let examQuestions = [];
+let currentQ = 0;
+let answers = [];
+let candidateName = '';
+let candidatePos = '';
+let selectedLangs = [];
+let timerInterval;
+let timeLeft = 0;
+
+const $=id=>document.getElementById(id);
+
+// ── Enable start button ──
+function checkReady(){
+  const name = $('cand-name').value.trim();
+  const pos = $('cand-position').value;
+  const langs = [...document.querySelectorAll('.lang-select input:checked')];
+  $('btn-start').disabled = !(name && pos && langs.length > 0);
+}
+$('cand-name').addEventListener('input', checkReady);
+$('cand-position').addEventListener('change', checkReady);
+document.querySelectorAll('.lang-select input').forEach(cb => cb.addEventListener('change', checkReady));
+
+// ── Build exam ──
+$('btn-start').addEventListener('click', () => {
+  candidateName = $('cand-name').value.trim();
+  candidatePos = $('cand-position').value;
+  selectedLangs = [...document.querySelectorAll('.lang-select input:checked')].map(c => c.value);
+
+  examQuestions = [];
+
+  // Add language questions (5 per language)
+  selectedLangs.forEach(lang => {
+    const pool = questionBank[lang + '_lang'];
+    if (pool) {
+      const shuffled = [...pool].sort(() => Math.random() - 0.5);
+      shuffled.slice(0, 5).forEach(q => examQuestions.push({...q, section: 'lang', lang}));
+    }
+  });
+
+  // Add professional questions (8)
+  const profPool = [...questionBank.professional].sort(() => Math.random() - 0.5);
+  profPool.slice(0, 8).forEach(q => examQuestions.push({...q, section: 'prof'}));
+
+  answers = new Array(examQuestions.length).fill(null);
+  currentQ = 0;
+
+  // Timer: 90 seconds per question
+  timeLeft = examQuestions.length * 90;
+
+  $('setup-area').style.display = 'none';
+  $('exam-area').style.display = 'block';
+
+  startTimer();
+  renderQuestion();
+});
+
+function startTimer(){
+  updateTimerDisplay();
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    updateTimerDisplay();
+    if (timeLeft <= 0) {
+      clearInterval(timerInterval);
+      finishExam();
+    }
+  }, 1000);
+}
+
+function updateTimerDisplay(){
+  const m = Math.floor(timeLeft / 60);
+  const s = timeLeft % 60;
+  $('timer-display').textContent = `${m}:${String(s).padStart(2,'0')}`;
+  $('timer').classList.toggle('warning', timeLeft < 120);
+}
+
+function renderQuestion(){
+  const q = examQuestions[currentQ];
+  const total = examQuestions.length;
+  const pct = ((currentQ) / total) * 100;
+  $('progress-fill').style.width = pct + '%';
+  $('q-count').textContent = `${currentQ + 1} / ${total}`;
+
+  const badge = $('section-badge');
+  if (q.section === 'lang') {
+    const langNames = {en:'English',de:'Deutsch',ru:'Русский'};
+    badge.className = 'section-badge lang';
+    badge.textContent = `◆ ${langNames[q.lang] || 'Language'}`;
+  } else {
+    badge.className = 'section-badge prof';
+    badge.textContent = '◆ Professional Knowledge';
+  }
+
+  const container = $('question-container');
+  let html = `<div class="question-card">
+    <div class="q-number">Question ${currentQ + 1}</div>
+    <div class="q-text">${q.q}</div>
+    ${q.ctx ? `<div class="q-context">${q.ctx}</div>` : ''}
+    <div class="options">`;
+
+  q.opts.forEach((opt, i) => {
+    const checked = answers[currentQ] === i ? 'checked' : '';
+    html += `<label class="option">
+      <input type="radio" name="q${currentQ}" value="${i}" ${checked}>
+      <span class="opt-label">${opt}</span>
+    </label>`;
+  });
+
+  html += `</div></div>`;
+  container.innerHTML = html;
+
+  // Update button text
+  $('btn-next').textContent = currentQ === total - 1 ? 'Finish Exam →' : 'Next →';
+
+  // Listen for selection
+  container.querySelectorAll('input[type=radio]').forEach(r => {
+    r.addEventListener('change', () => {
+      answers[currentQ] = parseInt(r.value);
+    });
+  });
+}
+
+$('btn-next').addEventListener('click', () => {
+  if (answers[currentQ] === null) {
+    // Allow skipping but flash a subtle indicator
+    const card = document.querySelector('.question-card');
+    card.style.borderColor = 'rgba(231,76,94,.4)';
+    setTimeout(() => card.style.borderColor = '', 600);
+    // Still allow proceeding
+  }
+  if (currentQ < examQuestions.length - 1) {
+    currentQ++;
+    renderQuestion();
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  } else {
+    clearInterval(timerInterval);
+    finishExam();
+  }
+});
+
+// ═══════════════════════════════════════
+// RESULTS
+// ═══════════════════════════════════════
+
+function finishExam(){
+  $('exam-area').style.display = 'none';
+  $('results-area').style.display = 'block';
+
+  // Calculate scores
+  let langCorrect = 0, langTotal = 0, profCorrect = 0, profTotal = 0;
+  const langScores = {};
+
+  examQuestions.forEach((q, i) => {
+    if (q.section === 'lang') {
+      langTotal++;
+      if (!langScores[q.lang]) langScores[q.lang] = {correct:0, total:0};
+      langScores[q.lang].total++;
+      if (answers[i] === q.ans) { langCorrect++; langScores[q.lang].correct++; }
+    } else {
+      profTotal++;
+      if (answers[i] === q.ans) profCorrect++;
+    }
+  });
+
+  const totalCorrect = langCorrect + profCorrect;
+  const totalQuestions = langTotal + profTotal;
+  const overallPct = Math.round((totalCorrect / totalQuestions) * 100);
+  const langPct = langTotal > 0 ? Math.round((langCorrect / langTotal) * 100) : 0;
+  const profPct = profTotal > 0 ? Math.round((profCorrect / profTotal) * 100) : 0;
+
+  // Ring colors
+  let ringColor = overallPct >= 70 ? 'var(--green)' : overallPct >= 50 ? 'var(--gold)' : 'var(--red)';
+  const circumference = 2 * Math.PI * 65;
+  const dashOffset = circumference - (circumference * overallPct / 100);
+
+  // Verdict
+  let verdict = '', verdictClass = '';
+  if (overallPct >= 75 && langPct >= 60 && profPct >= 60) {
+    verdict = `✓ RECOMMENDED — ${candidateName} demonstrates strong language skills and solid professional knowledge. Suitable for ${candidatePos} position.`;
+    verdictClass = 'pass';
+  } else if (overallPct >= 50) {
+    verdict = `◐ CONDITIONAL — ${candidateName} shows potential but needs improvement in ${langPct < profPct ? 'language proficiency' : 'professional knowledge'}. Consider with additional training plan.`;
+    verdictClass = 'conditional';
+  } else {
+    verdict = `✗ NOT RECOMMENDED — ${candidateName} does not meet the minimum requirements for ${candidatePos} at this time.`;
+    verdictClass = 'fail';
+  }
+
+  // Per-language breakdown
+  const langNames = {en:'🇬🇧 English', de:'🇩🇪 Deutsch', ru:'🇷🇺 Русский'};
+  let langBreakdownHTML = '';
+  Object.keys(langScores).forEach(lang => {
+    const s = langScores[lang];
+    const p = Math.round((s.correct / s.total) * 100);
+    const cls = p >= 70 ? 'high' : p >= 50 ? 'mid' : 'low';
+    langBreakdownHTML += `<div class="score-item"><div class="si-label">${langNames[lang] || lang}</div><div class="si-value ${cls}">${p}%</div></div>`;
+  });
+
+  const profCls = profPct >= 70 ? 'high' : profPct >= 50 ? 'mid' : 'low';
+
+  const timeUsed = examQuestions.length * 90 - timeLeft;
+  const mins = Math.floor(timeUsed / 60);
+  const secs = timeUsed % 60;
+
+  $('results-card').innerHTML = `
+    <h2>Assessment Complete</h2>
+    <div class="candidate-name">${candidateName} · ${candidatePos}</div>
+    <div class="score-ring">
+      <svg width="160" height="160" viewBox="0 0 160 160">
+        <circle cx="80" cy="80" r="65" fill="none" stroke="var(--bg3)" stroke-width="8"/>
+        <circle cx="80" cy="80" r="65" fill="none" stroke="${ringColor}" stroke-width="8"
+          stroke-dasharray="${circumference}" stroke-dashoffset="${dashOffset}"
+          stroke-linecap="round" style="transition:stroke-dashoffset 1.5s ease"/>
+      </svg>
+      <div class="score-text">
+        <span class="pct">${overallPct}%</span>
+        <span class="lbl">Overall</span>
+      </div>
+    </div>
+    <div class="score-breakdown">
+      ${langBreakdownHTML}
+      <div class="score-item"><div class="si-label">Professional Knowledge</div><div class="si-value ${profCls}">${profPct}%</div></div>
+      <div class="score-item"><div class="si-label">Time Used</div><div class="si-value" style="color:var(--text)">${mins}m ${secs}s</div></div>
+    </div>
+    <div class="verdict ${verdictClass}">${verdict}</div>
+    <button class="btn-restart" onclick="location.reload()">Restart Assessment</button>
+    <div class="watermark">ilk-er.com · Front Office Assessment System · ${new Date().toLocaleDateString('en-GB')}</div>
+  `;
+
+  $('progress-fill').style.width = '100%';
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+</script>
+
+</body>
+</html>
