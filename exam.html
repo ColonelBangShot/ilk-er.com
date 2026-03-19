@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Front Office Assessment | Siam Elegance & TUI Blue Maviss</title>
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+
 <style>
   @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&display=swap');
   :root {
@@ -231,7 +231,7 @@
 </div>
 
 <script>
-emailjs.init("d2OmX9p9Z8yo_2MxP");
+
 
 const UI = {
   en: {
@@ -501,15 +501,21 @@ function endExam(){
 
   const catLines=Object.entries(cats).map(([cat,d])=>`${cat}: ${d.correct}/${d.total}`).join(' | ');
 
-  // Send email
-  emailjs.send("service_ia9uakf","template_wx9akfl",{
-    candidate_name: candidateName,
-    candidate_email: candidateEmail,
-    language: UI[selectedLang].langLabel,
-    score: pct+'%',
-    lang_score: catLines,
-    pc_score: '',
-    date: new Date().toLocaleString()
+  // Send email via Web3Forms
+  fetch("https://api.web3forms.com/submit", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({
+      access_key: "14bb7ebc-93f9-4314-8caa-00c033578fef",
+      subject: "Yeni Sinav Sonucu - " + candidateName,
+      from_name: "Front Office Exam",
+      candidate_name: candidateName,
+      candidate_email: candidateEmail,
+      language: UI[selectedLang].langLabel,
+      score: pct + "%",
+      details: catLines,
+      date: new Date().toLocaleString()
+    })
   }).catch(e=>console.log('Mail error:',e));
 
   // Show thank you only
@@ -525,14 +531,20 @@ function invalidate(){
   document.getElementById('invalid-title').textContent=t.invalidTitle;
   document.getElementById('invalid-text').textContent=t.invalidText;
 
-  emailjs.send("service_ia9uakf","template_wx9akfl",{
-    candidate_name: candidateName||'Unknown',
-    candidate_email: candidateEmail||'-',
-    language: selectedLang?UI[selectedLang].langLabel:'-',
-    score: 'GEÇERSİZ / INVALID',
-    lang_score: 'Sınav geçersiz sayıldı - Tab/Fullscreen ihlali',
-    pc_score: '',
-    date: new Date().toLocaleString()
+  fetch("https://api.web3forms.com/submit", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({
+      access_key: "14bb7ebc-93f9-4314-8caa-00c033578fef",
+      subject: "GECERSIZ SINAV - " + (candidateName||'Unknown'),
+      from_name: "Front Office Exam",
+      candidate_name: candidateName||'Unknown',
+      candidate_email: candidateEmail||'-',
+      language: selectedLang?UI[selectedLang].langLabel:'-',
+      score: 'GECERSİZ / INVALID',
+      details: 'Tab/Fullscreen ihlali tespit edildi',
+      date: new Date().toLocaleString()
+    })
   }).catch(e=>console.log(e));
 
   showScreen('invalid');
