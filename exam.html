@@ -1,813 +1,580 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ön Büro Başvuru Değerlendirme Testi</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Front Office Assessment | Siam Elegance & TUI Blue Maviss</title>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-:root{--accent:#D49A3A;--dark:#7A1E30;--darker:#5A1522;--card:#ffffff;--text:#2c2c2c;--light:#FFF9F3;--success:#2e7d32;--danger:#9B1B30;--border:#E5D5C5}
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap');
-body{font-family:'Inter',sans-serif;background:var(--light);color:var(--text);min-height:100vh}
-.header{background:linear-gradient(135deg,var(--dark),var(--darker));padding:22px 0;text-align:center;border-bottom:3px solid var(--accent)}
-.header h1{font-family:'Playfair Display',serif;color:#fff;font-size:1.4rem;letter-spacing:2px}
-.header .sub{color:var(--accent);font-size:.82rem;margin-top:4px;letter-spacing:1px}
-.container{max-width:720px;margin:0 auto;padding:24px 16px}
-.card{background:var(--card);border-radius:12px;padding:32px;box-shadow:0 2px 20px rgba(0,0,0,.06);margin-bottom:20px;border:1px solid var(--border)}
-.card h2{font-family:'Playfair Display',serif;color:var(--dark);font-size:1.4rem;margin-bottom:8px}
-.card p{color:#666;line-height:1.6;font-size:.92rem}
-label.field-label{display:block;font-weight:600;margin-bottom:6px;color:var(--dark);font-size:.9rem}
-input[type=text],input[type=email],input[type=tel],select{width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:.95rem;font-family:'Inter',sans-serif;transition:border .2s;background:#fff}
-input:focus,select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(212,154,58,.15)}
-.form-group{margin-bottom:18px}
-.btn{display:inline-block;padding:14px 36px;background:linear-gradient(135deg,var(--accent),#B8832A);color:#fff;border:none;border-radius:8px;font-size:1rem;font-weight:600;cursor:pointer;letter-spacing:.5px;transition:all .25s;font-family:'Inter',sans-serif}
-.btn:hover{transform:translateY(-1px);box-shadow:0 4px 15px rgba(212,154,58,.4)}
-.btn:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
-.btn-full{width:100%;text-align:center}
-.hotel-select{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:16px 0}
-.hotel-opt{border:2px solid var(--border);border-radius:10px;padding:20px 16px;text-align:center;cursor:pointer;transition:all .25s;background:#fff}
-.hotel-opt:hover{border-color:var(--accent);background:#FFFAF0}
-.hotel-opt.selected{border-color:var(--accent);background:linear-gradient(135deg,#FFFAF0,#FFF5E0);box-shadow:0 2px 12px rgba(212,154,58,.2)}
-.hotel-opt .hotel-name{font-family:'Playfair Display',serif;font-weight:700;font-size:1.05rem;color:var(--dark);margin-bottom:4px}
-.hotel-opt .hotel-type{font-size:.78rem;color:#999;letter-spacing:.5px}
-.lang-select{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin:16px 0}
-.lang-opt{border:2px solid var(--border);border-radius:10px;padding:16px 10px;text-align:center;cursor:pointer;transition:all .25s;background:#fff}
-.lang-opt:hover{border-color:var(--accent)}
-.lang-opt.selected{border-color:var(--accent);background:#FFFAF0;box-shadow:0 2px 12px rgba(212,154,58,.2)}
-.lang-opt .flag{font-size:1.8rem;margin-bottom:4px}
-.lang-opt .lang-name{font-weight:600;font-size:.85rem;color:var(--dark)}
-.progress-bar{background:#EDDCCA;border-radius:20px;height:8px;margin:16px 0 24px;overflow:hidden}
-.progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),#E8B44A);border-radius:20px;transition:width .4s ease}
-.progress-text{text-align:center;font-size:.8rem;color:#999;margin-bottom:4px}
-.question-card{background:var(--card);border-radius:12px;padding:28px;box-shadow:0 2px 20px rgba(0,0,0,.06);margin-bottom:20px;border:1px solid var(--border)}
-.q-category{display:inline-block;padding:4px 12px;border-radius:20px;font-size:.72rem;font-weight:600;letter-spacing:.5px;margin-bottom:12px}
-.cat-frontdesk{background:#FCE8EC;color:var(--dark)}
-.cat-language{background:#FEF3E0;color:#B8762A}
-.cat-pms{background:#e8f5e9;color:#2e7d32}
-.cat-scenario{background:#F3E5F5;color:#7B1FA2}
-.q-text{font-size:1.05rem;font-weight:500;color:var(--dark);margin-bottom:18px;line-height:1.5}
-.q-scenario{background:#FFF8F0;border-left:3px solid var(--accent);padding:14px 16px;margin-bottom:18px;border-radius:0 8px 8px 0;font-size:.92rem;line-height:1.5;color:#555;font-style:italic}
-.options{display:flex;flex-direction:column;gap:10px}
-.option{border:1.5px solid var(--border);border-radius:8px;padding:14px 16px;cursor:pointer;transition:all .2s;display:flex;align-items:flex-start;gap:10px;background:#fff}
-.option:hover{border-color:var(--accent);background:#FFFAF0}
-.option.selected{border-color:var(--accent);background:linear-gradient(135deg,#FFFAF0,#FFF5E0)}
-.option .letter{min-width:26px;height:26px;border-radius:50%;background:var(--light);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:.82rem;color:var(--dark);border:1.5px solid var(--border);flex-shrink:0}
-.option.selected .letter{background:var(--accent);color:#fff;border-color:var(--accent)}
-.option .opt-text{font-size:.92rem;line-height:1.4;padding-top:2px}
-.nav-buttons{display:flex;gap:12px;margin-top:24px}
-.btn-secondary{background:#fff;color:var(--dark);border:1.5px solid var(--border);padding:12px 28px;border-radius:8px;font-size:.9rem;font-weight:500;cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif}
-.btn-secondary:hover{border-color:var(--accent);background:#FFFAF0}
-.btn-nav{padding:12px 28px;font-size:.9rem}
-.finish-screen{text-align:center;padding:40px 20px}
-.finish-screen .checkmark{font-size:3rem;margin-bottom:16px}
-.finish-screen h2{font-family:'Playfair Display',serif;color:var(--dark);margin-bottom:12px}
-.finish-screen p{color:#777;line-height:1.6;max-width:440px;margin:0 auto}
-.hidden{display:none!important}
-.timer{text-align:right;font-size:.82rem;color:#999;margin-bottom:8px}
-.timer span{font-weight:600;color:var(--dark)}
-@media(max-width:600px){
-  .hotel-select{grid-template-columns:1fr}
-  .card{padding:24px 18px}
-  .header h1{font-size:1.15rem}
-}
-.results-hidden{background:#FFF8F0;border:2px dashed var(--accent);border-radius:12px;padding:24px;margin-top:20px;text-align:center}
-.results-hidden p{font-size:.9rem;color:#888}
-.copy-btn{background:var(--dark);color:#fff;padding:10px 24px;border:none;border-radius:8px;cursor:pointer;font-size:.88rem;font-weight:500;margin-top:12px;font-family:'Inter',sans-serif}
-.copy-btn:hover{background:#9B2540}
-textarea.report{width:100%;min-height:300px;border:1.5px solid var(--border);border-radius:8px;padding:14px;font-family:'Courier New',monospace;font-size:.82rem;resize:vertical;background:#fff;color:var(--text);display:none}
-.score-badge{display:inline-block;padding:6px 16px;border-radius:20px;font-weight:700;font-size:1rem;margin:8px 4px}
-.score-high{background:#e8f5e9;color:#2e7d32}
-.score-mid{background:#fff3e0;color:#e65100}
-.score-low{background:#ffebee;color:#c62828}
-.email-status{margin-top:12px;font-size:.85rem;padding:8px 14px;border-radius:8px;display:none}
-.email-ok{background:#e8f5e9;color:#2e7d32;display:block}
-.email-fail{background:#ffebee;color:#c62828;display:block}
-/* Anti-cheat overlay */
-#cheatOverlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(90,21,34,.97);z-index:9999;justify-content:center;align-items:center;flex-direction:column;color:#fff;text-align:center;padding:40px}
-#cheatOverlay.active{display:flex}
-#cheatOverlay h2{font-family:'Playfair Display',serif;color:var(--accent);font-size:1.8rem;margin-bottom:16px}
-#cheatOverlay p{font-size:1rem;max-width:480px;line-height:1.6;margin-bottom:8px;color:#ddd}
-#cheatOverlay .warning-count{font-size:3rem;color:#E8B44A;font-weight:700;margin:16px 0}
-#cheatOverlay .btn{margin-top:20px}
-.cheat-banner{display:none;background:var(--danger);color:#fff;text-align:center;padding:8px 16px;font-size:.82rem;font-weight:600;letter-spacing:.5px;position:fixed;top:0;left:0;width:100%;z-index:9998}
-.cheat-banner.show{display:block}
+  @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&display=swap');
+  :root {
+    --gold: #C9A84C; --gold-light: #E8C97A;
+    --dark: #0D0D0D; --dark2: #1A1A1A; --dark3: #252525;
+    --text: #F0EDE6; --text-muted: #8A8580;
+    --danger: #E05252; --success: #4CAF82;
+    --border: rgba(201,168,76,0.2);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'DM Sans',sans-serif; background:var(--dark); color:var(--text); min-height:100vh; }
+  .screen { display:none; min-height:100vh; }
+  .screen.active { display:flex; flex-direction:column; }
+
+  /* LANG */
+  #lang-select { align-items:center; justify-content:center; padding:1.5rem;
+    background:radial-gradient(ellipse at top, #1A1500 0%, var(--dark) 60%); }
+  .lang-card { background:var(--dark2); border:1px solid var(--border); border-radius:16px;
+    padding:2rem 1.5rem; max-width:480px; width:100%; text-align:center; }
+  .hotel-badge { display:inline-flex; align-items:center; gap:8px; background:rgba(201,168,76,0.1);
+    border:1px solid var(--border); border-radius:100px; padding:6px 16px; font-size:11px;
+    letter-spacing:0.15em; text-transform:uppercase; color:var(--gold); margin-bottom:1.5rem; }
+  .lang-title { font-family:'DM Serif Display',serif; font-size:1.8rem; margin-bottom:0.5rem; }
+  .lang-sub { color:var(--text-muted); font-size:13px; margin-bottom:1.5rem; line-height:1.6; }
+  .lang-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:1.5rem; }
+  .lang-btn { background:var(--dark3); border:1px solid rgba(255,255,255,0.07); border-radius:12px;
+    padding:1rem; cursor:pointer; transition:all 0.15s; text-align:center; }
+  .lang-btn:hover { border-color:var(--gold); background:rgba(201,168,76,0.05); }
+  .lang-btn.selected { border-color:var(--gold); background:rgba(201,168,76,0.12); }
+  .lang-flag { font-size:13px; font-weight:600; color:var(--gold); margin-bottom:4px; letter-spacing:0.05em; }
+  .lang-name { font-size:14px; font-weight:500; color:var(--text); }
+  .lang-native { font-size:12px; color:var(--text-muted); }
+  .btn-gold { width:100%; padding:0.9rem; background:var(--gold); color:var(--dark); border:none;
+    border-radius:10px; font-family:'DM Sans',sans-serif; font-size:15px; font-weight:600;
+    cursor:pointer; transition:all 0.2s; }
+  .btn-gold:hover { background:var(--gold-light); }
+  .btn-gold:disabled { opacity:0.4; cursor:not-allowed; }
+
+  /* INTRO */
+  #intro { align-items:center; justify-content:center; padding:1.5rem;
+    background:radial-gradient(ellipse at top, #1A1500 0%, var(--dark) 60%); }
+  .intro-card { background:var(--dark2); border:1px solid var(--border); border-radius:16px;
+    padding:2rem 1.5rem; max-width:520px; width:100%; text-align:center; }
+  .intro-title { font-family:'DM Serif Display',serif; font-size:1.8rem; margin-bottom:0.5rem; line-height:1.2; }
+  .intro-sub { color:var(--text-muted); font-size:13px; margin-bottom:1.5rem; line-height:1.6; }
+  .info-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-bottom:1.5rem; }
+  .info-box { background:var(--dark3); border:1px solid rgba(255,255,255,0.06); border-radius:10px; padding:0.75rem; }
+  .info-box .val { font-size:18px; font-weight:600; color:var(--gold); }
+  .info-box .lbl { font-size:11px; color:var(--text-muted); margin-top:2px; }
+  .warn-box { background:rgba(224,82,82,0.08); border:1px solid rgba(224,82,82,0.25); border-radius:10px;
+    padding:1rem; margin-bottom:1.25rem; font-size:13px; color:#F0A0A0; line-height:1.6; text-align:left; }
+  .warn-box strong { color:var(--danger); }
+  input[type="text"], input[type="email"] { width:100%; background:var(--dark3);
+    border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:0.75rem 1rem;
+    color:var(--text); font-family:'DM Sans',sans-serif; font-size:14px; margin-bottom:10px; transition:border-color 0.2s; }
+  input:focus { outline:none; border-color:var(--gold); }
+
+  /* EXAM */
+  .exam-header { background:var(--dark2); border-bottom:1px solid var(--border); padding:0.75rem 1.25rem;
+    display:flex; align-items:center; justify-content:space-between; flex-shrink:0; }
+  .exam-logo { font-family:'DM Serif Display',serif; font-size:15px; color:var(--gold); }
+  .timer-wrap { display:flex; align-items:center; gap:8px; background:var(--dark3);
+    border:1px solid var(--border); border-radius:8px; padding:5px 12px; }
+  #timer { font-size:17px; font-weight:600; color:var(--gold); font-variant-numeric:tabular-nums; min-width:44px; }
+  #timer.warning { color:var(--danger); animation:blink 1s infinite; }
+  @keyframes blink { 50%{opacity:0.4;} }
+  .progress-bar-wrap { height:3px; background:var(--dark3); flex-shrink:0; }
+  .progress-bar-fill { height:100%; background:var(--gold); transition:width 0.3s; }
+  .exam-body { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    padding:1.25rem; overflow-y:auto; }
+  .question-card { background:var(--dark2); border:1px solid var(--border); border-radius:16px;
+    padding:1.75rem 1.5rem; max-width:640px; width:100%; }
+  .q-meta { display:flex; align-items:center; justify-content:space-between; margin-bottom:1.25rem; }
+  .q-category { font-size:11px; letter-spacing:0.12em; text-transform:uppercase; color:var(--gold);
+    background:rgba(201,168,76,0.1); border:1px solid var(--border); padding:4px 12px; border-radius:100px; }
+  .q-counter { font-size:13px; color:var(--text-muted); }
+  .q-text { font-size:16px; font-weight:500; color:var(--text); margin-bottom:1.5rem; line-height:1.5; }
+  .options { display:flex; flex-direction:column; gap:8px; margin-bottom:1.25rem; }
+  .option { background:var(--dark3); border:1px solid rgba(255,255,255,0.07); border-radius:10px;
+    padding:0.75rem 1rem; cursor:pointer; font-size:14px; color:var(--text);
+    transition:all 0.15s; display:flex; align-items:center; gap:10px; }
+  .option:hover { border-color:var(--gold); background:rgba(201,168,76,0.05); }
+  .option.correct { border-color:var(--success); background:rgba(76,175,130,0.12); color:#7DDFB0; }
+  .option.wrong { border-color:var(--danger); background:rgba(224,82,82,0.1); color:#F0A0A0; }
+  .opt-letter { width:24px;height:24px;border-radius:50%;border:1px solid currentColor;
+    display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0; }
+  .btn-next { width:100%; padding:0.85rem; background:transparent; border:1px solid var(--gold);
+    color:var(--gold); border-radius:10px; font-family:'DM Sans',sans-serif;
+    font-size:14px; font-weight:500; cursor:pointer; transition:all 0.2s; }
+  .btn-next:hover { background:var(--gold); color:var(--dark); }
+
+  /* RESULT */
+  #result { align-items:center; justify-content:center; padding:1.5rem;
+    background:radial-gradient(ellipse at top, #001A0D 0%, var(--dark) 60%); }
+  .result-card { background:var(--dark2); border:1px solid var(--border); border-radius:16px;
+    padding:2.5rem 2rem; max-width:480px; width:100%; text-align:center; }
+  .result-icon { font-size:48px; margin-bottom:1rem; }
+  .result-title { font-family:'DM Serif Display',serif; font-size:1.6rem; margin-bottom:0.75rem; }
+  .result-sub { color:var(--text-muted); font-size:14px; line-height:1.6; }
+
+  /* INVALID */
+  #invalid { align-items:center; justify-content:center; padding:1.5rem;
+    background:radial-gradient(ellipse at top, #1A0000 0%, var(--dark) 60%); }
+  .invalid-card { background:var(--dark2); border:1px solid rgba(224,82,82,0.3); border-radius:16px;
+    padding:2.5rem 2rem; max-width:460px; width:100%; text-align:center; }
+  .invalid-icon { font-size:48px; margin-bottom:1rem; }
+  .invalid-title { font-family:'DM Serif Display',serif; font-size:1.8rem; color:var(--danger); margin-bottom:0.75rem; }
+  .invalid-text { color:var(--text-muted); font-size:14px; line-height:1.6; }
+
+  .overlay-warn { position:fixed;inset:0;background:rgba(10,0,0,0.95);display:none;
+    align-items:center;justify-content:center;z-index:9999;flex-direction:column;gap:1rem;text-align:center;padding:2rem; }
+  .overlay-warn.show { display:flex; }
+  .overlay-warn h2 { font-family:'DM Serif Display',serif; font-size:1.8rem; color:var(--danger); }
+  .overlay-warn p { color:var(--text-muted); font-size:14px; max-width:360px; }
+  .overlay-warn .countdown { font-size:48px; font-weight:700; color:var(--danger); }
+
+  @media (max-width: 480px) {
+    .lang-title { font-size:1.4rem; }
+    .intro-title { font-size:1.4rem; }
+    .q-text { font-size:15px; }
+    .question-card { padding:1.25rem 1rem; }
+    .info-grid { grid-template-columns:1fr 1fr 1fr; gap:6px; }
+    .info-box .val { font-size:15px; }
+  }
 </style>
 </head>
 <body>
 
-<!-- ANTI-CHEAT OVERLAY -->
-<div id="cheatOverlay">
-  <h2 id="cheatTitle">Sekme Degistirme Tespit Edildi!</h2>
-  <p id="cheatMsg">Sinav sirasinda baska sekme veya uygulama acmaniz tespit edildi. Bu durum sinav raporunuza yansiyacaktir.</p>
-  <div class="warning-count" id="cheatCount">1</div>
-  <p id="cheatWarningText">uyari</p>
-  <button class="btn" onclick="dismissCheatWarning()" id="cheatBtn">Sinava Don</button>
-</div>
-
-<!-- CHEAT BANNER -->
-<div class="cheat-banner" id="cheatBanner"></div>
-
-<div class="header">
-  <h1 id="headerSub">ÖN BÜRO BAŞVURU DEĞERLENDİRME TESTİ</h1>
-</div>
-
-<div class="container">
-
-  <!-- STEP 1: Registration -->
-  <div id="step-register" class="card">
-    <h2 id="regTitle">Başvuru Bilgileri</h2>
-    <p id="regDesc" style="margin-bottom:20px;">Lütfen aşağıdaki bilgileri eksiksiz doldurunuz.</p>
-
-    <div class="form-group">
-      <label class="field-label" id="lblName">Ad Soyad *</label>
-      <input type="text" id="inpName" placeholder="">
-    </div>
-    <div class="form-group">
-      <label class="field-label" id="lblPhone">Telefon *</label>
-      <input type="tel" id="inpPhone" placeholder="">
-    </div>
-    <div class="form-group">
-      <label class="field-label" id="lblEmail">E-posta *</label>
-      <input type="email" id="inpEmail" placeholder="">
-    </div>
-    <div class="form-group">
-      <label class="field-label" id="lblPosition">Başvurulan Pozisyon *</label>
-      <select id="selPosition">
-        <option value="">-- Seçiniz --</option>
-        <option value="Resepsiyonist">Resepsiyonist</option>
-        <option value="Shift Leader">Shift Leader</option>
-      </select>
-    </div>
-
-    <div class="form-group">
-      <label class="field-label" id="lblHotel">Başvurulan Otel *</label>
-      <div class="hotel-select">
-        <div class="hotel-opt" onclick="selectHotel(this,'Siam Elegance')">
-          <div class="hotel-name">Siam Elegance</div>
-          <div class="hotel-type">RESORT & SPA</div>
-        </div>
-        <div class="hotel-opt" onclick="selectHotel(this,'TUI Blue Maviss')">
-          <div class="hotel-name">TUI Blue Maviss</div>
-          <div class="hotel-type">BEACH RESORT</div>
-        </div>
+<!-- LANG SELECT -->
+<div id="lang-select" class="screen active">
+  <div class="lang-card">
+    <div class="hotel-badge">Siam Elegance & TUI Blue Maviss</div>
+    <h1 class="lang-title">Select Your Language</h1>
+    <p class="lang-sub">Please choose the language for your exam.<br>All questions and the interface will appear in your selected language.</p>
+    <div class="lang-grid">
+      <div class="lang-btn" onclick="selectLang('en',this)">
+        <div class="lang-flag">EN</div>
+        <div class="lang-name">English</div>
+        <div class="lang-native">English</div>
+      </div>
+      <div class="lang-btn" onclick="selectLang('de',this)">
+        <div class="lang-flag">DE</div>
+        <div class="lang-name">German</div>
+        <div class="lang-native">Deutsch</div>
+      </div>
+      <div class="lang-btn" onclick="selectLang('ru',this)">
+        <div class="lang-flag">RU</div>
+        <div class="lang-name">Russian</div>
+        <div class="lang-native">Русский</div>
+      </div>
+      <div class="lang-btn" onclick="selectLang('tr',this)">
+        <div class="lang-flag">TR</div>
+        <div class="lang-name">Turkish</div>
+        <div class="lang-native">Türkçe</div>
       </div>
     </div>
+    <button class="btn-gold" id="lang-continue" onclick="goToIntro()" disabled>Continue →</button>
+  </div>
+</div>
 
-    <div class="form-group">
-      <label class="field-label" id="lblLang">Sınav Dili Seçimi *</label>
-      <p id="lblLangDesc" style="font-size:.82rem;color:#999;margin-bottom:10px;">Yabancı dil yetkinliğinizi test edeceğimiz dili seçiniz.</p>
-      <div class="lang-select">
-        <div class="lang-opt" onclick="selectLang(this,'en')">
-          <div class="flag">🇬🇧</div>
-          <div class="lang-name">English</div>
-        </div>
-        <div class="lang-opt" onclick="selectLang(this,'de')">
-          <div class="flag">🇩🇪</div>
-          <div class="lang-name">Deutsch</div>
-        </div>
-        <div class="lang-opt" onclick="selectLang(this,'ru')">
-          <div class="flag">🇷🇺</div>
-          <div class="lang-name">Русский</div>
-        </div>
+<!-- INTRO -->
+<div id="intro" class="screen">
+  <div class="intro-card">
+    <div class="hotel-badge">Siam Elegance & TUI Blue Maviss</div>
+    <h1 class="intro-title" id="intro-title"></h1>
+    <p class="intro-sub" id="intro-sub"></p>
+    <div class="info-grid">
+      <div class="info-box"><div class="val">20</div><div class="lbl" id="lbl-q">Questions</div></div>
+      <div class="info-box"><div class="val">15m</div><div class="lbl" id="lbl-d">Duration</div></div>
+      <div class="info-box"><div class="val">3</div><div class="lbl" id="lbl-c">Categories</div></div>
+    </div>
+    <div class="warn-box" id="warn-text"></div>
+    <input type="text" id="candidate-name" />
+    <input type="email" id="candidate-email" />
+    <button class="btn-gold" onclick="startExam()" id="btn-start"></button>
+  </div>
+</div>
+
+<!-- EXAM -->
+<div id="exam" class="screen">
+  <div class="exam-header">
+    <div class="exam-logo">Front Office Assessment</div>
+    <div class="timer-wrap"><span>⏱</span><span id="timer">15:00</span></div>
+  </div>
+  <div class="progress-bar-wrap">
+    <div class="progress-bar-fill" id="progress-bar" style="width:0%"></div>
+  </div>
+  <div class="exam-body">
+    <div class="question-card">
+      <div class="q-meta">
+        <span class="q-category" id="q-cat"></span>
+        <span class="q-counter" id="q-counter"></span>
       </div>
-    </div>
-
-    <div class="form-group">
-      <label class="field-label" id="lblExp">Otelcilik Deneyimi (Yıl) *</label>
-      <select id="selExp">
-        <option value="">-- Seçiniz --</option>
-        <option value="0-1">0 – 1 Yıl</option>
-        <option value="1-3">1 – 3 Yıl</option>
-        <option value="3-5">3 – 5 Yıl</option>
-        <option value="5+">5+ Yıl</option>
-      </select>
-    </div>
-
-    <button class="btn btn-full" id="btnStart" onclick="startTest()">Teste Başla</button>
-    <p id="regError" style="color:var(--danger);font-size:.82rem;margin-top:10px;text-align:center;display:none;"></p>
-  </div>
-
-  <!-- STEP 2: Questions -->
-  <div id="step-questions" class="hidden">
-    <div class="timer" id="timerBar">⏱ <span id="timerDisplay">00:00</span></div>
-    <div class="progress-text" id="progressLabel">Soru 1 / 18</div>
-    <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
-    <div id="questionArea"></div>
-    <div class="nav-buttons">
-      <button class="btn-secondary btn-nav" id="btnPrev" onclick="prevQ()">← Geri</button>
-      <div style="flex:1"></div>
-      <button class="btn btn-nav" id="btnNext" onclick="nextQ()">İleri →</button>
+      <div class="q-text" id="q-text"></div>
+      <div class="options" id="q-options"></div>
+      <button class="btn-next" id="btn-next" onclick="nextQuestion()"></button>
     </div>
   </div>
+</div>
 
-  <!-- STEP 3: Finish -->
-  <div id="step-finish" class="hidden">
-    <div class="card finish-screen">
-      <div class="checkmark">✅</div>
-      <h2 id="finishTitle">Değerlendirmeniz Tamamlandı</h2>
-      <p id="finishText">Yanıtlarınız başarıyla kaydedildi. İnsan Kaynakları ekibimiz başvurunuzu değerlendirdikten sonra sizinle iletişime geçecektir. İlginiz için teşekkür ederiz.</p>
-      <div class="email-status" id="emailStatus"></div>
-    </div>
-    <div class="results-hidden" id="managerReport" style="display:none;">
-      <p><strong>YÖNETİCİ RAPORU</strong></p>
-      <div id="scoreOverview"></div>
-      <textarea class="report" id="reportText"></textarea>
-      <br>
-      <button class="copy-btn" onclick="copyReport()">📋 Raporu Kopyala</button>
-    </div>
+<!-- RESULT (no score shown to candidate) -->
+<div id="result" class="screen">
+  <div class="result-card">
+    <div class="result-icon">✅</div>
+    <h2 class="result-title" id="result-title"></h2>
+    <p class="result-sub" id="result-sub"></p>
   </div>
+</div>
 
+<!-- INVALID -->
+<div id="invalid" class="screen">
+  <div class="invalid-card">
+    <div class="invalid-icon">🚫</div>
+    <h2 class="invalid-title" id="invalid-title">Invalid</h2>
+    <p class="invalid-text" id="invalid-text"></p>
+  </div>
+</div>
+
+<div class="overlay-warn" id="overlay-warn">
+  <h2 id="warn-ov-title">⚠️ WARNING</h2>
+  <p id="warn-ov-body"></p>
+  <div class="countdown" id="warn-countdown">5</div>
+  <p id="warn-ov-footer" style="color:var(--danger);font-size:13px;"></p>
 </div>
 
 <script>
-// =============================================
-// ÖN BÜRO BAŞVURU DEĞERLENDİRME TESTİ
-// =============================================
+emailjs.init("d2OmX9p9Z8yo_2MxP");
 
-var selectedHotel = '';
-var selectedLang = '';
-var currentQ = 0;
-var answers = {};
-var timerInterval;
-var startTime;
-var testStarted = false;
-
-// ========== ANTI-CHEAT SYSTEM ==========
-var tabSwitchCount = 0;
-var cheatLog = [];
-
-var CHEAT_UI = {
+const UI = {
   en: {
-    title: 'Tab Switch Detected!',
-    msg: 'You have been detected switching to another tab or application during the test. This will be reflected in your test report.',
-    warning: 'warning(s)',
-    btn: 'Return to Test',
-    banner: 'Tab switch detected — this incident has been recorded.'
+    introTitle:"Front Office\nAssessment Exam",
+    introSub:"This exam measures your language proficiency and office software knowledge. It takes approximately 15 minutes.",
+    lblQ:"Questions",lblD:"Duration",lblC:"Categories",
+    warnText:"<strong>⚠️ Important:</strong> Once the exam starts, you <strong>cannot exit fullscreen</strong>, switch tabs or use Alt+Tab. Violations will <strong>automatically invalidate your exam.</strong>",
+    namePH:"Full Name",emailPH:"Email address",btnStart:"Start Exam →",btnNext:"Next Question →",
+    invalidTitle:"Exam Invalidated",
+    invalidText:"Tab switching or fullscreen exit was detected.\n\nYour exam has been automatically invalidated. Please contact Human Resources to reschedule.",
+    warnOvTitle:"⚠️ WARNING",warnOvBody:"You exited fullscreen or switched tabs. Please return immediately!",
+    warnOvFooter:"If you do not return, your exam will be invalidated.",
+    resultTitle:"Thank You!",
+    resultSub:"Your exam has been completed and submitted. Our Human Resources team will review your results and contact you shortly.",
+    langLabel:"English"
   },
   de: {
-    title: 'Tab-Wechsel erkannt!',
-    msg: 'Es wurde erkannt, dass Sie während des Tests zu einem anderen Tab oder einer anderen Anwendung gewechselt haben. Dies wird in Ihrem Testbericht vermerkt.',
-    warning: 'Warnung(en)',
-    btn: 'Zurück zum Test',
-    banner: 'Tab-Wechsel erkannt — dieser Vorfall wurde aufgezeichnet.'
+    introTitle:"Front Office\nEignungstest",
+    introSub:"Dieser Test misst Ihre Sprachkenntnisse und Bürosoftware-Kenntnisse. Er dauert ca. 15 Minuten.",
+    lblQ:"Fragen",lblD:"Dauer",lblC:"Kategorien",
+    warnText:"<strong>⚠️ Wichtig:</strong> Sobald der Test beginnt, können Sie den <strong>Vollbildmodus nicht verlassen</strong>, keine Tabs wechseln oder Alt+Tab verwenden. Verstöße führen zur <strong>automatischen Ungültigerklärung.</strong>",
+    namePH:"Vor- und Nachname",emailPH:"E-Mail-Adresse",btnStart:"Test starten →",btnNext:"Nächste Frage →",
+    invalidTitle:"Test ungültig",
+    invalidText:"Tab-Wechsel oder Vollbildverlassen wurde erkannt.\n\nIhr Test wurde automatisch für ungültig erklärt. Bitte wenden Sie sich an die Personalabteilung.",
+    warnOvTitle:"⚠️ WARNUNG",warnOvBody:"Sie haben den Vollbildmodus verlassen. Bitte kehren Sie sofort zurück!",
+    warnOvFooter:"Wenn Sie nicht zurückkehren, wird Ihr Test ungültig.",
+    resultTitle:"Vielen Dank!",
+    resultSub:"Ihr Test wurde abgeschlossen und eingereicht. Unser HR-Team wird Ihre Ergebnisse prüfen und sich in Kürze bei Ihnen melden.",
+    langLabel:"Deutsch"
   },
   ru: {
-    title: 'Обнаружено переключение вкладки!',
-    msg: 'Обнаружено переключение на другую вкладку или приложение во время теста. Это будет отражено в отчёте.',
-    warning: 'предупреждение(й)',
-    btn: 'Вернуться к тесту',
-    banner: 'Переключение вкладки обнаружено — инцидент записан.'
+    introTitle:"Тест для\nФронт-офиса",
+    introSub:"Этот тест оценивает ваши языковые навыки и знание офисных программ. Он занимает около 15 минут.",
+    lblQ:"Вопросы",lblD:"Время",lblC:"Категории",
+    warnText:"<strong>⚠️ Важно:</strong> После начала теста вы <strong>не можете выйти из полноэкранного режима</strong>, переключать вкладки или использовать Alt+Tab. Нарушения приведут к <strong>автоматической аннуляции теста.</strong>",
+    namePH:"Имя и фамилия",emailPH:"Адрес электронной почты",btnStart:"Начать тест →",btnNext:"Следующий вопрос →",
+    invalidTitle:"Тест аннулирован",
+    invalidText:"Обнаружено переключение вкладок.\n\nВаш тест автоматически аннулирован. Пожалуйста, свяжитесь с отделом кадров.",
+    warnOvTitle:"⚠️ ПРЕДУПРЕЖДЕНИЕ",warnOvBody:"Вы вышли из полноэкранного режима. Пожалуйста, вернитесь немедленно!",
+    warnOvFooter:"Если вы не вернётесь, ваш тест будет аннулирован.",
+    resultTitle:"Спасибо!",
+    resultSub:"Ваш тест завершён и отправлен. Наш HR-отдел проверит ваши результаты и свяжется с вами в ближайшее время.",
+    langLabel:"Русский"
+  },
+  tr: {
+    introTitle:"Front Office\nDeğerlendirme Sınavı",
+    introSub:"Bu sınav yabancı dil yetkinliğinizi ve ofis yazılımları bilginizi ölçmektedir. Tamamlanması yaklaşık 15 dakika sürer.",
+    lblQ:"Soru",lblD:"Süre",lblC:"Kategori",
+    warnText:"<strong>⚠️ Önemli Uyarı:</strong> Sınav başladıktan sonra <strong>tam ekrandan çıkamazsınız</strong>. Sekme değiştiremez, alt+tab yapamazsınız. Bu kurallara uymayan adayların sınavı <strong>otomatik olarak geçersiz sayılacaktır.</strong>",
+    namePH:"Ad Soyad",emailPH:"E-posta adresi",btnStart:"Sınava Başla →",btnNext:"Sonraki Soru →",
+    invalidTitle:"Sınav Geçersiz",
+    invalidText:"Tam ekrandan çıkma veya sekme değiştirme tespit edildi.\n\nSınavınız otomatik olarak geçersiz sayılmıştır. Lütfen İnsan Kaynakları departmanımızla iletişime geçin.",
+    warnOvTitle:"⚠️ UYARI",warnOvBody:"Tam ekrandan çıktınız veya sekme değiştirdiniz. Lütfen hemen geri dönün!",
+    warnOvFooter:"Geri dönmezseniz sınavınız geçersiz sayılacaktır.",
+    resultTitle:"Teşekkürler!",
+    resultSub:"Sınavınız tamamlandı ve iletildi. İnsan Kaynakları ekibimiz sonuçlarınızı değerlendirip en kısa sürede sizinle iletişime geçecektir.",
+    langLabel:"Türkçe"
   }
 };
 
-document.addEventListener('visibilitychange', function() {
-  if (!testStarted) return;
-  if (document.hidden) {
-    tabSwitchCount++;
-    var now = new Date();
-    cheatLog.push({
-      type: 'tab_hidden',
-      time: now.toLocaleTimeString('tr-TR'),
-      question: currentQ + 1
-    });
-  } else {
-    showCheatWarning();
-  }
-});
-
-window.addEventListener('blur', function() {
-  if (!testStarted) return;
-  tabSwitchCount++;
-  var now = new Date();
-  cheatLog.push({
-    type: 'window_blur',
-    time: now.toLocaleTimeString('tr-TR'),
-    question: currentQ + 1
-  });
-});
-
-document.addEventListener('contextmenu', function(e) {
-  if (testStarted) { e.preventDefault(); return false; }
-});
-
-document.addEventListener('keydown', function(e) {
-  if (!testStarted) return;
-  if ((e.ctrlKey || e.metaKey) && (e.key === 'c' || e.key === 'v' || e.key === 'u' || e.key === 'a')) {
-    e.preventDefault(); return false;
-  }
-  if (e.key === 'F12' || ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'I')) {
-    e.preventDefault(); return false;
-  }
-});
-
-function showCheatWarning() {
-  var lang = selectedLang || 'en';
-  var t = CHEAT_UI[lang] || CHEAT_UI.en;
-  document.getElementById('cheatTitle').textContent = t.title;
-  document.getElementById('cheatMsg').textContent = t.msg;
-  document.getElementById('cheatCount').textContent = tabSwitchCount;
-  document.getElementById('cheatWarningText').textContent = t.warning;
-  document.getElementById('cheatBtn').textContent = t.btn;
-  document.getElementById('cheatOverlay').classList.add('active');
-  var banner = document.getElementById('cheatBanner');
-  banner.textContent = '⚠ ' + t.banner + ' (' + tabSwitchCount + ')';
-  banner.classList.add('show');
-}
-
-function dismissCheatWarning() {
-  document.getElementById('cheatOverlay').classList.remove('active');
-}
-
-// ========== UI TRANSLATIONS ==========
-var UI = {
-  en: {
-    headerSub: 'FRONT OFFICE APPLICATION ASSESSMENT TEST',
-    regTitle: 'Application Details',
-    regDesc: 'Please fill in all required fields below.',
-    lblName: 'Full Name *', lblPhone: 'Phone *', lblEmail: 'Email *',
-    lblPosition: 'Position Applied For *', lblHotel: 'Hotel Applied For *',
-    lblLang: 'Test Language *', lblLangDesc: 'Select the language to test your proficiency.',
-    lblExp: 'Hospitality Experience (Years) *',
-    btnStart: 'Start Test', btnNext: 'Next →', btnPrev: '← Back', btnSubmit: 'Submit Test ✓',
-    progressLabel: function(c,t){ return 'Question ' + c + ' / ' + t; },
-    finishTitle: 'Assessment Completed',
-    finishText: 'Your responses have been recorded successfully. Our HR team will review your application and contact you. Thank you for your interest.',
-    selPlaceholder: '-- Select --',
-    posOpts: ['Receptionist', 'Shift Leader'],
-    expOpts: ['0 – 1 Years','1 – 3 Years','3 – 5 Years','5+ Years'],
-    errorFill: 'Please fill in all required fields and make your selections.',
-    errorAnswer: 'Please select an answer to continue.'
-  },
-  de: {
-    headerSub: 'FRONT OFFICE BEWERBUNGS-BEWERTUNGSTEST',
-    regTitle: 'Bewerbungsdetails',
-    regDesc: 'Bitte füllen Sie alle erforderlichen Felder aus.',
-    lblName: 'Vollständiger Name *', lblPhone: 'Telefon *', lblEmail: 'E-Mail *',
-    lblPosition: 'Beworbene Position *', lblHotel: 'Beworbenes Hotel *',
-    lblLang: 'Testsprache *', lblLangDesc: 'Wählen Sie die Sprache für den Kompetenztest.',
-    lblExp: 'Erfahrung im Hotelgewerbe (Jahre) *',
-    btnStart: 'Test starten', btnNext: 'Weiter →', btnPrev: '← Zurück', btnSubmit: 'Test abschicken ✓',
-    progressLabel: function(c,t){ return 'Frage ' + c + ' / ' + t; },
-    finishTitle: 'Bewertung abgeschlossen',
-    finishText: 'Ihre Antworten wurden erfolgreich gespeichert. Unser HR-Team wird Ihre Bewerbung prüfen und sich bei Ihnen melden. Vielen Dank für Ihr Interesse.',
-    selPlaceholder: '-- Auswählen --',
-    posOpts: ['Rezeptionist/in', 'Shift Leader'],
-    expOpts: ['0 – 1 Jahre','1 – 3 Jahre','3 – 5 Jahre','5+ Jahre'],
-    errorFill: 'Bitte füllen Sie alle Pflichtfelder aus.',
-    errorAnswer: 'Bitte wählen Sie eine Antwort aus.'
-  },
-  ru: {
-    headerSub: 'ТЕСТ ОЦЕНКИ КАНДИДАТА ФРОНТ-ОФИСА',
-    regTitle: 'Данные заявки',
-    regDesc: 'Пожалуйста, заполните все обязательные поля.',
-    lblName: 'ФИО *', lblPhone: 'Телефон *', lblEmail: 'Эл. почта *',
-    lblPosition: 'Желаемая должность *', lblHotel: 'Отель *',
-    lblLang: 'Язык теста *', lblLangDesc: 'Выберите язык для проверки ваших навыков.',
-    lblExp: 'Опыт в гостиничном деле (лет) *',
-    btnStart: 'Начать тест', btnNext: 'Далее →', btnPrev: '← Назад', btnSubmit: 'Отправить тест ✓',
-    progressLabel: function(c,t){ return 'Вопрос ' + c + ' / ' + t; },
-    finishTitle: 'Оценка завершена',
-    finishText: 'Ваши ответы успешно записаны. Наш HR-отдел рассмотрит вашу заявку и свяжется с вами. Спасибо за ваш интерес.',
-    selPlaceholder: '-- Выберите --',
-    posOpts: ['Ресепшионист', 'Shift Leader'],
-    expOpts: ['0 – 1 лет','1 – 3 лет','3 – 5 лет','5+ лет'],
-    errorFill: 'Пожалуйста, заполните все обязательные поля.',
-    errorAnswer: 'Пожалуйста, выберите ответ.'
-  }
+const QUESTIONS = {
+  en: [
+    {cat:"Language",text:"A guest arrives frustrated after a long flight and says their room isn't ready. What do you do?",options:["Tell them to wait in the lobby.","Sincerely apologize, offer complimentary refreshments, and personally escort them to the lounge while expediting their room.","Ask them to come back in an hour.","Explain that check-in time is 3 PM."],correct:1},
+    {cat:"Language",text:"A guest asks: 'Could you arrange a transfer to the airport for 4 AM tomorrow?' Best response:",options:["We don't offer transfers that early.","Of course. I'll coordinate with our concierge and confirm the details to your room within the hour.","You should book a taxi yourself.","That's very early, are you sure?"],correct:1},
+    {cat:"Language",text:"Which sentence is grammatically correct and professionally appropriate?",options:["The guest want to checkout early.","The guest wishes to check out earlier than scheduled; I have already updated the system accordingly.","Guest is wanting early checkout.","We done the checkout for the guest."],correct:1},
+    {cat:"Language",text:"A guest says: 'I specifically requested a sea-view room but this faces the garden.' Your response:",options:["Sea-view rooms are more expensive.","I sincerely apologize for the oversight. Allow me to check availability immediately and arrange a room change if at all possible.","That's what was available.","You should have confirmed when booking."],correct:1},
+    {cat:"Language",text:"Complete the sentence professionally: 'Should you require any further assistance, please do not hesitate ___'",options:["to calling us.","to contact us at any time.","for contact us.","contacting us anytime you want."],correct:1},
+    {cat:"Language",text:"A VIP guest complains about noise from a neighboring room at midnight. What is your first action?",options:["Call the noisy room and ask them to be quiet.","Apologize immediately, offer a room move or complimentary upgrade, and personally follow up to ensure resolution.","Tell the VIP guest to use earplugs.","Note it in the log and address it in the morning."],correct:1},
+    {cat:"Language",text:"Which phrase best describes 'upselling' at the front desk?",options:["Charging guests for services they didn't request.","Professionally presenting enhanced room options or additional services that genuinely improve the guest experience.","Pressuring guests to spend more money.","Offering discounts to fill rooms."],correct:1},
+    {cat:"PC Skills",text:"In Microsoft Excel, which formula calculates the sum only if a condition is met?",options:["=SUM()","=SUMIF()","=COUNT()","=IF()"],correct:1},
+    {cat:"PC Skills",text:"You need to send a confidential salary report to HR without other recipients seeing each other. Which field do you use?",options:["To","CC","BCC","Reply All"],correct:2},
+    {cat:"PC Skills",text:"In Word, you want to replace the word 'guest' with 'visitor' throughout a 50-page document. Which tool do you use?",options:["Spell Check","Track Changes","Find & Replace (Ctrl+H)","Format Painter"],correct:2},
+    {cat:"PC Skills",text:"In Excel, the formula =COUNTIF(A1:A100,'>0') does what?",options:["Sums all positive numbers in the range","Counts cells with values greater than zero","Finds the average of positive numbers","Highlights positive numbers"],correct:1},
+    {cat:"PC Skills",text:"A colleague sends you a password-protected Excel file. To open it you:",options:["Cannot open it without IT support","Need the password the sender set","Must convert it to PDF first","Use Ctrl+P to bypass the password"],correct:1},
+    {cat:"PC Skills",text:"Which keyboard shortcut creates a new line within the same Excel cell (without moving to the next cell)?",options:["Enter","Shift+Enter","Alt+Enter","Ctrl+Enter"],correct:2},
+    {cat:"PC Skills",text:"In Outlook, you want your email to be sent automatically every Monday morning. Which feature do you use?",options:["Quick Steps","Scheduled Send / Delay Delivery","Out of Office","Rules"],correct:1},
+    {cat:"Hotel Ops",text:"A guest's credit card is declined at check-in. What is the correct procedure?",options:["Ask them to leave immediately.","Discreetly inform the guest of the situation, offer alternative payment methods, and give them privacy to resolve the issue.","Announce the issue loudly at the desk.","Hold their passport as collateral."],correct:1},
+    {cat:"Hotel Ops",text:"What is 'overbooking' in hotel operations?",options:["Booking the same table twice in a restaurant","Accepting more reservations than available rooms, typically to compensate for expected no-shows","A guest staying longer than planned","Double charging a guest's credit card"],correct:1},
+    {cat:"Hotel Ops",text:"At check-in, a guest mentions it's their anniversary. What is the best action?",options:["Note it and do nothing extra.","Congratulate them, note it in the system, and coordinate a small surprise (amenity, note, or upgrade if available) with the relevant departments.","Tell them to inform room service.","Offer them a discount."],correct:1},
+    {cat:"Hotel Ops",text:"What does 'walk-in guest' mean?",options:["A guest who arrives by foot","A guest who arrives without a prior reservation","A guest transferred from another hotel","A guest who books at the last minute online"],correct:1},
+    {cat:"Hotel Ops",text:"Which report does the night auditor primarily prepare?",options:["Monthly P&L Statement","Daily Revenue and Occupancy Report (Night Audit Report)","Annual Budget Forecast","Staff Scheduling Sheet"],correct:1},
+    {cat:"Hotel Ops",text:"A guest requests an early check-in at 8 AM (standard check-in is 2 PM). The hotel is fully booked the night before. Best response:",options:["Refuse politely.","Explain that rooms may not be available but take their details, place them on an early check-in waitlist, offer luggage storage, and contact them as soon as a room is ready.","Ask them to pay for an extra night.","Tell them to come back at 2 PM."],correct:1},
+  ],
+  de: [
+    {cat:"Sprachkenntnisse",text:"Ein Gast kommt nach einem langen Flug frustriert an und sein Zimmer ist noch nicht fertig. Was tun Sie?",options:["Sagen Sie ihm, in der Lobby zu warten.","Entschuldigen Sie sich aufrichtig, bieten Sie kostenlose Erfrischungen an und begleiten Sie ihn persönlich in die Lounge, während das Zimmer vorbereitet wird.","Bitten Sie ihn, in einer Stunde wiederzukommen.","Erklären Sie, dass der Check-in um 15 Uhr stattfindet."],correct:1},
+    {cat:"Sprachkenntnisse",text:"Ein Gast fragt: 'Könnten Sie morgen früh um 4 Uhr einen Transfer zum Flughafen arrangieren?' Beste Antwort:",options:["Wir bieten so früh keine Transfers an.","Natürlich. Ich koordiniere das mit unserem Concierge und bestätige Ihnen die Details innerhalb einer Stunde auf Ihr Zimmer.","Sie sollten selbst ein Taxi buchen.","So früh? Sind Sie sicher?"],correct:1},
+    {cat:"Sprachkenntnisse",text:"Welcher Satz ist grammatikalisch korrekt und professionell angemessen?",options:["Der Gast will früher auschecken.","Der Gast wünscht einen früheren Check-out; ich habe das System bereits entsprechend aktualisiert.","Gast ist wollend früher auschecken.","Wir haben den Checkout für Gast gemacht."],correct:1},
+    {cat:"Sprachkenntnisse",text:"Ein Gast sagt: 'Ich hatte ausdrücklich ein Meerblickzimmer gewünscht, aber dieses zeigt in den Garten.' Ihre Antwort:",options:["Meerblickzimmer sind teurer.","Ich entschuldige mich aufrichtig für das Versehen. Lassen Sie mich sofort die Verfügbarkeit prüfen und wenn möglich einen Zimmerwechsel arrangieren.","Das war das einzig Verfügbare.","Sie hätten es bei der Buchung bestätigen sollen."],correct:1},
+    {cat:"Sprachkenntnisse",text:"Ergänzen Sie den Satz professionell: 'Sollten Sie weitere Unterstützung benötigen, zögern Sie bitte nicht, ___'",options:["uns anzurufen wann immer.","uns jederzeit zu kontaktieren.","für uns zu kontaktieren.","uns kontaktieren Sie wann Sie wollen."],correct:1},
+    {cat:"Sprachkenntnisse",text:"Ein VIP-Gast beschwert sich um Mitternacht über Lärm aus dem Nachbarzimmer. Was ist Ihre erste Maßnahme?",options:["Rufen Sie das laute Zimmer an und bitten Sie um Ruhe.","Entschuldigen Sie sich sofort, bieten Sie einen Zimmerwechsel oder ein kostenloses Upgrade an und verfolgen Sie die Lösung persönlich nach.","Sagen Sie dem VIP-Gast, Ohrstöpsel zu benutzen.","Notieren Sie es und kümmern Sie sich morgen darum."],correct:1},
+    {cat:"Sprachkenntnisse",text:"Welche Phrase beschreibt 'Upselling' an der Rezeption am besten?",options:["Gästen Dienstleistungen berechnen, die sie nicht angefordert haben.","Professionell verbesserte Zimmeroptionen oder zusätzliche Dienstleistungen präsentieren, die das Gästeerlebnis wirklich verbessern.","Gäste unter Druck setzen, mehr Geld auszugeben.","Rabatte anbieten, um Zimmer zu füllen."],correct:1},
+    {cat:"PC-Kenntnisse",text:"Welche Excel-Formel berechnet die Summe nur, wenn eine Bedingung erfüllt ist?",options:["=SUMME()","=SUMMEWENN()","=ANZAHL()","=WENN()"],correct:1},
+    {cat:"PC-Kenntnisse",text:"Sie müssen einen vertraulichen Gehaltsbericht an die HR senden, ohne dass Empfänger die anderen Adressen sehen. Welches Feld verwenden Sie?",options:["An","CC","BCC","Allen antworten"],correct:2},
+    {cat:"PC-Kenntnisse",text:"In Word möchten Sie das Wort 'Gast' in einem 50-seitigen Dokument durch 'Besucher' ersetzen. Welches Tool verwenden Sie?",options:["Rechtschreibprüfung","Änderungen verfolgen","Suchen & Ersetzen (Strg+H)","Format übertragen"],correct:2},
+    {cat:"PC-Kenntnisse",text:"Was macht die Formel =ZÄHLENWENN(A1:A100;'>0') in Excel?",options:["Summiert alle positiven Zahlen","Zählt Zellen mit Werten größer als null","Berechnet den Durchschnitt positiver Zahlen","Hebt positive Zahlen hervor"],correct:1},
+    {cat:"PC-Kenntnisse",text:"Welche Tastenkombination erstellt eine neue Zeile innerhalb derselben Excel-Zelle?",options:["Enter","Umschalt+Enter","Alt+Enter","Strg+Enter"],correct:2},
+    {cat:"PC-Kenntnisse",text:"In Outlook möchten Sie eine E-Mail automatisch jeden Montagmorgen senden. Welche Funktion verwenden Sie?",options:["QuickSteps","Geplantes Senden / Übermittlung verzögern","Abwesenheitsassistent","Regeln"],correct:1},
+    {cat:"Hotelbetrieb",text:"Die Kreditkarte eines Gastes wird beim Check-in abgelehnt. Was ist das korrekte Vorgehen?",options:["Bitten Sie ihn sofort zu gehen.","Informieren Sie den Gast diskret, bieten Sie alternative Zahlungsmethoden an und geben Sie ihm Privatsphäre, das Problem zu lösen.","Kündigen Sie das Problem laut an der Rezeption an.","Behalten Sie seinen Pass als Sicherheit."],correct:1},
+    {cat:"Hotelbetrieb",text:"Was ist 'Überbuchung' im Hotelbetrieb?",options:["Denselben Tisch zweimal im Restaurant buchen","Mehr Reservierungen annehmen als verfügbare Zimmer, um erwartete No-Shows auszugleichen","Ein Gast bleibt länger als geplant","Doppelte Berechnung einer Gästekreditkarte"],correct:1},
+    {cat:"Hotelbetrieb",text:"Beim Check-in erwähnt ein Gast, dass er seinen Hochzeitstag feiert. Was ist die beste Reaktion?",options:["Notieren Sie es und tun Sie nichts Besonderes.","Gratulieren Sie, notieren Sie es im System und koordinieren Sie eine kleine Überraschung mit den relevanten Abteilungen.","Sagen Sie ihm, den Zimmerservice zu informieren.","Bieten Sie ihm einen Rabatt an."],correct:1},
+    {cat:"Hotelbetrieb",text:"Was bedeutet 'Walk-in Gast'?",options:["Ein Gast, der zu Fuß ankommt","Ein Gast, der ohne vorherige Reservierung ankommt","Ein von einem anderen Hotel überwiesener Gast","Ein Gast, der kurzfristig online bucht"],correct:1},
+    {cat:"Hotelbetrieb",text:"Welchen Bericht erstellt der Nachtauditor hauptsächlich?",options:["Monatliche G&V-Rechnung","Täglicher Umsatz- und Auslastungsbericht (Nachtauditbericht)","Jährliche Budgetplanung","Dienstplan"],correct:1},
+    {cat:"Hotelbetrieb",text:"Ein Gast wünscht frühen Check-in um 8 Uhr (Standard 14 Uhr). Das Hotel ist voll belegt. Beste Antwort:",options:["Höflich ablehnen.","Erklären Sie die Situation, setzen Sie ihn auf eine Warteliste, bieten Sie Gepäckaufbewahrung an und kontaktieren Sie ihn sobald ein Zimmer frei ist.","Bitten Sie ihn, eine zusätzliche Nacht zu bezahlen.","Sagen Sie ihm, um 14 Uhr wiederzukommen."],correct:1},
+    {cat:"Hotelbetrieb",text:"Was ist ein 'No-Show' im Hotel?",options:["Ein Gast, der früh anreist","Ein Gast, der eine Reservierung hat, aber nicht erscheint","Eine stornierte Buchung","Eine Überbuchungssituation"],correct:1},
+  ],
+  ru: [
+    {cat:"Языковые навыки",text:"Расстроенный гость прибывает после долгого перелёта, а его номер ещё не готов. Ваши действия?",options:["Попросите его подождать в лобби.","Искренне извинитесь, предложите бесплатные напитки и лично проводите его в лаундж, пока номер готовится.","Попросите вернуться через час.","Объясните, что заезд с 15:00."],correct:1},
+    {cat:"Языковые навыки",text:"Гость спрашивает: 'Можете организовать трансфер в аэропорт в 4 утра?' Лучший ответ:",options:["Мы не предоставляем трансфер в такое время.","Конечно. Я скоординирую с консьержем и подтвержу детали в ваш номер в течение часа.","Закажите такси самостоятельно.","Так рано? Вы уверены?"],correct:1},
+    {cat:"Языковые навыки",text:"Гость говорит: 'Я специально просил номер с видом на море, но вижу сад.' Ваш ответ:",options:["Номера с видом на море стоят дороже.","Приношу искренние извинения за ошибку. Позвольте немедленно проверить доступность и организовать смену номера, если это возможно.","Это было всё, что было доступно.","Вы должны были уточнить при бронировании."],correct:1},
+    {cat:"Языковые навыки",text:"Завершите предложение профессионально: 'Если вам потребуется дополнительная помощь, пожалуйста, не стесняйтесь ___'",options:["нам позвонить когда угодно.","обращаться к нам в любое время.","для связи с нами.","контактировать нас когда хотите."],correct:1},
+    {cat:"Языковые навыки",text:"VIP-гость жалуется на шум из соседнего номера в полночь. Первое действие:",options:["Позвоните в шумный номер и попросите тишины.","Немедленно извинитесь, предложите смену номера или бесплатный апгрейд и лично проследите за решением проблемы.","Скажите VIP-гостю использовать беруши.","Запишите и разберитесь утром."],correct:1},
+    {cat:"Языковые навыки",text:"Какая фраза лучше всего описывает 'апселлинг' на ресепшн?",options:["Взимать плату за незапрошенные услуги.","Профессионально представлять улучшенные варианты номеров или доп. услуги, которые реально улучшают опыт гостя.","Давить на гостей, чтобы они тратили больше.","Предлагать скидки для заполнения номеров."],correct:1},
+    {cat:"Языковые навыки",text:"Гость при заезде упоминает, что отмечает годовщину свадьбы. Лучшее действие:",options:["Отметьте и ничего дополнительного.","Поздравьте, внесите в систему и скоординируйте небольшой сюрприз с соответствующими отделами.","Скажите ему связаться с room service.","Предложите скидку."],correct:1},
+    {cat:"Навыки ПК",text:"Какая формула Excel вычисляет сумму только при выполнении условия?",options:["=СУММ()","=СУММЕСЛИ()","=СЧЁТ()","=ЕСЛИ()"],correct:1},
+    {cat:"Навыки ПК",text:"Нужно отправить конфиденциальный отчёт в HR, не показывая адреса получателей друг другу. Какое поле использовать?",options:["Кому","Копия (CC)","Скрытая копия (BCC)","Ответить всем"],correct:2},
+    {cat:"Навыки ПК",text:"В Word нужно заменить слово 'гость' на 'посетитель' во всём 50-страничном документе. Какой инструмент?",options:["Проверка орфографии","Отслеживание изменений","Найти и заменить (Ctrl+H)","Формат по образцу"],correct:2},
+    {cat:"Навыки ПК",text:"Что делает формула =СЧЁТЕСЛИ(A1:A100;'>0') в Excel?",options:["Суммирует все положительные числа","Подсчитывает ячейки со значениями больше нуля","Находит среднее положительных чисел","Выделяет положительные числа"],correct:1},
+    {cat:"Навыки ПК",text:"Какое сочетание клавиш создаёт новую строку внутри той же ячейки Excel?",options:["Enter","Shift+Enter","Alt+Enter","Ctrl+Enter"],correct:2},
+    {cat:"Навыки ПК",text:"В Outlook нужно отправлять письмо автоматически каждый понедельник утром. Какую функцию использовать?",options:["Быстрые действия","Отложенная отправка","Автоответ об отсутствии","Правила"],correct:1},
+    {cat:"Операции отеля",text:"Кредитная карта гостя отклонена при заезде. Правильная процедура:",options:["Попросите его немедленно уйти.","Дискретно сообщите гостю о ситуации, предложите альтернативные способы оплаты и дайте ему личное пространство для решения вопроса.","Громко объявите о проблеме на ресепшн.","Оставьте паспорт в залог."],correct:1},
+    {cat:"Операции отеля",text:"Что такое 'овербукинг' в работе отеля?",options:["Бронирование одного стола в ресторане дважды","Приём большего количества броней, чем доступных номеров, для компенсации ожидаемых неявок","Гость остаётся дольше запланированного","Двойное списание с карты гостя"],correct:1},
+    {cat:"Операции отеля",text:"Что означает 'walk-in гость'?",options:["Гость, пришедший пешком","Гость, прибывший без предварительного бронирования","Гость, переведённый из другого отеля","Гость, забронировавший в последнюю минуту онлайн"],correct:1},
+    {cat:"Операции отеля",text:"Какой отчёт в первую очередь составляет ночной аудитор?",options:["Ежемесячный отчёт о прибылях и убытках","Ежедневный отчёт о доходах и загрузке (ночной аудит)","Годовой бюджетный прогноз","График персонала"],correct:1},
+    {cat:"Операции отеля",text:"Гость просит ранний заезд в 8 утра (стандарт — 14:00). Отель полностью занят с прошлой ночи. Лучший ответ:",options:["Вежливо отказать.","Объясните ситуацию, внесите в лист ожидания, предложите хранение багажа и свяжитесь как только номер будет готов.","Попросите доплатить за лишнюю ночь.","Скажите прийти в 14:00."],correct:1},
+    {cat:"Операции отеля",text:"Что такое 'no-show' в отеле?",options:["Гость, приехавший рано","Гость с бронью, который не приехал","Отменённое бронирование","Ситуация с перебронированием"],correct:1},
+    {cat:"Операции отеля",text:"Гость звонит из номера и говорит, что в ванной нет горячей воды. Первое действие:",options:["Сказать подождать.","Немедленно извиниться, сообщить в технический отдел и лично перезвонить гостю через 10 минут для подтверждения решения.","Переключить на room service.","Предложить сменить отель."],correct:1},
+  ],
+  tr: [
+    {cat:"Dil Becerileri",text:"Uzun bir uçuştan sonra sinirli gelen bir misafirin odası hazır değil. Ne yaparsınız?",options:["Lobide beklemesini söyleyin.","İçtenlikle özür dileyin, ücretsiz ikram teklif edin ve oda hazırlanırken misafiri kişisel olarak salona eşlik edin.","Bir saat sonra gelmesini isteyin.","Check-in saatinin 15.00 olduğunu açıklayın."],correct:1},
+    {cat:"Dil Becerileri",text:"Misafir soruyor: 'Yarın sabah 04.00'de havalimanı transferi ayarlayabilir misiniz?' En iyi yanıt:",options:["Bu saatte transfer sunmuyoruz.","Tabii ki. Concierge ile koordineli şekilde detayları bir saat içinde odanıza bildireceğim.","Kendiniz taksi tutabilirsiniz.","Bu saatte mi, emin misiniz?"],correct:1},
+    {cat:"Dil Becerileri",text:"Misafir diyor ki: 'Deniz manzaralı oda istemiştim ama burası bahçeye bakıyor.' Yanıtınız:",options:["Deniz manzaralı odalar daha pahalıdır.","Bu gözden kaçırma için içtenlikle özür dilerim. Müsaitliği hemen kontrol edip oda değişikliği ayarlamaya çalışayım.","Elimizdeki buydu.","Rezervasyon sırasında teyit ettirmeniz gerekirdi."],correct:1},
+    {cat:"Dil Becerileri",text:"Cümleyi profesyonelce tamamlayın: 'Herhangi bir konuda yardıma ihtiyaç duyarsanız ___'",options:["bizi arayabilirsiniz ne zaman olursa.","lütfen her zaman bizimle iletişime geçmekten çekinmeyin.","bize iletişim için.","istediğinizde bize yazın."],correct:1},
+    {cat:"Dil Becerileri",text:"Gece yarısı VIP misafir komşu odadan gelen gürültüden şikayet ediyor. İlk adımınız:",options:["Gürültülü odayı arayıp sessiz olmalarını isteyin.","Hemen özür dileyin, oda değişikliği veya ücretsiz yükseltme önerin ve çözümü kişisel olarak takip edin.","VIP misafire kulak tıkacı önerin.","Not alın ve sabah halledin."],correct:1},
+    {cat:"Dil Becerileri",text:"Resepsiyonda 'upselling' kavramını en iyi hangi ifade tanımlar?",options:["Misafirlerden istemedikleri hizmetler için ücret almak.","Misafir deneyimini gerçekten iyileştirecek üst kategori oda veya ek hizmetleri profesyonelce sunmak.","Misafirleri daha fazla harcamaya zorlamak.","Odaları doldurmak için indirim teklif etmek."],correct:1},
+    {cat:"Dil Becerileri",text:"Check-in sırasında misafir evlilik yıldönümünü kutladığını söylüyor. En iyi hareket:",options:["Not alın, ekstra bir şey yapmayın.","Tebrik edin, sisteme kaydedin ve ilgili departmanlarla küçük bir sürpriz koordine edin.","Room service'e bildirmesini söyleyin.","İndirim teklif edin."],correct:1},
+    {cat:"PC Bilgisi",text:"Excel'de yalnızca bir koşul sağlandığında toplam hesaplayan formül:",options:["=TOPLA()","=ETOPLA()","=BAĞ_DEĞ_SAY()","=EĞER()"],correct:1},
+    {cat:"PC Bilgisi",text:"Gizli maaş raporunu İK'ya gönderirken alıcıların birbirinin adresini görmemesi için:",options:["Kime","Bilgi (CC)","Gizli (BCC)","Tümünü Yanıtla"],correct:2},
+    {cat:"PC Bilgisi",text:"Word'de 50 sayfalık belgede 'misafir' kelimesini 'ziyaretçi' ile değiştirmek için:",options:["Yazım Denetimi","Değişiklikleri İzle","Bul ve Değiştir (Ctrl+H)","Biçim Boyacısı"],correct:2},
+    {cat:"PC Bilgisi",text:"Excel'de =EĞERSAY(A1:A100;'>0') formülü ne yapar?",options:["Tüm pozitif sayıları toplar","Sıfırdan büyük değerlere sahip hücreleri sayar","Pozitif sayıların ortalamasını bulur","Pozitif sayıları vurgular"],correct:1},
+    {cat:"PC Bilgisi",text:"Aynı Excel hücresinde yeni satır oluşturmak için kısayol:",options:["Enter","Shift+Enter","Alt+Enter","Ctrl+Enter"],correct:2},
+    {cat:"PC Bilgisi",text:"Outlook'ta her pazartesi sabahı otomatik e-posta göndermek için:",options:["Hızlı Adımlar","Zamanlanmış Gönderme / Teslimi Geciktir","Dışarıda mesajı","Kurallar"],correct:1},
+    {cat:"Otel Operasyonları",text:"Misafirin kredi kartı check-in'de reddedildi. Doğru prosedür:",options:["Hemen ayrılmasını isteyin.","Misafiri sessizce bilgilendirin, alternatif ödeme yöntemleri sunun ve sorunu çözmesi için mahremiyet tanıyın.","Durumu resepsiyonda yüksek sesle duyurun.","Pasaportunu teminat olarak alın."],correct:1},
+    {cat:"Otel Operasyonları",text:"Otel operasyonlarında 'overbooking' nedir?",options:["Restoranda aynı masayı iki kez rezerve etmek","Beklenen iptal ve gelmemeleri karşılamak için mevcut oda sayısından fazla rezervasyon almak","Misafirin planlanandan uzun kalması","Misafir kartından çift ücret kesilmesi"],correct:1},
+    {cat:"Otel Operasyonları",text:"'Walk-in misafir' ne anlama gelir?",options:["Yürüyerek gelen misafir","Önceden rezervasyonu olmayan misafir","Başka otelden transfer edilen misafir","Son dakika online rezervasyon yapan misafir"],correct:1},
+    {cat:"Otel Operasyonları",text:"Gece denetçisi (night auditor) öncelikle hangi raporu hazırlar?",options:["Aylık kar-zarar tablosu","Günlük gelir ve doluluk raporu (gece denetim raporu)","Yıllık bütçe tahmini","Personel çizelgesi"],correct:1},
+    {cat:"Otel Operasyonları",text:"Misafir sabah 08.00'de erken check-in istiyor (standart: 14.00). Otel bir önceki gece tamamen dolu. En iyi yanıt:",options:["Nezaketle reddedin.","Durumu açıklayın, bekleme listesine alın, bagaj depolama teklif edin ve oda hazır olur olmaz haber verin.","Ekstra gece ücreti ödemesini isteyin.","14.00'de gelmesini söyleyin."],correct:1},
+    {cat:"Otel Operasyonları",text:"Otelde 'no-show' ne demektir?",options:["Erken gelen misafir","Rezervasyonu olup gelmeyen misafir","İptal edilen rezervasyon","Fazla rezervasyon durumu"],correct:1},
+    {cat:"Otel Operasyonları",text:"Misafir odadan arayarak banyoda sıcak su olmadığını söylüyor. İlk adım:",options:["Beklemesini söyleyin.","Hemen özür dileyin, teknik ekibe bildirin ve 10 dakika sonra çözümü teyit etmek için misafiri kişisel olarak arayın.","Room service'e yönlendirin.","Farklı bir otel önerin."],correct:1},
+  ]
 };
 
-function applyLang(lang) {
-  if (!UI[lang]) return;
-  var t = UI[lang];
-  document.getElementById('headerSub').textContent = t.headerSub;
-  document.getElementById('regTitle').textContent = t.regTitle;
-  document.getElementById('regDesc').textContent = t.regDesc;
-  document.getElementById('lblName').textContent = t.lblName;
-  document.getElementById('lblPhone').textContent = t.lblPhone;
-  document.getElementById('lblEmail').textContent = t.lblEmail;
-  document.getElementById('lblPosition').textContent = t.lblPosition;
-  document.getElementById('lblHotel').textContent = t.lblHotel;
-  document.getElementById('lblLang').textContent = t.lblLang;
-  document.getElementById('lblLangDesc').textContent = t.lblLangDesc;
-  document.getElementById('lblExp').textContent = t.lblExp;
-  document.getElementById('btnStart').textContent = t.btnStart;
-  var selPos = document.getElementById('selPosition');
-  selPos.options[0].text = t.selPlaceholder;
-  selPos.options[1].text = t.posOpts[0];
-  selPos.options[2].text = t.posOpts[1];
-  var selExp = document.getElementById('selExp');
-  selExp.options[0].text = t.selPlaceholder;
-  for(var i=0;i<t.expOpts.length;i++) selExp.options[i+1].text = t.expOpts[i];
-}
+let selectedLang=null, current=0, score=0, answers=[];
+let timerInterval, timeLeft=15*60, answered=false;
+let violationCount=0, warnTimer;
+let candidateName='', candidateEmail='';
+let questions=[], catScores={};
 
-function selectHotel(el, name) {
-  document.querySelectorAll('.hotel-opt').forEach(function(h){ h.classList.remove('selected'); });
+function selectLang(lang,el){
+  selectedLang=lang;
+  document.querySelectorAll('.lang-btn').forEach(b=>b.classList.remove('selected'));
   el.classList.add('selected');
-  selectedHotel = name;
+  document.getElementById('lang-continue').disabled=false;
 }
 
-function selectLang(el, lang) {
-  document.querySelectorAll('.lang-opt').forEach(function(l){ l.classList.remove('selected'); });
-  el.classList.add('selected');
-  selectedLang = lang;
-  applyLang(lang);
+function goToIntro(){
+  if(!selectedLang)return;
+  const t=UI[selectedLang];
+  questions=QUESTIONS[selectedLang];
+  document.getElementById('intro-title').textContent=t.introTitle;
+  document.getElementById('intro-sub').textContent=t.introSub;
+  document.getElementById('lbl-q').textContent=t.lblQ;
+  document.getElementById('lbl-d').textContent=t.lblD;
+  document.getElementById('lbl-c').textContent=t.lblC;
+  document.getElementById('warn-text').innerHTML=t.warnText;
+  document.getElementById('candidate-name').placeholder=t.namePH;
+  document.getElementById('candidate-email').placeholder=t.emailPH;
+  document.getElementById('btn-start').textContent=t.btnStart;
+  showScreen('intro');
 }
 
-// ========== SHUFFLE OPTIONS (randomize correct answers) ==========
-function shuffleOptions(qs) {
-  qs.forEach(function(q) {
-    var correctText = q.options[q.correct];
-    for (var i = q.options.length - 1; i > 0; i--) {
-      var j = Math.floor(Math.random() * (i + 1));
-      var tmp = q.options[i];
-      q.options[i] = q.options[j];
-      q.options[j] = tmp;
-    }
-    q.correct = q.options.indexOf(correctText);
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function startExam(){
+  candidateName=document.getElementById('candidate-name').value.trim();
+  candidateEmail=document.getElementById('candidate-email').value.trim();
+  if(!candidateName||!candidateEmail){
+    alert(selectedLang==='tr'?'Lütfen ad soyad ve e-posta giriniz.':'Please enter your name and email.');return;
+  }
+  const el=document.documentElement;
+  if(el.requestFullscreen)el.requestFullscreen();
+  else if(el.webkitRequestFullscreen)el.webkitRequestFullscreen();
+  showScreen('exam');
+  document.getElementById('btn-next').textContent=UI[selectedLang].btnNext;
+  renderQuestion();
+  startTimer();
+  setupAntiCheat();
+}
+
+function renderQuestion(){
+  const q=questions[current];
+  document.getElementById('q-cat').textContent=q.cat;
+  document.getElementById('q-counter').textContent=`${current+1} / ${questions.length}`;
+  document.getElementById('q-text').textContent=q.text;
+  document.getElementById('progress-bar').style.width=`${(current/questions.length)*100}%`;
+  answered=false;
+  const opts=document.getElementById('q-options');
+  opts.innerHTML='';
+  const letters=['A','B','C','D'];
+  q.options.forEach((opt,i)=>{
+    const div=document.createElement('div');
+    div.className='option';
+    div.innerHTML=`<span class="opt-letter">${letters[i]}</span><span>${opt}</span>`;
+    div.onclick=()=>selectOption(i,div);
+    opts.appendChild(div);
   });
 }
 
-// ========== QUESTION BANK ==========
-function getQuestions(lang, hotel, position) {
-  var isShiftLeader = (position === 'Shift Leader');
-
-  // --- FRONT DESK (always Turkish for domain knowledge) ---
-  var frontDesk = [
-    {
-      category:'frontdesk', catLabel:'Ön Büro Bilgisi',
-      text:'Bir misafir check-in sırasında rezervasyonunun bulunamadığını iddia ediyor. İlk olarak ne yaparsınız?',
-      options:[
-        'Misafirden özür diler, ad-soyad ve konfirmasyon numarasıyla sistemi tekrar kontrol edersiniz.',
-        'Misafire yeni rezervasyon açmayı teklif edersiniz.',
-        'Misafiri rezervasyon yaptığı acente/siteye yönlendirirsiniz.',
-        'Müdürü çağırırsınız.'
-      ], correct:0
-    },
-    {
-      category:'pms', catLabel:'Elektraweb PMS',
-      text:'Elektraweb PMS üzerinde bir walk-in misafir için oda satışı yaparken hangi adımları takip edersiniz?',
-      options:[
-        'Ön Büro → Yeni Rezervasyon → Misafir bilgilerini gir → Uygun odayı seç → Fiyat ve ödeme bilgilerini kaydet → Check-in yap.',
-        'Housekeeping → Boş oda bul → Misafiri yerleştir.',
-        'Sadece kart bilgisi alıp oda anahtarı verirsiniz.',
-        'Müdürden onay alıp, müdür sisteme giriş yapar.'
-      ], correct:0
-    },
-    {
-      category:'frontdesk', catLabel:'Ön Büro Bilgisi',
-      text:'Overbooking durumunda misafiri başka bir otele yönlendirmeniz gerekiyor. Bu işleme ne ad verilir?',
-      options:['Walk-out / Relocation','No-show','Upgrade','Complimentary'], correct:0
-    },
-    {
-      category:'pms', catLabel:'Elektraweb PMS',
-      text:'Elektraweb PMS\'te misafir foliosuna (hesap kartı) yapılan manuel yükleme işlemi hangisinde doğru tanımlanmıştır?',
-      options:[
-        'Folio ekranından "Ek Hizmet / Charge" butonu ile ilgili departmanı seçerek yükleme yapılır.',
-        'Ön büro ekranından toplu fatura kesilir.',
-        'Housekeeping modülünden minibar girişi yapılır.',
-        'Sadece muhasebe departmanı folioya yükleme yapabilir.'
-      ], correct:0
-    },
-    {
-      category:'frontdesk', catLabel:'Ön Büro Bilgisi',
-      text:'Check-out sırasında misafir, minibar tüketimini kabul etmiyor. Nasıl hareket edersiniz?',
-      options:[
-        'Housekeeping\'ten minibar kontrol formu isteyerek misafire kanıtla birlikte kibarca bilgi verirsiniz. Anlaşmazlık devam ederse yöneticiye bildirim yaparsınız.',
-        'Misafirin söylediğini kabul ederek tutarı silersiniz.',
-        'Güvenliği çağırırsınız.',
-        'Misafirden imza alıp zorla tahsil edersiniz.'
-      ], correct:0
-    },
-    {
-      category:'frontdesk', catLabel:'Ön Büro Bilgisi',
-      text:'"No-show" terimi ne anlama gelir?',
-      options:[
-        'Rezervasyonu olup otele gelmeyen misafir.',
-        'Check-out yapmadan otelden ayrılan misafir.',
-        'Walk-in olarak gelen misafir.',
-        'Erken check-in talep eden misafir.'
-      ], correct:0
-    }
-  ];
-
-  if (isShiftLeader) {
-    frontDesk.push({
-      category:'frontdesk', catLabel:'Shift Leader',
-      text:'Shift Leader olarak vardiya devir tesliminde (shift handover) hangi bilgiler mutlaka raporlanmalıdır?',
-      options:[
-        'VIP misafir listesi, beklenen check-in/out\'lar, açık complaint\'ler, grup bilgileri, teknik arızalar ve özel talepler.',
-        'Sadece doluluk oranı.',
-        'Sadece kasa raporu.',
-        'Bir sonraki vardiyaya kimin geleceği bilgisi.'
-      ], correct:0
-    });
-  }
-
-  // --- LANGUAGE QUESTIONS (selected language) ---
-  var langQs = {
-    en: [
-      {category:'language',catLabel:'English Proficiency',scenario:'A guest approaches the front desk and says: "Excuse me, I booked a sea-view room but I\'ve been given a room facing the car park. This is unacceptable!"',text:'What is the most appropriate response?',options:['"I sincerely apologize for the inconvenience, Mr./Mrs. ___. Let me check our availability right away and see if I can move you to a sea-view room as you originally booked."','"Sorry, all sea-view rooms are full. Nothing I can do."','"You should have confirmed your booking with the travel agent."','"I will note your complaint. Please wait in your room."'],correct:0},
-      {category:'language',catLabel:'English Proficiency',scenario:'A guest calls the front desk at 11 PM: "My air conditioning is not working and the room is extremely hot. I can\'t sleep!"',text:'Choose the best response:',options:['"I\'m very sorry about that, Mr./Mrs. ___. I will send our maintenance team to your room immediately. In the meantime, may I arrange a portable fan or offer you a room change?"','"Please call back tomorrow morning when the maintenance team is available."','"Try opening the window."','"I will report it. Maintenance will come when they can."'],correct:0},
-      {category:'language',catLabel:'English Proficiency',text:'Complete the sentence: "I\'m afraid your room is not _____ yet. Would you like to leave your luggage with the concierge while you enjoy our lobby lounge?"',options:['ready','available','cleaned','prepared'],correct:0},
-      {category:'language',catLabel:'English Proficiency',text:'A guest asks: "Could you recommend a good local restaurant for a romantic dinner?" Which answer demonstrates the best concierge-level service?',options:['"Absolutely! I\'d recommend [Restaurant Name] — it has a lovely terrace with sea views, perfect for a special evening. Shall I make a reservation for you and arrange transportation?"','"There are many restaurants outside. Just walk around."','"I\'m not sure. You can check Google Maps."','"We have a restaurant in the hotel."'],correct:0},
-      {category:'scenario',catLabel:'Guest Scenario (EN)',scenario:'A VIP guest (returning client) arrives and you notice their reservation shows a Standard Room, but their profile indicates they usually stay in a Suite.',text:'What should you do?',options:['Proactively check suite availability, attempt a complimentary upgrade, and welcome them by name mentioning you\'re glad to see them again.','Check them into the Standard Room as booked without mentioning anything.','Tell the guest there was a booking error.','Ask the guest to pay the difference for a suite.'],correct:0},
-      {category:'scenario',catLabel:'Guest Scenario (EN)',scenario:'A guest wants to extend their stay by two nights, but the hotel is fully booked for the second additional night due to a large group arrival.',text:'How do you handle this?',options:['"I can confirm one additional night. For the second night, I\'ll check if we can accommodate you in an alternative room category, or I can arrange a reservation at our sister property with transportation."','"Sorry, we are full. You have to leave."','"I\'ll extend both nights and figure it out later."','"Please contact your travel agent to sort this out."'],correct:0}
-    ],
-    de: [
-      {category:'language',catLabel:'Deutsch Kenntnisse',scenario:'Ein Gast kommt an die Rezeption und sagt: "Entschuldigung, ich habe ein Zimmer mit Meerblick gebucht, aber mein Zimmer zeigt auf den Parkplatz. Das ist inakzeptabel!"',text:'Was ist die angemessenste Antwort?',options:['"Es tut mir sehr leid, Herr/Frau ___. Lassen Sie mich sofort die Verfügbarkeit prüfen und schauen, ob ich Sie in ein Zimmer mit Meerblick umziehen kann, wie ursprünglich gebucht."','"Tut mir leid, alle Meerblick-Zimmer sind belegt. Da kann ich nichts machen."','"Sie hätten Ihre Buchung mit dem Reisebüro bestätigen sollen."','"Ich notiere Ihre Beschwerde. Bitte warten Sie auf Ihrem Zimmer."'],correct:0},
-      {category:'language',catLabel:'Deutsch Kenntnisse',scenario:'Ein Gast ruft um 23 Uhr an der Rezeption an: "Meine Klimaanlage funktioniert nicht und es ist extrem heiß im Zimmer. Ich kann nicht schlafen!"',text:'Wählen Sie die beste Antwort:',options:['"Das tut mir sehr leid, Herr/Frau ___. Ich schicke sofort unsere Haustechnik zu Ihnen. In der Zwischenzeit, darf ich Ihnen einen Ventilator bringen lassen oder möchten Sie ein anderes Zimmer?"','"Bitte rufen Sie morgen früh an, wenn die Haustechnik verfügbar ist."','"Versuchen Sie, das Fenster zu öffnen."','"Ich melde es. Die Haustechnik kommt, wenn sie Zeit hat."'],correct:0},
-      {category:'language',catLabel:'Deutsch Kenntnisse',text:'Vervollständigen Sie den Satz: "Ihr Zimmer ist leider noch nicht _____. Darf ich Ihr Gepäck aufbewahren, während Sie unsere Lobby-Lounge genießen?"',options:['bezugsfertig','geöffnet','reserviert','kontrolliert'],correct:0},
-      {category:'language',catLabel:'Deutsch Kenntnisse',text:'Ein Gast fragt: "Können Sie mir ein gutes lokales Restaurant für ein romantisches Abendessen empfehlen?" Welche Antwort zeigt den besten Concierge-Service?',options:['"Selbstverständlich! Ich empfehle Ihnen [Restaurant] — es hat eine wunderbare Terrasse mit Meerblick, perfekt für einen besonderen Abend. Soll ich für Sie reservieren und einen Transfer organisieren?"','"Es gibt viele Restaurants draußen. Schauen Sie einfach mal."','"Da bin ich nicht sicher. Schauen Sie auf Google Maps."','"Wir haben ein Restaurant im Hotel."'],correct:0},
-      {category:'scenario',catLabel:'Gastszenario (DE)',scenario:'Ein VIP-Gast (Stammgast) kommt an und Sie bemerken, dass seine Reservierung ein Standard-Zimmer zeigt, aber sein Profil zeigt, dass er normalerweise eine Suite bucht.',text:'Was sollten Sie tun?',options:['Proaktiv die Suite-Verfügbarkeit prüfen, ein kostenloses Upgrade versuchen und den Gast namentlich begrüßen mit dem Hinweis, dass Sie sich freuen, ihn wiederzusehen.','Den Gast ins Standard-Zimmer einchecken, ohne etwas zu erwähnen.','Dem Gast sagen, es gab einen Buchungsfehler.','Den Gast bitten, den Aufpreis für eine Suite zu zahlen.'],correct:0},
-      {category:'scenario',catLabel:'Gastszenario (DE)',scenario:'Ein Gast möchte seinen Aufenthalt um zwei Nächte verlängern, aber das Hotel ist für die zweite zusätzliche Nacht wegen einer Gruppenanreise ausgebucht.',text:'Wie gehen Sie damit um?',options:['"Ich kann eine zusätzliche Nacht bestätigen. Für die zweite Nacht prüfe ich, ob wir Sie in einer anderen Zimmerkategorie unterbringen können, oder ich organisiere eine Reservierung in unserem Partnerhotel mit Transfer."','"Leider sind wir ausgebucht. Sie müssen abreisen."','"Ich verlängere beide Nächte und kläre es später."','"Bitte kontaktieren Sie Ihr Reisebüro."'],correct:0}
-    ],
-    ru: [
-      {category:'language',catLabel:'Знание русского',scenario:'Гость подходит к стойке ресепшн и говорит: "Извините, я бронировал номер с видом на море, но мне дали номер с видом на парковку. Это неприемлемо!"',text:'Какой ответ наиболее уместен?',options:['"Приношу искренние извинения, г-н/г-жа ___. Позвольте мне сразу проверить наличие свободных номеров и перевести Вас в номер с видом на море, как Вы изначально бронировали."','"Извините, все номера с видом на море заняты. Ничем не могу помочь."','"Вам нужно было подтвердить бронирование через турагента."','"Я запишу Вашу жалобу. Подождите, пожалуйста, в номере."'],correct:0},
-      {category:'language',catLabel:'Знание русского',scenario:'Гость звонит на ресепшн в 23:00: "У меня не работает кондиционер и в номере очень жарко. Я не могу спать!"',text:'Выберите лучший ответ:',options:['"Приношу глубокие извинения, г-н/г-жа ___. Я немедленно направлю к Вам нашу техническую службу. Пока могу ли я организовать вентилятор или предложить Вам замену номера?"','"Пожалуйста, позвоните завтра утром, когда техническая служба будет доступна."','"Попробуйте открыть окно."','"Я сообщу. Техническая служба придёт, когда сможет."'],correct:0},
-      {category:'language',catLabel:'Знание русского',text:'Дополните предложение: "К сожалению, Ваш номер ещё не _____. Могу ли я оставить Ваш багаж у консьержа, пока Вы наслаждаетесь нашим лобби-баром?"',options:['готов','свободен','убран','открыт'],correct:0},
-      {category:'language',catLabel:'Знание русского',text:'Гость спрашивает: "Можете посоветовать хороший местный ресторан для романтического ужина?" Какой ответ демонстрирует лучший уровень консьерж-сервиса?',options:['"Конечно! Рекомендую [ресторан] — там прекрасная терраса с видом на море, идеально для особенного вечера. Хотите, я забронирую столик и организую трансфер?"','"Рядом много ресторанов. Просто погуляйте."','"Не уверен. Посмотрите в Google Maps."','"У нас есть ресторан в отеле."'],correct:0},
-      {category:'scenario',catLabel:'Сценарий с гостем (RU)',scenario:'Приезжает VIP-гость (постоянный клиент), и Вы замечаете, что его бронирование показывает стандартный номер, но в профиле указано, что обычно он останавливается в сьюте.',text:'Что следует сделать?',options:['Проактивно проверить наличие сьютов, попытаться сделать бесплатное повышение категории и поприветствовать гостя по имени, отметив, что рады видеть его снова.','Заселить гостя в стандартный номер, ничего не упоминая.','Сказать гостю, что произошла ошибка бронирования.','Попросить гостя доплатить за сьют.'],correct:0},
-      {category:'scenario',catLabel:'Сценарий с гостем (RU)',scenario:'Гость хочет продлить проживание на две ночи, но отель полностью забронирован на вторую дополнительную ночь из-за прибытия большой группы.',text:'Как Вы поступите?',options:['"Я могу подтвердить одну дополнительную ночь. На вторую ночь я проверю возможность размещения в другой категории номера или организую бронирование в нашем партнёрском отеле с трансфером."','"Извините, мы полностью заняты. Вам придётся выехать."','"Я продлю на обе ночи и разберёмся потом."','"Пожалуйста, свяжитесь с Вашим турагентом."'],correct:0}
-    ]
-  };
-
-  // Hotel specific
-  var hotelSpecific = [];
-  if (hotel === 'TUI Blue Maviss') {
-    hotelSpecific.push({category:'frontdesk',catLabel:'Otel Bilgisi',text:'TUI grubu otellerinde "TUI Blue" konseptinin temel farkı nedir?',options:['Aktif yaşam, yerel deneyim ve kişiselleştirilmiş hizmet konseptiyle genç ve dinamik bir misafir kitlesine hitap eder.','Sadece all-inclusive ultra her şey dahil hizmet verir.','Yalnızca Alman misafirlere hizmet veren bir otel zinciridir.','Butik otel konseptinde küçük ölçekli tesislerdir.'],correct:0});
-  } else {
-    hotelSpecific.push({category:'frontdesk',catLabel:'Otel Bilgisi',text:'Uluslararası 5 yıldızlı bir resort & spa otelinde SPA randevusu isteyen misafir için resepsiyonist olarak doğru yaklaşım nedir?',options:['Misafirin tercihlerini (masaj türü, terapist cinsiyeti, saat) öğrenip SPA\'ya bilgi aktarır, randevuyu PMS ve SPA sisteminden onaylar.','Misafiri direkt SPA\'ya yönlendirirsiniz.','SPA broşürünü verip kendiniz müdahale etmezsiniz.','Sadece SPA dahili telefon numarasını verirsiniz.'],correct:0});
-  }
-
-  hotelSpecific.push({category:'pms',catLabel:'Elektraweb PMS',text:'Elektraweb PMS\'te "Night Audit" (gece denetimi) işlemi sırasında hangi kontroller yapılır?',options:['Günlük gelirlerin doğrulanması, no-show reservasyonlarının işlenmesi, oda ücretlerinin foliolara yüklenmesi, raporların oluşturulması ve tarih geçişi.','Sadece tarih değiştirilir.','Yalnızca kasa sayımı yapılır.','Housekeeping odaları temizlenmişe çevrilir.'],correct:0});
-
-  // Critical scenario in selected language
-  var finalScenarios = {
-    en: [{category:'scenario',catLabel:'Critical Scenario (EN)',scenario:'A guest is visibly upset and raises their voice at the front desk because they found insects in their room. Other guests in the lobby are watching.',text:'As the front desk agent, what is your priority action sequence?',options:['Stay calm and empathetic → Apologize sincerely → Invite the guest to a private area → Immediately offer a room change with an upgrade → Inform housekeeping and management → Follow up with a courtesy call or amenity.','Argue that housekeeping cleaned the room today.','Tell the guest to keep their voice down as it disturbs others.','Apologize and offer a 10% discount on their next stay.'],correct:0}],
-    de: [{category:'scenario',catLabel:'Kritisches Szenario (DE)',scenario:'Ein Gast ist sichtlich verärgert und erhebt die Stimme an der Rezeption, weil er Insekten in seinem Zimmer gefunden hat. Andere Gäste in der Lobby schauen zu.',text:'Was ist Ihre Prioritäts-Handlungsabfolge als Rezeptionsmitarbeiter?',options:['Ruhig und empathisch bleiben → Aufrichtig entschuldigen → Gast in einen privaten Bereich einladen → Sofort Zimmerwechsel mit Upgrade anbieten → Housekeeping und Management informieren → Nachfassen mit Höflichkeitsanruf oder Aufmerksamkeit.','Argumentieren, dass Housekeeping heute gereinigt hat.','Den Gast bitten, leiser zu sein, da er andere Gäste stört.','Sich entschuldigen und 10% Rabatt auf den nächsten Aufenthalt anbieten.'],correct:0}],
-    ru: [{category:'scenario',catLabel:'Критический сценарий (RU)',scenario:'Гость заметно расстроен и повышает голос на ресепшн, потому что обнаружил насекомых в номере. Другие гости в лобби наблюдают.',text:'Какова Ваша приоритетная последовательность действий как сотрудника ресепшн?',options:['Сохранять спокойствие и эмпатию → Искренне извиниться → Пригласить гостя в приватную зону → Немедленно предложить смену номера с повышением категории → Уведомить хаускипинг и руководство → Перезвонить с уточнением или предоставить комплимент.','Объяснять, что хаускипинг убирал номер сегодня.','Попросить гостя говорить тише, так как он мешает другим.','Извиниться и предложить скидку 10% на следующее проживание.'],correct:0}]
-  };
-
-  var allQs = frontDesk.concat(langQs[lang] || langQs.en).concat(hotelSpecific).concat(finalScenarios[lang] || finalScenarios.en);
-
-  // Shuffle options so correct answer isn't always A
-  shuffleOptions(allQs);
-
-  return allQs;
+function selectOption(idx){
+  if(answered)return;
+  answered=true;
+  const q=questions[current];
+  answers.push({q:current,selected:idx,cat:q.cat});
+  document.querySelectorAll('.option').forEach((o,i)=>{
+    if(i===q.correct)o.classList.add('correct');
+    else if(i===idx&&idx!==q.correct)o.classList.add('wrong');
+    o.onclick=null;
+  });
+  if(idx===q.correct)score++;
 }
 
-var questions = [];
-
-function startTest() {
-  var name = document.getElementById('inpName').value.trim();
-  var phone = document.getElementById('inpPhone').value.trim();
-  var email = document.getElementById('inpEmail').value.trim();
-  var position = document.getElementById('selPosition').value;
-  var experience = document.getElementById('selExp').value;
-  var errEl = document.getElementById('regError');
-
-  if (!name || !phone || !email || !position || !selectedHotel || !selectedLang || !experience) {
-    var t2 = UI[selectedLang] || {};
-    errEl.textContent = t2.errorFill || 'Lütfen tüm alanları doldurun ve seçimlerinizi yapın.';
-    errEl.style.display = 'block';
-    return;
+function nextQuestion(){
+  if(!answered){
+    alert(selectedLang==='tr'?'Lütfen bir seçenek işaretleyin.':'Please select an option.');return;
   }
-  errEl.style.display = 'none';
-
-  questions = getQuestions(selectedLang, selectedHotel, position);
-  currentQ = 0;
-  answers = {};
-  testStarted = true;
-  tabSwitchCount = 0;
-  cheatLog = [];
-
-  document.getElementById('step-register').classList.add('hidden');
-  document.getElementById('step-questions').classList.remove('hidden');
-
-  var t = UI[selectedLang];
-  document.getElementById('btnPrev').textContent = t.btnPrev;
-  document.getElementById('btnNext').textContent = t.btnNext;
-
-  startTime = Date.now();
-  timerInterval = setInterval(updateTimer, 1000);
+  current++;
+  if(current>=questions.length){endExam();return;}
   renderQuestion();
 }
 
-function updateTimer() {
-  var elapsed = Math.floor((Date.now() - startTime) / 1000);
-  var m = String(Math.floor(elapsed / 60)).padStart(2, '0');
-  var s = String(elapsed % 60).padStart(2, '0');
-  document.getElementById('timerDisplay').textContent = m + ':' + s;
+function startTimer(){
+  timerInterval=setInterval(()=>{
+    timeLeft--;
+    const m=Math.floor(timeLeft/60),s=timeLeft%60;
+    const el=document.getElementById('timer');
+    el.textContent=`${m}:${s.toString().padStart(2,'0')}`;
+    if(timeLeft<=60)el.classList.add('warning');
+    if(timeLeft<=0){clearInterval(timerInterval);endExam();}
+  },1000);
 }
 
-function renderQuestion() {
-  var q = questions[currentQ];
-  var t = UI[selectedLang];
-  document.getElementById('progressLabel').textContent = t.progressLabel(currentQ + 1, questions.length);
-  document.getElementById('progressFill').style.width = ((currentQ + 1) / questions.length * 100) + '%';
-
-  var catClass = 'cat-frontdesk';
-  if (q.category === 'language') catClass = 'cat-language';
-  else if (q.category === 'pms') catClass = 'cat-pms';
-  else if (q.category === 'scenario') catClass = 'cat-scenario';
-
-  var html = '<div class="question-card"><span class="q-category ' + catClass + '">' + q.catLabel + '</span>';
-  if (q.scenario) html += '<div class="q-scenario">' + q.scenario + '</div>';
-  html += '<div class="q-text">' + q.text + '</div><div class="options">';
-
-  var letters = ['A','B','C','D'];
-  q.options.forEach(function(opt, i) {
-    var sel = (answers[currentQ] === i) ? 'selected' : '';
-    html += '<div class="option ' + sel + '" onclick="selectAnswer(' + i + ')"><span class="letter">' + letters[i] + '</span><span class="opt-text">' + opt + '</span></div>';
-  });
-  html += '</div></div>';
-  document.getElementById('questionArea').innerHTML = html;
-
-  document.getElementById('btnPrev').style.visibility = (currentQ === 0) ? 'hidden' : 'visible';
-  document.getElementById('btnNext').textContent = (currentQ === questions.length - 1) ? (t.btnSubmit) : t.btnNext;
-}
-
-function selectAnswer(idx) {
-  answers[currentQ] = idx;
-  document.querySelectorAll('.option').forEach(function(o, i) {
-    o.classList.toggle('selected', i === idx);
-  });
-}
-
-function nextQ() {
-  if (answers[currentQ] === undefined) {
-    var t = UI[selectedLang] || {};
-    alert(t.errorAnswer || 'Lütfen bir cevap seçin.');
-    return;
-  }
-  if (currentQ < questions.length - 1) {
-    currentQ++;
-    renderQuestion();
-    window.scrollTo({top:0, behavior:'smooth'});
-  } else {
-    finishTest();
-  }
-}
-
-function prevQ() {
-  if (currentQ > 0) { currentQ--; renderQuestion(); }
-}
-
-function finishTest() {
+function endExam(){
   clearInterval(timerInterval);
-  testStarted = false;
-  var elapsed = Math.floor((Date.now() - startTime) / 1000);
+  document.getElementById('progress-bar').style.width='100%';
+  const pct=Math.round((score/questions.length)*100);
 
-  document.getElementById('step-questions').classList.add('hidden');
-  document.getElementById('step-finish').classList.remove('hidden');
-  document.getElementById('cheatBanner').classList.remove('show');
-
-  var t = UI[selectedLang];
-  document.getElementById('finishTitle').textContent = t.finishTitle;
-  document.getElementById('finishText').textContent = t.finishText;
-
-  generateReport(elapsed);
-
-  var params = new URLSearchParams(window.location.search);
-  if (params.get('view') === 'manager') {
-    document.getElementById('managerReport').style.display = 'block';
-    document.getElementById('reportText').style.display = 'block';
-  }
-}
-
-function generateReport(elapsed) {
-  var name = document.getElementById('inpName').value.trim();
-  var phone = document.getElementById('inpPhone').value.trim();
-  var email = document.getElementById('inpEmail').value.trim();
-  var position = document.getElementById('selPosition').value;
-  var experience = document.getElementById('selExp').value;
-  var langNames = {en:'İngilizce', de:'Almanca', ru:'Rusça'};
-  var mins = Math.floor(elapsed / 60);
-  var secs = elapsed % 60;
-  var letters = ['A','B','C','D'];
-
-  var totalCorrect=0, fdCorrect=0, fdTotal=0, langCorrect=0, langTotal=0, pmsCorrect=0, pmsTotal=0, scenCorrect=0, scenTotal=0;
-  var details = [];
-
-  questions.forEach(function(q, i) {
-    var isCorrect = (answers[i] === q.correct);
-    if (isCorrect) totalCorrect++;
-    if (q.category==='frontdesk'){fdTotal++;if(isCorrect)fdCorrect++;}
-    else if(q.category==='language'){langTotal++;if(isCorrect)langCorrect++;}
-    else if(q.category==='pms'){pmsTotal++;if(isCorrect)pmsCorrect++;}
-    else if(q.category==='scenario'){scenTotal++;if(isCorrect)scenCorrect++;}
-    details.push('  S'+(i+1)+'. ['+(isCorrect?'✓':'✗')+'] '+q.catLabel+' — Cevap: '+letters[answers[i]]+(isCorrect?'':' (Doğru: '+letters[q.correct]+')'));
+  // Category breakdown
+  const cats={};
+  questions.forEach((q,i)=>{
+    if(!cats[q.cat])cats[q.cat]={total:0,correct:0};
+    cats[q.cat].total++;
+    const ans=answers.find(a=>a.q===i);
+    if(ans&&ans.selected===q.correct)cats[q.cat].correct++;
   });
 
-  var totalScore = Math.round((totalCorrect / questions.length) * 100);
-  var fdScore = fdTotal>0 ? Math.round((fdCorrect/fdTotal)*100) : '-';
-  var langScore = langTotal>0 ? Math.round((langCorrect/langTotal)*100) : '-';
-  var pmsScore = pmsTotal>0 ? Math.round((pmsCorrect/pmsTotal)*100) : '-';
-  var scenScore = scenTotal>0 ? Math.round((scenCorrect/scenTotal)*100) : '-';
+  const catLines=Object.entries(cats).map(([cat,d])=>`${cat}: ${d.correct}/${d.total}`).join(' | ');
 
-  var recommendation = '';
-  if (totalScore >= 80) recommendation = '🟢 YÜZYÜZE GÖRÜŞMEYE DAVET EDİLMESİ ÖNERİLİR';
-  else if (totalScore >= 60) recommendation = '🟡 SINIRDA — YÖNETİCİ DEĞERLENDİRMESİ GEREKLİ';
-  else recommendation = '🔴 YETERSİZ — BAŞVURU REDDEDİLMESİ ÖNERİLİR';
+  // Send email
+  emailjs.send("service_ia9uakf","template_wx9akfl",{
+    candidate_name: candidateName,
+    candidate_email: candidateEmail,
+    language: UI[selectedLang].langLabel,
+    score: pct+'%',
+    lang_score: catLines,
+    pc_score: '',
+    date: new Date().toLocaleString()
+  }).catch(e=>console.log('Mail error:',e));
 
-  var cheatSummary = '';
-  if (tabSwitchCount > 0) {
-    cheatSummary = '\n\n⚠️  KOPYA TEDBİRİ UYARISI\n──────────────────\n  Sekme/Uygulama Değiştirme: ' + tabSwitchCount + ' kez\n';
-    cheatLog.forEach(function(log) {
-      cheatSummary += '    → ' + log.time + ' | Soru ' + log.question + ' | ' + log.type + '\n';
-    });
-  } else {
-    cheatSummary = '\n\n✅ KOPYA TEDBİRİ: Temiz — Hiçbir sekme değişikliği tespit edilmedi.\n';
-  }
-
-  var report = '══════════════════════════════════════════════════\n  ADAY DEĞERLENDİRME RAPORU\n══════════════════════════════════════════════════\n\n📋 ADAY BİLGİLERİ\n──────────────────\n  Ad Soyad     : '+name+'\n  Telefon      : '+phone+'\n  E-posta      : '+email+'\n  Pozisyon     : '+position+'\n  Otel         : '+selectedHotel+'\n  Test Dili    : '+(langNames[selectedLang]||selectedLang)+'\n  Deneyim      : '+experience+' yıl\n  Tarih        : '+new Date().toLocaleDateString('tr-TR')+'\n  Süre         : '+mins+' dk '+secs+' sn\n\n📊 GENEL SONUÇ: %'+totalScore+' ('+totalCorrect+'/'+questions.length+')\n──────────────────\n  '+recommendation+'\n\n📈 KATEGORİ BAZLI SONUÇLAR\n──────────────────\n  Ön Büro Bilgisi     : %'+fdScore+' ('+fdCorrect+'/'+fdTotal+')\n  Yabancı Dil         : %'+langScore+' ('+langCorrect+'/'+langTotal+')\n  Elektraweb PMS      : %'+pmsScore+' ('+pmsCorrect+'/'+pmsTotal+')\n  Senaryo Çözümleme   : %'+scenScore+' ('+scenCorrect+'/'+scenTotal+')'+cheatSummary+'\n\n📝 DETAYLI CEVAPLAR\n──────────────────\n'+details.join('\n')+'\n\n══════════════════════════════════════════════════\n  Ön Büro Başvuru Değerlendirme Testi\n══════════════════════════════════════════════════';
-
-  document.getElementById('reportText').value = report;
-
-  var badgeClass = totalScore>=80?'score-high':totalScore>=60?'score-mid':'score-low';
-  document.getElementById('scoreOverview').innerHTML = '<div style="margin:16px 0"><span class="score-badge '+badgeClass+'">Genel: %'+totalScore+'</span><span class="score-badge" style="background:#FCE8EC;color:var(--dark);padding:6px 12px;border-radius:20px">Ön Büro: %'+fdScore+'</span><span class="score-badge" style="background:#fef3e0;color:#B8762A;padding:6px 12px;border-radius:20px">Dil: %'+langScore+'</span><span class="score-badge" style="background:#e8f5e9;color:#2e7d32;padding:6px 12px;border-radius:20px">PMS: %'+pmsScore+'</span></div><p style="font-weight:600;margin:8px 0">'+recommendation+'</p>'+(tabSwitchCount>0?'<p style="color:#9B1B30;font-weight:600">⚠ '+tabSwitchCount+' kez sekme değiştirme tespit edildi!</p>':'<p style="color:#2e7d32">✅ Kopya tedbiri: Temiz</p>');
-
-  // Save to localStorage
-  try {
-    var results = JSON.parse(localStorage.getItem('ilker_results') || '[]');
-    results.push({name:name,phone:phone,email:email,position:position,hotel:selectedHotel,lang:selectedLang,experience:experience,totalScore:totalScore,fdScore:fdScore,langScore:langScore,pmsScore:pmsScore,scenScore:scenScore,tabSwitches:tabSwitchCount,recommendation:recommendation,date:new Date().toISOString(),duration:mins+':'+secs});
-    localStorage.setItem('ilker_results', JSON.stringify(results));
-  } catch(e) {}
-
-  // ========== SEND RESULTS VIA EMAIL (formsubmit.co) ==========
-  sendResultsEmail(report, name, totalScore, position, selectedHotel);
+  // Show thank you only
+  const t=UI[selectedLang];
+  document.getElementById('result-title').textContent=t.resultTitle;
+  document.getElementById('result-sub').textContent=t.resultSub;
+  showScreen('result');
 }
 
-function sendResultsEmail(report, candidateName, score, position, hotel) {
-  var emailStatusEl = document.getElementById('emailStatus');
-  try {
-    fetch('https://formsubmit.co/ajax/fom@tuibluemaviss.com', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
-      body: JSON.stringify({
-        _subject: 'Yeni Aday Sonucu: ' + candidateName + ' — %' + score + ' | ' + hotel + ' | ' + position,
-        _template: 'box',
-        Aday: candidateName,
-        Otel: hotel,
-        Pozisyon: position,
-        Puan: '%' + score,
-        Rapor: report
-      })
-    })
-    .then(function(response) {
-      return response.json();
-    })
-    .then(function(data) {
-      if (data.success) {
-        emailStatusEl.className = 'email-status email-ok';
-        emailStatusEl.textContent = '✅ Sonuçlarınız yöneticiye iletildi.';
-      } else {
-        emailStatusEl.className = 'email-status email-fail';
-        emailStatusEl.textContent = '⚠ Sonuçlar gönderilemedi. Lütfen yönetici ile iletişime geçin.';
-      }
-    })
-    .catch(function(err) {
-      emailStatusEl.className = 'email-status email-fail';
-      emailStatusEl.textContent = '⚠ Sonuçlar gönderilemedi. Lütfen yönetici ile iletişime geçin.';
-    });
-  } catch(e) {
-    emailStatusEl.className = 'email-status email-fail';
-    emailStatusEl.textContent = '⚠ Sonuçlar gönderilemedi. Lütfen yönetici ile iletişime geçin.';
-  }
+function invalidate(){
+  clearInterval(timerInterval);
+  const t=UI[selectedLang]||UI.en;
+  document.getElementById('invalid-title').textContent=t.invalidTitle;
+  document.getElementById('invalid-text').textContent=t.invalidText;
+
+  emailjs.send("service_ia9uakf","template_wx9akfl",{
+    candidate_name: candidateName||'Unknown',
+    candidate_email: candidateEmail||'-',
+    language: selectedLang?UI[selectedLang].langLabel:'-',
+    score: 'GEÇERSİZ / INVALID',
+    lang_score: 'Sınav geçersiz sayıldı - Tab/Fullscreen ihlali',
+    pc_score: '',
+    date: new Date().toLocaleString()
+  }).catch(e=>console.log(e));
+
+  showScreen('invalid');
 }
 
-function copyReport() {
-  var ta = document.getElementById('reportText');
-  ta.style.display = 'block';
-  ta.select();
-  document.execCommand('copy');
-  var btn = document.querySelector('.copy-btn');
-  btn.textContent = '✅ Kopyalandı!';
-  setTimeout(function(){ btn.textContent = '📋 Raporu Kopyala'; }, 2000);
+function triggerWarning(){
+  violationCount++;
+  if(violationCount>2){invalidate();return;}
+  const t=UI[selectedLang]||UI.en;
+  const overlay=document.getElementById('overlay-warn');
+  document.getElementById('warn-ov-title').textContent=t.warnOvTitle;
+  document.getElementById('warn-ov-body').textContent=t.warnOvBody;
+  document.getElementById('warn-ov-footer').textContent=t.warnOvFooter;
+  overlay.classList.add('show');
+  let c=5;
+  document.getElementById('warn-countdown').textContent=c;
+  clearInterval(warnTimer);
+  warnTimer=setInterval(()=>{
+    c--;document.getElementById('warn-countdown').textContent=c;
+    if(c<=0){clearInterval(warnTimer);invalidate();}
+  },1000);
+  overlay.onclick=()=>{
+    clearInterval(warnTimer);overlay.classList.remove('show');
+    const el=document.documentElement;
+    if(el.requestFullscreen)el.requestFullscreen();
+  };
 }
 
-// Dashboard view
-(function() {
-  var params = new URLSearchParams(window.location.search);
-  if (params.get('view') === 'dashboard') {
-    var results = [];
-    try { results = JSON.parse(localStorage.getItem('ilker_results') || '[]'); } catch(e){}
-    if (results.length === 0) {
-      document.querySelector('.container').innerHTML = '<div class="card" style="text-align:center;padding:40px"><h2>Henüz sonuç bulunmamaktadır.</h2><p>Adaylar testi tamamladıkça sonuçlar burada görünecektir.</p></div>';
-      return;
+function setupAntiCheat(){
+  document.addEventListener('visibilitychange',()=>{
+    if(document.hidden&&document.getElementById('exam').classList.contains('active'))triggerWarning();
+  });
+  document.addEventListener('fullscreenchange',()=>{
+    if(!document.fullscreenElement&&document.getElementById('exam').classList.contains('active'))triggerWarning();
+  });
+  document.addEventListener('keydown',e=>{
+    if((e.altKey&&e.key==='Tab')||e.key==='F11'||(e.ctrlKey&&(e.key==='w'||e.key==='t'))){
+      e.preventDefault();triggerWarning();
     }
-    var html = '<div class="card"><h2>Aday Değerlendirme Paneli</h2><p style="margin-bottom:16px">'+results.length+' aday test tamamladı.</p><table style="width:100%;border-collapse:collapse;font-size:.85rem"><tr style="background:var(--dark);color:#fff"><th style="padding:10px;text-align:left">Aday</th><th style="padding:10px">Otel</th><th style="padding:10px">Pozisyon</th><th style="padding:10px">Puan</th><th style="padding:10px">Kopya</th><th style="padding:10px">Öneri</th></tr>';
-    results.reverse().forEach(function(r){
-      var color = r.totalScore>=80?'#2e7d32':r.totalScore>=60?'#e65100':'#c62828';
-      html += '<tr style="border-bottom:1px solid #eee"><td style="padding:10px"><strong>'+r.name+'</strong><br><small>'+r.phone+'</small></td><td style="padding:10px;text-align:center;font-size:.8rem">'+r.hotel+'</td><td style="padding:10px;text-align:center;font-size:.8rem">'+r.position+'</td><td style="padding:10px;text-align:center;font-weight:700;color:'+color+'">%'+r.totalScore+'</td><td style="padding:10px;text-align:center;font-size:.8rem">'+(r.tabSwitches>0?'⚠️'+r.tabSwitches:'✅')+'</td><td style="padding:10px;text-align:center;font-size:.78rem">'+(r.totalScore>=80?'🟢':r.totalScore>=60?'🟡':'🔴')+'</td></tr>';
-    });
-    html += '</table></div>';
-    document.querySelector('.container').innerHTML = html;
-  }
-})();
+  });
+  document.addEventListener('contextmenu',e=>e.preventDefault());
+}
 </script>
 </body>
 </html>
