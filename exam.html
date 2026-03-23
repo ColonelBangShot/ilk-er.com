@@ -405,7 +405,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--dark);color:var(--text);m
       </div>
       <div class="hotel-badge" style="margin:0 auto 1rem">Sınav Tamamlandı</div>
       <h1 class="card-title" id="result-title">Teşekkürler!</h1>
-      <p class="card-sub" id="result-sub">Sınavınız değerlendirilmeye alındı.</p>
+      <p class="card-sub" id="result-sub">Değerlendirmeniz tamamlandı. Sonuçlarınız İnsan Kaynakları ekibimize iletilmiştir; başvurunuz incelendikten sonra sizinle en kısa sürede iletişime geçilecektir.</p>
       <div class="result-grid">
         <div class="result-stat">
           <div class="result-num" id="r-correct">0</div>
@@ -676,6 +676,52 @@ const QB = {
       {pos:['leader'],cat:'Vardiya Liderliği',q:'Shift leader olarak upselling metrikleriniz düşük. Ekip için hangi yöntemi uygularsınız?',opts:[{t:'Upselling eğitimi verir, rol yapma (role-play) senaryoları çalışır, hedef ve teşvik sistemi kurarım.',c:true},{t:'Herkese uyarı yazarım.',c:false},{t:'Upselling yapmamalarını söylerim.',c:false},{t:'Sadece rapor tutarım.',c:false}]},
     ],
   }
+
+  // ─── HOTEL-SPECIFIC QUESTIONS ───
+  hospitality_hotel: {
+    tui: {
+      clerk: [
+        {pos:['clerk'],cat:'TUI Blue Maviss — Konsept',q:'TUI Blue konseptinin "Blue Feel Good" felsefesi resepsiyonistin günlük tutumuna nasıl yansımalıdır?',opts:[{t:'Her misafirle göz teması kurarak, ismiyle hitap ederek ve proaktif bilgi sunarak samimi ve kişiselleştirilmiş bir deneyim oluşturmak.',c:true},{t:'Sadece check-in işlemlerini hızlı yapmak.',c:false},{t:'Şikâyetleri yöneticiye iletmek.',c:false},{t:'Resmi ve mesafeli bir tutum sergilemek.',c:false}]},
+        {pos:['clerk'],cat:'TUI Blue Maviss — Konsept',q:'TUI Blue otellerde "Local Living" deneyimi ne anlama gelir ve resepsiyonistin buna katkısı nedir?',opts:[{t:'Misafirlere destinasyonun kültürünü, yerel lezzetleri ve özgün aktiviteleri tanıtmak; yerel deneyim önerileri sunmak.',c:true},{t:'Sadece standart tur paketleri önermek.',c:false},{t:'Misafirlerin otelden çıkmamasını sağlamak.',c:false},{t:'Yerel kültürle ilgilenmemek, sadece konforla ilgilenmek.',c:false}]},
+        {pos:['clerk'],cat:'TUI Blue Maviss — Konsept',q:'TUI Blue değerlendirme sisteminde "TUI Quality Score" neden kritiktir?',opts:[{t:'Misafir memnuniyetini ölçer, TUI dağıtım kanallarındaki görünürlüğü doğrudan etkiler ve bir sonraki sezon doluluk oranını belirler.',c:true},{t:'Sadece şikâyetleri kayıt altına alır.',c:false},{t:'Sadece yöneticileri ilgilendirir.',c:false},{t:'Otel yıldız sayısını belirler.',c:false}]},
+        {pos:['clerk'],cat:'TUI Blue Maviss — Servis',q:'TUI Blue Maviss'te misafir check-in sırasında "Welcome Drink" ikramı ve tesisin tanıtımı standart prosedürün parçasıdır. Bir TUI misafiri "Bu prosedür zorunlu mu?" diye sorarsa ne dersiniz?',opts:[{t:'Bu sizin için hazırladığımız bir karşılama jesti; isterseniz atlayabiliriz, ama sizi tesisimizle tanıştırmak istiyoruz.',c:true},{t:'Evet zorunlu, bekleyin.',c:false},{t:'Hayır, direkt odanıza gidebilirsiniz.',c:false},{t:'Bu kural, ben uygulamak zorundayım.',c:false}]},
+        {pos:['clerk'],cat:'TUI Blue Maviss — Dijital',q:'TUI Blue uygulaması (TUI App) üzerinden yapılan Online Check-in'de misafir bilgileri eksik geldi. Ne yaparsınız?',opts:[{t:'Eksik bilgileri kibarca tamamlarım, PMS'e doğru şekilde işlerim ve misafiri yavaşlatmadan deneyimi akıcı tutarım.',c:true},{t:'Misafiri online check-in yapmadığı için uyarırım.',c:false},{t:'Check-in'i reddederim.',c:false},{t:'IT departmanına bildirip misafiri bekletirim.',c:false}]},
+      ],
+      night: [
+        {pos:['night'],cat:'TUI Blue Maviss — Gece',q:'TUI Blue Maviss'te gece vardiyasında bir TUI tour operatör temsilcisi otel hakkında acil bir şikâyet iletmek için sizi arıyor. Nasıl hareket edersiniz?',opts:[{t:'Şikâyeti not alır, sakin ve profesyonel dinler, nöbet amirini bilgilendiririm ve sabah öncelikli olarak yöneticiye iletmek üzere ayrıntılı tutanak tutarım.',c:true},{t:'Sabah aramasını söylerim.',c:false},{t:'Şikâyeti TUI'ye göndermesini öneririm.',c:false},{t:'Şikâyetle ilgilenmem, gece vardiyası.',c:false}]},
+        {pos:['night'],cat:'TUI Blue Maviss — Gece',q:'Gece denetiminde TUI misafir anket sistemine (HolidayCheck/TUI Guestboard) girilecek olan günlük memnuniyet verilerinde eksiklik fark ettiniz. Ne yaparsınız?',opts:[{t:'Eksiklikleri belgeler, tamamlanabilecek olanları tamamlar, eksik verilerin nedenini not eder ve sabah sorumlusuna devrederim.',c:true},{t:'Sistemi kapatıp bırakırım.',c:false},{t:'Verileri tahmin ederek doldururum.',c:false},{t:'Sabah ekibini beklerim, gece görevi değil.',c:false}]},
+        {pos:['night'],cat:'TUI Blue Maviss — Gece',q:'TUI Blue Maviss'e bağlanan charter uçuşu 3 saat gecikecek; 40 misafir gece 02:00 yerine 05:00'de gelecek. Gece resepsiyonisti olarak ne hazırlarsınız?',opts:[{t:'Kat hizmetlerini bilgilendirir, karşılama ikramlarını ayarlar, odaların hazır olduğunu teyit eder, transfer şirketi ile koordine eder ve check-in listesini güncelledirim.',c:true},{t:'Sadece beklerim.',c:false},{t:'Sabah ekibine havale ederim.',c:false},{t:'Misafirlere başka bir gün gelmelerini öneririm.',c:false}]},
+        {pos:['night'],cat:'TUI Blue Maviss — Gece',q:'Gece TUI sistemine (TOMA/Contrex) erişim kesildi. Rezervasyon bilgilerine ulaşamıyorsunuz. Ne yaparsınız?',opts:[{t:'Yedek offline kayıtlara başvururum, TUI acil IT hattını arar sistemi bildiririm, misafir walk-in'lerini manuel prosedürle karşılarım.',c:true},{t:'Hiç check-in yapmam.',c:false},{t:'Sistemi beklerim ve misafirleri bekletirim.',c:false},{t:'Sadece rezervasyon numarası alanları boş bırakarak kabul ederim.',c:false}]},
+        {pos:['night'],cat:'TUI Blue Maviss — Gece',q:'Gece yarısı TUI misafiri check-out yapmak istiyor, erkenden ayrılıyor. Kısmi iade talep ediyor. Nasıl yanıt verirsiniz?',opts:[{t:'Kibarca politikayı açıklarım, misafirin talebini kayıt altına alırım ve sabah yöneticisiyle görüşmesini öneririm; kendi inisiyatifimle iade yapmam.',c:true},{t:'İadeyi hemen onaylayıp işlerim.',c:false},{t:'İade yapılamaz deyip konuyu kapatırım.',c:false},{t:'Misafiri güvenlik ile çıkarırım.',c:false}]},
+      ],
+      leader: [
+        {pos:['leader'],cat:'TUI Blue Maviss — Liderlik',q:'TUI Blue Maviss'in TUI kalite değerlendirmesinde (TUI Quality Review) önceki sezondan düşük puanlı olduğu tespit edildi. Shift leader olarak ekibinizi nasıl motive edersiniz?',opts:[{t:'Zayıf alanları ekiple şeffaf paylaşır, bireysel güçlü yönleri destekler, olumlu misafir geri bildirimlerini görünür kılar ve kısa vadeli iyileştirme hedefleri belirlerim.',c:true},{t:'Herkesin performans dosyasını açarım.',c:false},{t:'TUI değerlendirmelerini önemsemeyiz derim.',c:false},{t:'Hiçbir şey yapmam, zaten değişmez.',c:false}]},
+        {pos:['leader'],cat:'TUI Blue Maviss — Liderlik',q:'TUI Blue Maviss'te "Blue Moments" deneyim programını bilen bir misafir, beklentilerinin karşılanmadığını söylüyor. Shift leader olarak nasıl devreye girersiniz?',opts:[{t:'Misafirin beklentilerini birebir dinler, "Blue Moments" kapsamında karşılanabilecek özel bir jest organize eder ve sonucu misafir profiline not ederim.',c:true},{t:'Programın içeriğini bilmiyorum derim.',c:false},{t:'Tur temsilcisine yönlendiririm.',c:false},{t:'Standart şikâyet prosedürü uygularım.',c:false}]},
+        {pos:['leader'],cat:'TUI Blue Maviss — Liderlik',q:'TUI Blue Maviss'te bir TUI Preferred Partner seyahat acentası temsilcisi ani bir FAM trip ile geliyor. Shift leader olarak nasıl karşılarsınız?',opts:[{t:'İsimle karşılar, özel karşılama paketi hazırlar, tesis tanıtımı organize eder, yöneticiyi bilgilendiririm ve deneyimi kişiselleştiririm.',c:true},{t:'Normal check-in prosedürü uygularım.',c:false},{t:'Sabah yönetici gelene kadar bekletirim.',c:false},{t:'Rezervasyon olmadan giremez derim.',c:false}]},
+        {pos:['leader'],cat:'TUI Blue Maviss — Liderlik',q:'TUI Blue konseptinde "No Stress Check-in" standardı nedir ve shift leader olarak nasıl uygularsınız?',opts:[{t:'Misafirin tüm ön kayıt işlemleri check-in öncesi tamamlanmış olur; misafir sadece kart alır ve odaya yönlendirilir; süre 3 dakikayı geçmez.',c:true},{t:'Her misafirle 15 dakika vakit geçirmek.',c:false},{t:'Check-in kuyruğunu kaldırmak.',c:false},{t:'Misafirin tüm belgelerini tekrar toplamak.',c:false}]},
+        {pos:['leader'],cat:'TUI Blue Maviss — Liderlik',q:'TUI Blue Maviss'in açılış sezonunda bir TUI operatör denetimi (Brand Audit) öncesinde ön büronuzu nasıl hazırlarsınız?',opts:[{t:'Tüm SOP'ları gözden geçiririm, fiziksel alanı TUI brand standartlarına göre düzenlerim, ekiple rol yapma denemeleri yapar ve denetim kriterlerini tüm personele aktarırım.',c:true},{t:'Denetim günü biraz daha dikkatli olurum.',c:false},{t:'Sadece genel temizlik yaptırırım.',c:false},{t:'Denetçilere özel muamele yaparım.',c:false}]},
+      ],
+    },
+    siam: {
+      clerk: [
+        {pos:['clerk'],cat:'Siam Elegance — Konsept',q:'Ultra All-Inclusive konseptinde misafir "ekstra ücretli mi?" diye soran her şey için ne yanıt verilmelidir?',opts:[{t:'Paketinize dahil olan tüm hizmetleri net şekilde açıklarım; dahil olmayan varsa kibar ve dürüst şekilde belirtirim.',c:true},{t:'Her şey dahil derim, sorgulamadan.',c:false},{t:'Yönetici sorar derim.',c:false},{t:'Fiyat listesini uzatırım.',c:false}]},
+        {pos:['clerk'],cat:'Siam Elegance — Konsept',q:'Siam Elegance'ta repeater (tekrar gelen) bir misafir check-in yapıyor. Önceki kalışından not alınmış tercihlerini nasıl kullanırsınız?',opts:[{t:'Misafiri ismiyle karşılar, önceki tercihlerini (oda tipi, yastık tercihi, diyet vb.) hatırladığımı belirterek kişiselleştirilmiş bir karşılama sunarım.',c:true},{t:'Sıfırdan başlarım, önceki bilgiye bakmam.',c:false},{t:'Misafirden tekrar liste doldurmасını isterim.',c:false},{t:'Sadece standart check-in yaparım.',c:false}]},
+        {pos:['clerk'],cat:'Siam Elegance — Konsept',q:'Siam Elegance'ta SPA rezervasyonu yapmak isteyen misafir resepsiyona geliyor. Doğru yönlendirme nasıl yapılır?',opts:[{t:'SPA resepsiyonuyla irtibat kurarak müsait saatleri kontrol eder, misafirin tercihine göre seçenek sunar ve onay sonrası PMS'e işlerim.',c:true},{t:'SPA'ya gitsin kendisi baksın derim.',c:false},{t:'Sadece telefon numarası veririm.',c:false},{t:'Rezervasyon yapamam derim.',c:false}]},
+        {pos:['clerk'],cat:'Siam Elegance — Servis',q:'5 yıldızlı Siam Elegance'ta bir misafir akşam saatinde odasına çiçek ve şarap istedi, ancak departman kapandı. Ne yaparsınız?',opts:[{t:'Tüm seçenekleri değerlendiririm; nöbet müdürüyle koordineli olarak alternatif ikram organize eder, misafiri bilgilendiririm.',c:true},{t:'Departman kapalı, yapamam derim.',c:false},{t:'Sabaha bırakırım.',c:false},{t:'Kendi çözümümü getiririm.',c:false}]},
+        {pos:['clerk'],cat:'Siam Elegance — Servis',q:'Siam Elegance'ta VIP statüsündeki misafir için oda hazırlık kontrol listesinde neler olmalıdır?',opts:[{t:'Kişiselleştirilmiş karşılama notu, meyve tabağı, çiçek aranjmanı, özel yatak konfigürasyonu, havlular ve tercih edilen minibar içerikleri.',c:true},{t:'Sadece temiz oda.',c:false},{t:'Ekstra havlu.',c:false},{t:'Sadece standart ikram.',c:false}]},
+      ],
+      night: [
+        {pos:['night'],cat:'Siam Elegance — Gece',q:'Siam Elegance'ta gece denetiminde misafir hesabına yanlışlıkla iki kez mini bar ücreti yansıtılmış. Fark ettiniz. Ne yaparsınız?',opts:[{t:'Hatalı kaydı belgeler, düzeltme işlemini PMS'de yapar, hatayı nöbet raporuna işler ve sabah müdürüne bildiririm.',c:true},{t:'Sabaha bırakırım.',c:false},{t:'Misafiri uyandırıp bilgilendiririm.',c:false},{t:'Çift kaydı onaylı bırakırım.',c:false}]},
+        {pos:['night'],cat:'Siam Elegance — Gece',q:'Gece saatlerinde lobide yalnız ağlayan bir misafir gördünüz. Nasıl yaklaşırsınız?',opts:[{t:'Sessizce yanına yaklaşır, yardım edip edemeyeceğimi sorar, dinler ve gerekirse psikolojik destek hattı ya da nöbet müdürüyle koordine ederim.',c:true},{t:'Görmezden gelirim.',c:false},{t:'Güvenliği çağırırım.',c:false},{t:'Odasına gitmesini söylerim.',c:false}]},
+        {pos:['night'],cat:'Siam Elegance — Gece',q:'Siam Elegance gece denetiminde tüm odaların doluluk verisi ile PMS arasında uyumsuzluk var. Ne yaparsınız?',opts:[{t:'Fiziksel oda durumu raporu ile PMS kaydını karşılaştırır, tutarsızlıkları belgeler, gerekirse gece güvenlikle fiziksel kontrol yaparım.',c:true},{t:'Sabaha bırakırım.',c:false},{t:'Sistem hatası olarak kapatırım.',c:false},{t:'Farkı kendin tahmin ederek doldururum.',c:false}]},
+      ],
+      leader: [
+        {pos:['leader'],cat:'Siam Elegance — Liderlik',q:'5 yıldızlı Ultra All-Inclusive Siam Elegance'ta yüksek sezon doluluğunda ön büro operasyonlarında hangi kriz senaryosu en kritiktir?',opts:[{t:'Overbooking + uzun check-in kuyruğu + VIP arrival çakışması; çözüm: ek personel, VIP ayrı hat, misafirlere proaktif iletişim.',c:true},{t:'Mini bar envanter açığı.',c:false},{t:'Restoranın kapanması.',c:false},{t:'Yüzme havuzunun geçici kapanması.',c:false}]},
+        {pos:['leader'],cat:'Siam Elegance — Liderlik',q:'Siam Elegance'ta honeymoon/anniversary paketi alan bir çift, sürpriz hazırlıklarının yapılmadığını öğreniyor. Shift leader olarak nasıl kurtarırsınız?',opts:[{t:'Önce içtenlikle özür diler, derhal odayı kişiselleştirecek hazırlıkları başlatır (çiçek, dekor, kek), özel bir jesti tamamlayarak çifti şaşırtırım.',c:true},{t:'Rezervasyon ekibini suçlarım.',c:false},{t:'Sonraki gün yapılır derim.',c:false},{t:'İndirim teklif edip geçiştiririm.',c:false}]},
+        {pos:['leader'],cat:'Siam Elegance — Liderlik',q:'Siam Elegance'ta ön büro KPI'ları arasında misafir memnuniyeti skoru düştü. Kök neden analizi için hangi adımları atarsınız?',opts:[{t:'Şikâyet kayıtlarını, online yorumları ve departmanlar arası iletişim kopuklığını analiz eder; ekiple bireysel görüşmeler yaparak sorunun kaynağını tespit ederim.',c:true},{t:'Sadece survey sonuçlarına bakarım.',c:false},{t:'Ekipten özür dilemelerini isterim.',c:false},{t:'Daha çok indirim yapılmasını öneririm.',c:false}]},
+      ],
+    },
+  },
 };
 
 // ══════════════════════════════════════════
@@ -747,7 +793,7 @@ function buildQuestions() {
   // Language questions for chosen level (pos-filtered)
   const langPool = (QB[lang]?.[lvl] || []).filter(q => q.pos.includes(pos));
   // Hospitality questions (pos-specific)
-  const hospPool = (QB.hospitality[pos] || []).slice();
+  // hospPool used below via hotel-specific logic
 
   // Mix: ~60% language, ~40% hospitality
   const langCount = Math.round(totalQ * 0.6);
@@ -759,8 +805,18 @@ function buildQuestions() {
     return arr;
   };
 
+  // Hotel-specific hospitality pool
+  const hotelKey = state.hotel === 'tui' ? 'tui' : 'siam';
+  const baseHospPool = (QB.hospitality[pos] || []).slice();
+  const hotelHospPool = (QB.hospitality_hotel?.[hotelKey]?.[pos] || []).slice();
+  // Blend: ~50% hotel-specific if available, rest generic
+  const hotelHospCount = Math.min(hotelHospPool.length, Math.round(hospCount * 0.5));
+  const genericHospCount = hospCount - hotelHospCount;
+  const hospQ_hotel = shuffle([...hotelHospPool]).slice(0, hotelHospCount);
+  const hospQ_generic = shuffle([...baseHospPool]).slice(0, genericHospCount);
+  const hospQ = [...hospQ_hotel, ...hospQ_generic];
+
   let langQ = shuffle([...langPool]).slice(0, langCount);
-  let hospQ = shuffle([...hospPool]).slice(0, hospCount);
 
   // If not enough questions, fill with other levels
   if(langQ.length < langCount) {
@@ -943,8 +999,9 @@ function finishExam() {
   }, 300);
 
   const posNames = {clerk:'Reception Clerk',night:'Gece Resepsiyonisti',leader:'Shift Leader'};
+  const hotelFull = {siam:'Siam Elegance Hotels & SPA', tui:'TUI Blue Maviss'}[state.hotel] || '';
   document.getElementById('result-title').textContent = state.name ? `Teşekkürler, ${state.name}!` : 'Teşekkürler!';
-  document.getElementById('result-sub').textContent = `${(posNames[state.pos]||'')} pozisyonu için sınavınız tamamlandı. İK ekibimiz sonuçlarınızı değerlendirip sizinle iletişime geçecektir.`;
+  document.getElementById('result-sub').textContent = \`\${hotelFull} – \${posNames[state.pos]||''} pozisyonuna ilişkin değerlendirmeniz başarıyla tamamlanmıştır. Başvurunuz İnsan Kaynakları departmanımıza iletilmiş olup inceleme sürecinin ardından tarafınıza olumlu ya da olumsuz dönüş yapılacaktır.\`;
 
   sendResults(false);
 }
@@ -965,9 +1022,10 @@ function sendResults(invalidated) {
 
   const params = {
     to_email: 'ilkerdege@gmail.com',
-    from_name: state.name || 'Aday',
+    from_name: 'FO Assessment System',
     candidate_name: state.name || '—',
     candidate_email: state.email || '—',
+    reply_to: 'noreply@ilk-er.com',
     hotel: hotelNames[state.hotel] || '—',
     position: posNames[state.pos] || '—',
     language: langNames[state.lang] || '—',
