@@ -480,50 +480,274 @@ c2:[
 },
 
 // ── Otelcilik & Pozisyon Soruları ──
+// KURAL: Doğru cevap bazen en kısa. Yanlışlar uzun, mantıklı görünür ama yanlış.
 hosp:{
-clerk:[
-  {pos:['clerk'],cat:'Ön Büro – Temel',q:'PMS nedir ve resepsiyonistin temel görevi bağlamında önemi nedir?',opts:[{t:'Otelin rezervasyon, check-in/out, fatura ve oda yönetimi süreçlerini yöneten yazılım; resepsiyonistin tüm operasyonel işlemlerinin merkezi.',c:true},{t:'Personel maaş yönetim sistemi.',c:false},{t:'Misafir anket platformu.',c:false},{t:'Kat hizmetleri iş akışı uygulaması.',c:false}]},
-  {pos:['clerk'],cat:'Ön Büro – Temel',q:'All-inclusive otelde check-in sırasında misafire standart olarak ne verilmelidir?',opts:[{t:'Oda kartı, all-inclusive bilekliği veya kartı, tesis haritası ve hizmetlere dair kısa bilgilendirme.',c:true},{t:'Yalnızca oda kartı.',c:false},{t:'Yalnızca fatura özeti.',c:false},{t:'Pasaport fotokopisi ve kaydı.',c:false}]},
-  {pos:['clerk'],cat:'Ön Büro – Senaryo',q:'Misafir check-in yapmak istiyor ancak odası henüz hazır değil. En doğru yaklaşım hangisidir?',opts:[{t:'Özür dileyerek bagajını teslim almayı teklif edin, lobi ya da restaurant\'da bekleyebileceğini söyleyin ve oda hazır olunca bildirim yapacağınızı belirtin.',c:true},{t:'Sadece "oda hazır değil" deyin.',c:false},{t:'Misafiri otel dışında beklemeye yönlendirin.',c:false},{t:'Odaya kilitsiz girmesine izin verin.',c:false}]},
-  {pos:['clerk'],cat:'Ön Büro – Bilgi',q:'"ADR" ne demektir ve neden takip edilir?',opts:[{t:'Average Daily Rate — günlük ortalama oda geliri; finansal performansı ve fiyatlandırma stratejisini ölçmek için kritik bir KPI.',c:true},{t:'Ek gün rezervasyonu.',c:false},{t:'Otomatik istek defteri.',c:false},{t:'Aktivite güncelleme raporu.',c:false}]},
-  {pos:['clerk'],cat:'Ön Büro – Senaryo',q:'Lobby\'de misafir fatura itirazı yapıyor, kuyruktaki diğer misafirler duyuyor. Nasıl yönetirsiniz?',opts:[{t:'Misafiri gizliliği koruyarak özel bir alana davet eder, faturayı birlikte inceleyip gerekirse müdüre danışır ve sakin, çözüm odaklı tutum sergilerim.',c:true},{t:'Yüksek sesle açıklama yapar, kuyruktakilerin merakını gideririm.',c:false},{t:'Müdür gelene kadar misafiri bekletirim.',c:false},{t:'Faturanın doğru olduğunu kesinlikle reddederim.',c:false}]},
-],
-night:[
-  {pos:['night'],cat:'Gece Resepsiyon',q:'Night audit\'in temel amacı nedir?',opts:[{t:'Günlük gelir hesaplarını kapatmak, tüm işlemleri doğrulamak, tutarsızlıkları raporlamak ve yeni günü sistem üzerinde açmak.',c:true},{t:'Odaları temizlemek.',c:false},{t:'Gece misafir kayıtlarını manuel tutmak.',c:false},{t:'Sabah kahvaltısı hazırlığını koordine etmek.',c:false}]},
-  {pos:['night'],cat:'Gece Resepsiyon – Acil',q:'Gece vardiyasında yangın alarmı çalıyor. Resepsiyonist olarak ilk üç adımınız nedir?',opts:[{t:'Acil tahliye protokolünü başlatmak, güvenlik ve itfaiyeyi aramak, misafir listesiyle tahliyeyi koordine etmek.',c:true},{t:'Alarm sesini kapatıp durumun geçmesini beklemek.',c:false},{t:'Sadece kendi vardiya alanını kontrol etmek.',c:false},{t:'Sabah yönetici gelene kadar beklemek.',c:false}]},
-  {pos:['night'],cat:'Gece Resepsiyon – Senaryo',q:'Gece 02:00\'de tıbbi yardım isteyen bir misafir var. Nasıl hareket edersiniz?',opts:[{t:'Derhal ambulans çağırır, misafirin yanında kalır, nöbet müdürünü bilgilendirir ve tüm detayları olay defterine kaydederim.',c:true},{t:'Sabaha kadar beklemesini öneririm.',c:false},{t:'En yakın eczaneye yönlendiririm.',c:false},{t:'Kapıya güvenlik personeli gönderip uzaklaşırım.',c:false}]},
-  {pos:['night'],cat:'Gece Resepsiyon – Audit',q:'Night audit\'ta kasa farkı tespit ettiniz. Ne yaparsınız?',opts:[{t:'Tüm işlemleri sırayla kontrol eder, farkı zaman damgasıyla belgeler, üst amire yazılı olarak bildiririm; farkı kapatmak için kendi girişimde asla bulunmam.',c:true},{t:'Kasadan para koyarak dengelerim.',c:false},{t:'Sabah vardiyasına bırakırım.',c:false},{t:'Fark küçükse görmezden gelirim.',c:false}]},
-  {pos:['night'],cat:'Gece Resepsiyon – Senaryo',q:'Gece check-in\'e gelen misafirin sistemde rezervasyonu yok, ancak oda müsait. Ne yaparsınız?',opts:[{t:'Walk-in prosedürünü uygular, kimlik ve ödemeyi alır, PMS\'e düzgün kaydeder ve tüm bilgileri nöbet raporuna eklerim.',c:true},{t:'Sistem kayıtlı değil deyip misafiri geri çeviririm.',c:false},{t:'Sabah müdürü gelene kadar bekletiririm.',c:false},{t:'Odanın dolu olduğunu söylerim.',c:false}]},
-],
-leader:[
-  {pos:['leader'],cat:'Shift Leader – Operasyon',q:'Yüksek sezonda resepsiyonda ciddi bir kuyruk oluştu, iki personel yetersiz kalıyor. Shift leader olarak ne yaparsınız?',opts:[{t:'Öncelikleri belirler, gerekirse ek personel çağırır ya da bizzat müdahil olur, kuyruktaki misafirlere bekleme süresi hakkında proaktif bilgi veririm.',c:true},{t:'Misafirlerin beklemesine izin veririm, ekip halleder.',c:false},{t:'Müdürü arayıp talimat beklerim.',c:false},{t:'Problemi bir sonraki vardiyaya bırakırım.',c:false}]},
-  {pos:['leader'],cat:'Shift Leader – Kriz',q:'Overbooking nedeniyle garantili rezervasyonu olan bir misafire oda veremiyorsunuz. Nasıl yönetirsiniz?',opts:[{t:'Samimiyetle özür diler, denk kalitede yakın bir otele transfer organize eder, tüm masrafları otelin üstleneceğini belirtir ve geri dönüşte öncelik ile tazminat sunarım.',c:true},{t:'Lobide beklemesini söylerim, iptal çıkabilir.',c:false},{t:'Sadece ücreti iade edip uğurlarım.',c:false},{t:'Durumu yönetime bildirip kenara çekilirim.',c:false}]},
-  {pos:['leader'],cat:'Shift Leader – Liderlik',q:'Bir personelin misafirle tartışmaya girdiğini gördünüz. Nasıl müdahale edersiniz?',opts:[{t:'Personeli kibarca tartışmadan uzaklaştırır, misafirle bizzat ilgilenirim; ardından personelle bireysel olarak durumu değerlendiririm.',c:true},{t:'Müdahale etmem, personel kendi halleder.',c:false},{t:'Personeli açıkça azarlarım.',c:false},{t:'Misafiri otelden çıkarmayı öneririm.',c:false}]},
-  {pos:['leader'],cat:'Shift Leader – Raporlama',q:'Bir vardiyada beklenmedik bir olay yaşandı (misafir yaralanması, hırsızlık şüphesi, altyapı arızası). Shift leader olarak raporlama sorumluluğunuz nedir?',opts:[{t:'Olayı anında Duty Manager\'a sözlü bildiririm, detaylı yazılı olay raporu (incident report) doldururum, ilgili departmanları bilgilendiririm ve gerekli follow-up\'ları sabah brifingine dahil ederim.',c:true},{t:'Sadece müdürü arar, yazılı rapor tutmam.',c:false},{t:'Sabah vardiyası halleder, müdahale etmem.',c:false},{t:'Küçük olayları kayıt altına almam.',c:false}]},
-  {pos:['leader'],cat:'Shift Leader – Revenue',q:'Shift leader olarak "RevPAR" ve "occupancy" arasındaki farkı ve ikisinin neden eş zamanlı takip edilmesi gerektiğini açıklayınız.',opts:[{t:'Occupancy doluluk oranını gösterir; RevPAR ise hem doluluk hem tarife verilerini birleştirerek gerçek gelir verimliliğini ölçer. Yüksek doluluk düşük tarifle RevPAR\'ı düşürür; ikisi birlikte optimize edilmelidir.',c:true},{t:'RevPAR ve occupancy aynı şeyi ölçer, fark yoktur.',c:false},{t:'Occupancy yeterli; RevPAR sadece GM\'i ilgilendirir.',c:false},{t:'RevPAR yalnızca lüks otellerde anlam taşır.',c:false}]},
+
+// ════════════════════════════════════════
+// SIAM ELEGANCE — CLERK
+// Ultra 5* All-Inclusive, Belek, Türk lüksü
+// Misafir profili: Avrupalı, tekrar gelenler, SPA yoğun, yüksek beklenti
+// ════════════════════════════════════════
+siam_clerk:[
+  {pos:['clerk'],cat:'Siam Elegance — Karşılama',q:'Siam Elegance\'ta tekrar gelen bir misafir check-in yapıyor. PMS profilinde özel tercihler kayıtlı. Doğru yaklaşım nedir?',opts:[
+    {t:'Misafiri ismiyle karşılar, notları önceden uygular, tercihlerini tekrar sormadan "Her şey hazır" derim.',c:true},
+    {t:'Misafirden tercihlerini güncellemesini isteyerek profili tazelemek en sağlıklı yoldur çünkü tercihler değişmiş olabilir.',c:false},
+    {t:'Standart check-in yapar, sonra tercihleri sorarım; önceki ziyaretle bu seferi farklı olabilir.',c:false},
+    {t:'Profildeki notları süpervizöre bildiririm, o misafiri karşılasın.',c:false}
+  ]},
+  {pos:['clerk'],cat:'Siam Elegance — Ultra AI',q:'Ultra All-Inclusive misafir "infinity pool özel bölgesi kullanım saatleri nedir?" diye soruyor ama siz bu konuda emin değilsiniz. Ne yaparsınız?',opts:[
+    {t:'"Hemen doğru bilgiyi alıyorum" der, ilgili departmanı arar, 2 dakika içinde net cevabı veririm.',c:true},
+    {t:'"Zaten her şey dahil, dilediğiniz saatte kullanabilirsiniz" derim; böylece misafir memnun ayrılır.',c:false},
+    {t:'Misafiri doğrudan havuz görevlisine yönlendiririm; o daha iyi bilir.',c:false},
+    {t:'Uygulamayı indirmesini öneririm; tüm detaylar dijital rehberde var.',c:false}
+  ]},
+  {pos:['clerk'],cat:'Siam Elegance — Servis',q:'Siam Elegance\'ta akşam 22:30\'da misafir "odama çilek ve şampanya istiyorum" diyor. Alakart servis o saat için kapalı. Ne yaparsınız?',opts:[
+    {t:'Nöbet müdürüyle koordineli alternatif çözüm üretir, misafiri bilgilendiririm; "hayır" demek son seçenek.',c:true},
+    {t:'"Bu saatte alakart kapalı, sabah 08:00\'de açılıyor" diyerek durumu açıklarım.',c:false},
+    {t:'Misafiri 24 saat açık olan snack bara yönlendiririm; çilek yerine meyve tabağı sunabilirler.',c:false},
+    {t:'Oda servisi menüsünde alternatif ürün öneririm; şampanya yerine şarap da olabilir.',c:false}
+  ]},
+  {pos:['clerk'],cat:'Siam Elegance — VIP',q:'Bir misafir "Balayı paketi aldık ama odada hiçbir hazırlık yok" diyor. Hata rezervasyon departmanında. İlk tepkiniz nedir?',opts:[
+    {t:'Önce "Çok üzgünüm, hemen hallederiz" der, odaya ekibi yönlendirir, misafiri beklerken özür içecekleri sunarım.',c:true},
+    {t:'"Rezervasyon detaylarınızı incelememiz lazım; sisteme bakayım" diyerek önce kaydı doğrularım.',c:false},
+    {t:'Rezervasyon departmanını ararım; hatanın kimin kaynaklı olduğunu netleştirip süreci başlatırım.',c:false},
+    {t:'"Odanızı hemen hazırlatıyorum, 20 dakika lobide bekler misiniz?" derim ve süreci başlatırım.',c:false}
+  ]},
+  {pos:['clerk'],cat:'Siam Elegance — Fatura',q:'Misafir check-out\'ta minibarda içmediği ürünlerin faturasına yansıtıldığını söylüyor. Kuyruğun gözetmektedir. Ne yaparsınız?',opts:[
+    {t:'Misafiri sessizce özel alana alır, faturayı inceler; hata varsa anında düzeltirim.',c:true},
+    {t:'"Lütfen biraz bekleyin; kat hizmetlerine minibar kontrolü yaptırmam gerekiyor" derim.',c:false},
+    {t:'"Sistem otomatik kayıt yapıyor, muhtemelen kocanız/çocuğunuz tüketmiş olabilir" derim.',c:false},
+    {t:'Şikayeti not alır, müdür onayı sonrası iade yapılacağını bildiririm.',c:false}
+  ]},
 ],
 
-// ── TUI Blue Özel Soruları ──
+// ════════════════════════════════════════
+// TUI BLUE MAVISS — CLERK
+// TUI Blue konsept, Avrupalı charter misafiri, brand standartları, dijital entegrasyon
+// ════════════════════════════════════════
 tui_clerk:[
-  {pos:['clerk'],cat:'TUI Blue – Konsept',q:'TUI Blue "Blue Feel Good" felsefesi, resepsiyonistin misafirle kurduğu ilk temasa nasıl yansımalıdır?',opts:[{t:'Göz teması kurarak, ismiyle hitap ederek ve ilk 30 saniyede proaktif bir bilgi vererek samimi, kişiselleştirilmiş bir karşılama yaratmak.',c:true},{t:'Hızlı check-in yaparak misafiri zaman kaybettirmemek.',c:false},{t:'Resmi ve mesafeli tutum sergileyerek kurumsal imaj korumak.',c:false},{t:'Şikayetleri süpervizöre yönlendirerek süreci temiz tutmak.',c:false}]},
-  {pos:['clerk'],cat:'TUI Blue – Konsept',q:'TUI Blue otellerde "Local Living" deneyiminin resepsiyonist üzerindeki operasyonel karşılığı nedir?',opts:[{t:'Misafirlere destinasyonun özgün kültürünü, yerel yemekleri ve off-the-beaten-path deneyimleri tanıtmak; standart tur listesi yerine kişiselleştirilmiş yerel öneriler sunmak.',c:true},{t:'Yalnızca lobide yerel kültür afişleri sergilemek.',c:false},{t:'Misafirleri tur otobüsü rezervasyonuna yönlendirmek.',c:false},{t:'Yerel yemekler yerine uluslararası mutfağı önermek.',c:false}]},
-  {pos:['clerk'],cat:'TUI Blue – Kalite',q:'TUI Quality Score neden kritiktir ve resepsiyonistin buna doğrudan katkısı nasıl olur?',opts:[{t:'Puanlar TUI dağıtım kanallarında otel sıralamasını belirler; misafirin karşılanma kalitesi, bilgi doğruluğu ve şikayet çözüm hızı skoru doğrudan etkiler.',c:true},{t:'Skor yalnızca yönetim kararlarını etkiler, resepsiyonla ilişkisi yoktur.',c:false},{t:'TUI Quality Score sadece restoran departmanını kapsar.',c:false},{t:'Skor yıllık değerlendirilir, günlük operasyonla bağlantısı yoktur.',c:false}]},
-  {pos:['clerk'],cat:'TUI Blue – Dijital',q:'TUI App üzerinden tamamlanmış online check-in\'de bazı bilgiler eksik geldi. Ne yaparsınız?',opts:[{t:'Eksik bilgileri kibarca tamamlar, PMS\'e doğru şekilde işler, misafiri süreci anlatarak güvence altına alır ve deneyimi yavaşlatmadan akıcı tutarım.',c:true},{t:'Online check-in hatalı diye sistemi baştan açarım.',c:false},{t:'Misafiri IT destek hattına yönlendiririm.',c:false},{t:'Eksik alanları boş bırakıp check-in\'i tamamlarım.',c:false}]},
-  {pos:['clerk'],cat:'TUI Blue – Servis',q:'TUI Blue Maviss\'te check-in sırasında "Welcome Drink" ve tesis tanıtımı standart prosedürün parçasıdır. Misafir "Bunu atlamak istiyorum" derse ne dersiniz?',opts:[{t:'Tabii ki, saygı duyarım. Sadece oda kartınızı alıp dilediğinizde keşfedebilirsiniz; ihtiyacınız olursa ben buradayım.',c:true},{t:'Prosedür zorunlu, atlanamaz.',c:false},{t:'O zaman hızlıca anlatayım, çok kısa sürer.',c:false},{t:'Anlaşıldı, direkt check-in yapıyorum.',c:false}]},
+  {pos:['clerk'],cat:'TUI Blue — Blue Feel Good',q:'TUI Blue "Blue Feel Good" felsefesine göre misafir check-in sırasında resepsiyonistten beklenen davranış nedir?',opts:[
+    {t:'İsimle hitap, göz teması, proaktif bilgi; prosedürü kişiselleştirilmiş bir deneyime dönüştürmek.',c:true},
+    {t:'Check-in\'i mümkün olan en kısa sürede tamamlayarak misafiri odasına göndermek; zaman kaybetmemek.',c:false},
+    {t:'Önce TUI kalite formunu doldurmak, ardından odaya yönlendirmek; evrak eksiksiz olmalı.',c:false},
+    {t:'Misafiri sıcak karşılamak ve tesis tanıtımını tam olarak yapmak; tüm noktaları sırasıyla anlatmak.',c:false}
+  ]},
+  {pos:['clerk'],cat:'TUI Blue — Dijital',q:'TUI App üzerinden online check-in yapan misafirin bazı alanları eksik. Check-in\'de ne yaparsınız?',opts:[
+    {t:'Eksikleri kibarca tamamlar, PMS\'e işler, akışı durdurmadan deneyimi sürdürürüm.',c:true},
+    {t:'"Online check-in eksik kalmış, baştan doldurmamız gerekiyor" diyerek formu yeniden açarım.',c:false},
+    {t:'Misafiri IT destek hattına yönlendiririm; uygulama hatası teknik ekibin sorumluluğunda.',c:false},
+    {t:'Eksik alanları boş bırakarak check-in\'i tamamlarım; misafir sonra tamamlayabilir.',c:false}
+  ]},
+  {pos:['clerk'],cat:'TUI Blue — Quality Score',q:'TUI Quality Score\'u düşüren en kritik faktörlerden biri nedir ve resepsiyonist buna nasıl katkı sağlar?',opts:[
+    {t:'İlk temas kalitesi; isimle karşılama, doğru bilgi ve şikayet çözüm hızı skoru doğrudan etkiler.',c:true},
+    {t:'Restoran kalitesi ve oda temizliği; bunlar skorun büyük bölümünü oluşturur, resepsiyonun etkisi azdır.',c:false},
+    {t:'TUI Quality Score yalnızca yılsonu değerlendirmede işlenir; günlük operasyonla bağlantısı yoktur.',c:false},
+    {t:'Misafirin kişisel beklentileri belirleyicidir; resepsiyonun yapabileceği sınırlıdır.',c:false}
+  ]},
+  {pos:['clerk'],cat:'TUI Blue — Local Living',q:'Bir TUI Blue misafiri "buradaki gibi yerlere gitmeyi değil, gerçek Antalya\'yı görmek istiyorum" diyor. Doğru yanıt nedir?',opts:[
+    {t:'Kişiselleştirilmiş yerel deneyim önerileri sunarım: pazarlar, koylar, yerel restoranlar; standart tur kataloğu değil.',c:true},
+    {t:'Tur masasına yönlendiririm; uzmanlaşmış rehberler daha iyi bilgi verir.',c:false},
+    {t:'TUI\'nin önerdiği yerlerin güvenli ve kaliteli olduğunu belirterek resmi tur kataloğunu öneririm.',c:false},
+    {t:'"Şehir merkezi karmaşık olabilir, tesis içi aktiviteler de çok güzel" derim.',c:false}
+  ]},
+  {pos:['clerk'],cat:'TUI Blue — Servis',q:'TUI Blue Maviss\'te check-in\'de Welcome Drink ve tesis tanıtımı standarttır. Misafir "atlayalım" derse ne yaparsınız?',opts:[
+    {t:'"Tabii ki, oda kartınız hazır; ihtiyacınızda buradayım." Tercihine saygı gösteririm.',c:true},
+    {t:'"Bu prosedür TUI standardı, 5 dakika alır" diyerek kısa tutarak yine de yapmamazı istemem.',c:false},
+    {t:'"Anlaşıldı" diyerek odaya uğurlarım ama tanıtımı kağıt olarak veririm.',c:false},
+    {t:'Müdürü bilgilendiririm; standart prosedürü atlayıp atlamamamı o karar versin.',c:false}
+  ]},
 ],
+
+// ════════════════════════════════════════
+// SIAM ELEGANCE — NIGHT
+// Gece denetimi, yüksek sezon yoğunluğu, bağımsız karar
+// ════════════════════════════════════════
+siam_night:[
+  {pos:['night'],cat:'Siam Elegance — Night Audit',q:'Night audit sırasında bir misafirin hesabında aynı SPA hizmeti iki kez fatura edilmiş. Ne yaparsınız?',opts:[
+    {t:'Çift kaydı belgeler, PMS\'de düzeltme yapar, nöbet raporuna işler, sabah müdüre bildiririm.',c:true},
+    {t:'Misafiri uyandırıp bilgilendiririm; şeffaflık önemli, hata kabul etmek güven oluşturur.',c:false},
+    {t:'Faturayı sabaha bırakırım; SPA onaylamadan düzeltme yapmak prosedüre aykırı olabilir.',c:false},
+    {t:'SPA departmanını arayarak onay aldıktan sonra düzeltme yaparım.',c:false}
+  ]},
+  {pos:['night'],cat:'Siam Elegance — Acil',q:'Gece 02:00\'de lobide ağlayan yalnız bir misafir var. Yaklaşımınız?',opts:[
+    {t:'Sessizce yaklaşır, "Yardımcı olabilir miyim?" derim; dinler, gerekirse nöbet müdürünü devreye alırım.',c:true},
+    {t:'Önce güvenlik personelini gönderirim; durum bilinmeden yaklaşmak riskli olabilir.',c:false},
+    {t:'Odaya dönmesini nazikçe öneririm; lobi sakin olmalı, diğer misafirler etkilenebilir.',c:false},
+    {t:'Uzaktan gözlemler; kendiliğinden geçebilir, müdahale şart değil.',c:false}
+  ]},
+  {pos:['night'],cat:'Siam Elegance — Doluluk',q:'Gece denetiminde PMS doluluk verisi ile fiziksel oda durumu arasında tutarsızlık var. Ne yaparsınız?',opts:[
+    {t:'Fiziksel oda listesiyle PMS\'i karşılaştırır, tutarsızlıkları belgeler, gerekirse güvenlikle kontrol ederim.',c:true},
+    {t:'Sistem taraflı olduğunu varsayarak PMS\'i esas alır, sabaha bırakırım.',c:false},
+    {t:'Tüm boş görünen odaları "dolu" olarak işaretler, hata riskini elimine ederim.',c:false},
+    {t:'Kat hizmetlerini arayıp onay alarak sistemi güncellemeye çalışırım.',c:false}
+  ]},
+  {pos:['night'],cat:'Siam Elegance — Senaryo',q:'Gece walk-in misafir geliyor, sistemde oda yok. Ancak fiziksel olarak 1 oda müsait. Ne yaparsınız?',opts:[
+    {t:'Walk-in prosedürünü uygular, kimlik ve ödemeyi alır, PMS\'e doğru kaydeder, nöbet raporuna eklerim.',c:true},
+    {t:'"Sistem dolu gösteriyor, gelemeyiz" diyerek özür dilerim; hata sistemin.',c:false},
+    {t:'Müdürü uyandırırım; izinsiz oda açmak prosedüre aykırı.',c:false},
+    {t:'Misafiri yakın otele yönlendiririm; gecenin bu saatinde risk almak doğru değil.',c:false}
+  ]},
+  {pos:['night'],cat:'Siam Elegance — Kriz',q:'Gece yarısı bir misafir akut rahatsızlık geçiriyor. Kardiyak belirti var. İlk yapmanız gereken nedir?',opts:[
+    {t:'112\'yi aramak.',c:true},
+    {t:'Otel hekimini aramak; akut durumda medikal protokol önceliklidir, dışarıya açmadan önce iç kaynaklar denenmeli.',c:false},
+    {t:'Nöbet müdürünü uyandırmak; yetkili kişi olmadan kritik kararlar alınmamalı.',c:false},
+    {t:'Misafirin yakınlarını odadan uyandırarak durumu bildirmek; aile önce haberdar edilmeli.',c:false}
+  ]},
+],
+
+// ════════════════════════════════════════
+// TUI BLUE MAVISS — NIGHT
+// Charter operasyonları, TUI sistemleri, Avrupalı misafir profili, gece bağımsızlığı
+// ════════════════════════════════════════
 tui_night:[
-  {pos:['night'],cat:'TUI Blue – Gece',q:'Gece vardiyasında TUI tur operatör temsilcisi grubu aşırı gürültülü bir aktivite yapıyor, diğer misafirler şikayet ediyor. Nasıl yönetirsiniz?',opts:[{t:'Önce komşu odaların şikayetlerini belgelerim; ardından temsilciyle saygılı ama net bir şekilde konuşur, sessiz saatlere uyulmasını ister ve tekrar ihlal olursa nöbet müdürünü devreye alırım.',c:true},{t:'TUI temsilcisi olduğu için müdahale etmem.',c:false},{t:'Tüm gruba hemen oda çıkışı uygularım.',c:false},{t:'Sabah yönetici halleder, geceleri müdahale etmem.',c:false}]},
-  {pos:['night'],cat:'TUI Blue – Gece',q:'TUI charter uçuşu 4 saat gecikecek; 50 misafir sabah 06:00\'da gelecek. Gece resepsiyonisti olarak hazırlık planınız nedir?',opts:[{t:'Kat hizmetlerini gecikmeli geliş için uyarırım, karşılama ikramlarını ayarlarım, odaların hazır olduğunu teyit ederim, transfer koordinasyonunu sağlarım ve check-in listesini güncelledirim.',c:true},{t:'Yalnızca geliş saatini nöbet raporuna yazarım.',c:false},{t:'Sabah vardiyası halleder diyerek hiç hazırlık yapmam.',c:false},{t:'Misafirlere başka gün gelmeleri için mesaj gönderirim.',c:false}]},
-  {pos:['night'],cat:'TUI Blue – Sistem',q:'Gece TUI rezervasyon sistemine erişim kesildi. Ne yaparsınız?',opts:[{t:'Yedek offline kayıtlara başvurur, TUI acil IT hattını arar, walk-in ve geliş misafirlerini manuel prosedürle karşılar ve tüm işlemleri gece raporuna not alırım.',c:true},{t:'Sistem düzelene kadar hiç check-in yapmam.',c:false},{t:'Misafirleri lobide bekletirim.',c:false},{t:'Sistemi yeniden başlatmak için sunucu odasına giderim.',c:false}]},
-  {pos:['night'],cat:'TUI Blue – Audit',q:'Gece denetiminde TUI misafir anket sistemine girilecek memnuniyet verilerinde eksiklik fark ettiniz. Ne yaparsınız?',opts:[{t:'Eksiklikleri belgeler, tamamlanabilecek olanları tamamlar, veri kaynağını not eder ve sabah sorumlusuna devir notu bırakırım; tahmin veya uydurmayla asla doldurmam.',c:true},{t:'Boş alanları mantıklı tahminlerle doldururum.',c:false},{t:'Sabah ekibi halleder, gece işim değil.',c:false},{t:'Anket sistemini tamamen kapatırım.',c:false}]},
-  {pos:['night'],cat:'TUI Blue – Senaryo',q:'Gece yarısı TUI misafiri erken check-out yapıyor ve geriye kalan gecelere kısmi iade talep ediyor. Nasıl yanıt verirsiniz?',opts:[{t:'Politikayı kibarca açıklarım, talebi ayrıntılı kayıt altına alırım ve misafiri sabah yöneticisiyle görüşmeye yönlendiririm; kendi inisiyatifimle iade onaylamam.',c:true},{t:'İşlemi hemen onaylayıp iadeyi gerçekleştiririm.',c:false},{t:'İade yapılamaz deyip konuyu kapatırım.',c:false},{t:'Misafiri güvenlikle odaya çıkarmaya zorlarım.',c:false}]},
+  {pos:['night'],cat:'TUI Blue — Charter Operasyon',q:'TUI charter uçuşu 4 saat gecikecek, 48 misafir 06:00\'da geliyor. İlk yapmanız gereken nedir?',opts:[
+    {t:'Kat hizmetlerini, karşılama ikramlarını ve transfer koordinasyonunu organize etmek.',c:true},
+    {t:'TUI temsilcisini aramak; gecikme bildiriminin resmi kanaldan gelmesi gerekiyor.',c:false},
+    {t:'Sabah vardiyasına not bırakmak; gece ekibinin kapasitesi bu kadar misafir için yetmez.',c:false},
+    {t:'Otobüs şirketini arayarak transferi iptal edip yeniden planlamak.',c:false}
+  ]},
+  {pos:['night'],cat:'TUI Blue — Sistem Kesintisi',q:'Gece TUI rezervasyon sistemine erişim kesildi. Rezervasyonu olan misafir geliyor. Ne yaparsınız?',opts:[
+    {t:'Offline yedek kayıtları kullanır, manuel prosedürle check-in yapar, tüm detayları nöbet raporuna not alırım.',c:true},
+    {t:'"Sistem çevrimdışı, sabah 07:00\'de tekrar gelin" derim; hatalı işlem yapmak daha kötü sonuç doğurur.',c:false},
+    {t:'TUI acil hattını arayıp sistemin düzelmesini bekler, bu süre zarfında misafiri lobide ağırlarım.',c:false},
+    {t:'Misafirin rezervasyon numarasını alır, sisteme girmeden odaya yönlendiririm; sabah kaydı tamamlarım.',c:false}
+  ]},
+  {pos:['night'],cat:'TUI Blue — Tur Temsilcisi',q:'Gece TUI tur temsilcisi bir grup şikayetini acilen iletmek için sizi arıyor. Doğru yaklaşım?',opts:[
+    {t:'Şikayeti not alır, nöbet müdürünü bilgilendirir, sabah öncelikli brifinge eklerim.',c:true},
+    {t:'"Sabah yöneticiyle görüşebilirsiniz" derim; gece resepsiyonunun yetki alanı dışında.',c:false},
+    {t:'Şikayeti TUI merkez hattına yönlendiririm; resmi kanal burası.',c:false},
+    {t:'Durumu kendi inisiyatifimle çözmeye çalışırım; müdürü uyandırmak son seçenek olmalı.',c:false}
+  ]},
+  {pos:['night'],cat:'TUI Blue — Anket Verisi',q:'Night audit\'ta TUI misafir memnuniyet sistemine girilmesi gereken veriler eksik. Ne yaparsınız?',opts:[
+    {t:'Tamamlanabilenleri doldurur, eksikler için kaynak notunu belirtir, sabah sorumlusuna bırakırım; veri uydurmam.',c:true},
+    {t:'Tüm alanları mantıklı tahminlerle doldururum; eksik veri sistem puanını düşürür.',c:false},
+    {t:'Tüm anketi boş bırakırım; yarım veri yanıltıcı olabilir.',c:false},
+    {t:'Sistemi geçici olarak kapatırım, sabah ekibi sıfırdan başlasın.',c:false}
+  ]},
+  {pos:['night'],cat:'TUI Blue — Erken Çıkış',q:'Gece misafiri erken check-out yapıyor ve kalan gecelere kısmi iade istiyor. Politika iade yok. Ne yaparsınız?',opts:[
+    {t:'Politikayı açıklar, talebi kayıt altına alır, sabah müdürüne yönlendiririm; kendi inisiyatifimle onay vermem.',c:true},
+    {t:'"Iade yapılamaz" diyerek konuyu hızlıca kapatırım; gece gerekli yetkiye sahip değilim.',c:false},
+    {t:'Kısmi iade onaylarım; saatler geç, tartışmak verimsiz.',c:false},
+    {t:'TUI merkezi müşteriyi arayıp onay alsın diye talep oluştururum.',c:false}
+  ]},
 ],
+
+// ════════════════════════════════════════
+// SIAM ELEGANCE — SHIFT LEADER
+// 5* Ultra AI operasyonel liderlik; departman koordinasyonu, revenue, kriz, misafir memnuniyeti
+// ════════════════════════════════════════
+siam_leader:[
+  {pos:['leader'],cat:'Siam Elegance — Kriz Yönetimi',q:'Yüksek sezonda aynı anda: overbooking 3 oda, VIP arrival, lobby kuyruğu 12 kişi, 1 personel hasta. Öncelik sırası nedir?',opts:[
+    {t:'VIP\'i özel hat ile al, overbooking transfer organizasyonunu başlat, sağlam personeli kuyruğa ver, hasta için destek talep et.',c:true},
+    {t:'Önce kuyruğu çöz; en fazla misafir burada bekliyor, genel memnuniyet öncelikli.',c:false},
+    {t:'Müdürü ara ve tüm durumu devret; bu kadar eş zamanlı kriz yetki alanını aşıyor.',c:false},
+    {t:'Overbooking misafirlerine önce odada beklemelerini söyle, diğerlerini çözdükten sonra dönersin.',c:false}
+  ]},
+  {pos:['leader'],cat:'Siam Elegance — Misafir Memnuniyeti',q:'Siam Elegance\'ta bir misafir 5 gün boyunca farklı departmanlarda tekrar eden sorunlar bildirdi. Shift leader olarak ne yaparsınız?',opts:[
+    {t:'Kişisel sorumluluk alır, structured recovery görüşmesi yapar, departmanlar arası incident raporu hazırlar, GM\'i briefler.',c:true},
+    {t:'Her şikayeti ilgili departmana iletir; aynı misafirden geldikleri için önce bağlantı kurmalarını isterim.',c:false},
+    {t:'Misafirden şikayetlerini yazılı olarak iletmesini isterim; sözlü bildirimler kayıt için yeterli değil.',c:false},
+    {t:'Ücretsiz SPA seansı veya oda yükseltmesi teklif ederim; somut jestler en hızlı çözümdür.',c:false}
+  ]},
+  {pos:['leader'],cat:'Siam Elegance — Balayı Hatası',q:'Balayı paketi alan çift "odada hiçbir hazırlık yok" diyor. Hata rezervasyonda. Shift leader olarak ilk 3 dakikada ne yaparsınız?',opts:[
+    {t:'Özür diler, çifti lounge\'a alır, odaya hazırlık ekibini gönderir, kişisel jesti (köpük/meyve) organize ederim; hatayı araştırmak ikinci adım.',c:true},
+    {t:'Rezervasyonu sistem üzerinde kontrol ederim; paketin gerçekten alınıp alınmadığını önce doğrulamak gerekir.',c:false},
+    {t:'Sorumlu rezervasyon personelini bulup müdahale ettiririm; bu onların sorumluluk alanında.',c:false},
+    {t:'Standart bir özür sunar, en kısa sürede düzeltileceğini söylerim ve süreci başlatırım.',c:false}
+  ]},
+  {pos:['leader'],cat:'Siam Elegance — Raporlama',q:'Vardiyada ciddi bir olay yaşandı: misafir lobide düştü, yaralandı. Shift leader olarak zorunlu raporlama adımları nelerdir?',opts:[
+    {t:'112 çağrısı → anında GM bildirimi → incident report (saat, tanık, eylem) → sigortacı için fotoğraflı belgeleme → vardiya notu.',c:true},
+    {t:'Olay raporunu eksiksiz doldurmak yeterli; GM sadece ciddi vakalar için aranır.',c:false},
+    {t:'Önce misafirin yakınlarını bilgilendirmek; aile onayı olmadan resmi kayıt açmak etik değil.',c:false},
+    {t:'Güvenlik kameraları zaten kayıt yapıyor; ek belgelemeye gerek yok.',c:false}
+  ]},
+  {pos:['leader'],cat:'Siam Elegance — Revenue',q:'"RevPAR" nedir ve Siam Elegance gibi Ultra AI bir tesiste shift leader\'in buna katkısı nasıl olur?',opts:[
+    {t:'RevPAR = doluluk × ortalama tarife; shift leader upselling, oda yükseltme ve F&B cross-sell ile katkı sağlar.',c:true},
+    {t:'RevPAR gelir yönetimi departmanının metriğidir; shift leader\'in operasyonel etkisi yoktur.',c:false},
+    {t:'RevPAR sadece doluluk oranını gösterir; oda fiyatıyla ilgisi yoktur.',c:false},
+    {t:'Ultra AI\'da ek satış yapılmaz; her şey pakete dahil olduğu için RevPAR sabit kalır.',c:false}
+  ]},
+],
+
+// ════════════════════════════════════════
+// TUI BLUE MAVISS — SHIFT LEADER
+// TUI brand operasyonu, pre-opening süreç, quality audit, Avrupalı misafir profili
+// ════════════════════════════════════════
 tui_leader:[
-  {pos:['leader'],cat:'TUI Blue – Liderlik',q:'TUI Blue Maviss\'in TUI Quality Review\'unda önceki sezondan düşük puan aldığı tespit edildi. Shift leader olarak 30 günlük aksiyon planınız nedir?',opts:[{t:'Düşük puanlı alanları ekiple şeffaf paylaşır, bireysel güçlü yanları destekler, misafir geri bildirimlerini görünür kılar, haftalık mikro-eğitimler düzenler ve gelişimi haftalk metriklerle takip ederim.',c:true},{t:'Herkesin performans dosyasını açar, yazılı ihtarname düzenlerim.',c:false},{t:'TUI puanlamasının öznel olduğunu ekiple paylaşırım.',c:false},{t:'Sadece şikayet sayısını düşürmeye odaklanırım.',c:false}]},
-  {pos:['leader'],cat:'TUI Blue – Deneyim',q:'"Blue Moments" deneyim programını bilen bir misafir beklentisinin karşılanmadığını belirtiyor. Shift leader olarak nasıl devreye girersiniz?',opts:[{t:'Misafirin spesifik beklentisini dinler, Blue Moments kapsamında kişiselleştirilmiş bir jest organizasyonu yapar (özel ikram, süpriz aktivite vb.) ve sonucu misafir profiline not ederim.',c:true},{t:'Programın içeriğini bilmiyorum derim.',c:false},{t:'TUI temsilcisine yönlendiririm, benim konuma girmez.',c:false},{t:'Standart şikayet prosedürünü uygularım.',c:false}]},
-  {pos:['leader'],cat:'TUI Blue – FAM Trip',q:'TUI Blue Maviss\'e ani bir FAM trip (familiarization trip) ile TUI Preferred Partner acenta temsilcileri geliyor. Shift leader olarak nasıl karşılarsınız?',opts:[{t:'İsimle karşılar, özel bir karşılama paketi hazırlar, tesis tanıtım turunun logistiğini organize eder, yönetimi bilgilendirir ve tüm deneyimi kişiselleştiririm.',c:true},{t:'Normal check-in prosedürü uygularım, fark yoktur.',c:false},{t:'Sabah müdürü gelene kadar lobide bekletirim.',c:false},{t:'Rezervasyon kaydı olmadan giremez derim.',c:false}]},
-  {pos:['leader'],cat:'TUI Blue – Standart',q:'TUI Blue "No Stress Check-in" standardının operasyonel gereklilikleri nelerdir ve shift leader olarak nasıl denetlersiniz?',opts:[{t:'Misafirin tüm ön kayıt işlemleri check-in öncesinde tamamlanmış olur; karşılama maksimum 3 dakika sürer; sistemde tüm profil verileri eksiksiz hazır olmalıdır; standarda uyumu günlük mystery check ile denetlerim.',c:true},{t:'Misafiri uzun tanıtım konuşmasıyla karşılamak demektir.',c:false},{t:'Check-in kuyruğunu tamamen kaldırmak.',c:false},{t:'Yalnızca VIP misafirlere uygulanan özel bir prosedürdür.',c:false}]},
-  {pos:['leader'],cat:'TUI Blue – Brand Audit',q:'TUI Blue Maviss\'in ilk operasyon sezonunda bir TUI Brand Audit öncesinde ön büroda hangi hazırlıkları yaparsınız?',opts:[{t:'Tüm SOP\'ları gözden geçirir, fiziksel alanı TUI brand standartlarına göre düzenler, ekiple denetim kriterlerini paylaşır, rol yapma simülasyonları yapar ve eksiklikleri denetim öncesinde kapatırım.',c:true},{t:'Denetim günü biraz daha dikkatli olmak yeterlidir.',c:false},{t:'Genel temizlik yaptırıp eksiklikleri bakım ekibine iletirım.',c:false},{t:'Denetçilere özel muamele göstererek iyi izlenim bırakmak.',c:false}]},
+  {pos:['leader'],cat:'TUI Blue — Brand Audit',q:'TUI Brand Audit haftası. Denetçi bugün geliyor. Ekibiniz hazırlıksız görünüyor. Shift leader olarak sabah 07:00\'de ne yaparsınız?',opts:[
+    {t:'15 dakikalık hızlı brifing: kritik SOP\'ları hatırlatır, fiziksel alanı tarar, her personelin rolünü netleştirir.',c:true},
+    {t:'Denetçiye durumu açıklar, olağan koşulları değil günlük gerçeği görmesini sağlarım; dürüstlük önemli.',c:false},
+    {t:'Deneyimli personeli öne çıkarır, yenileri arka planda tutar; risk minimizasyon stratejisi.',c:false},
+    {t:'GM\'i arayıp denetimi ertelemesini talep ederim; hazırlıksız girmek daha büyük risk.',c:false}
+  ]},
+  {pos:['leader'],cat:'TUI Blue — Quality Recovery',q:'TUI Quality Review\'da önceki sezondan düşük puan. Ana sorun: misafir bilgilendirme eksikliği. 30 günlük aksiyon planınız?',opts:[
+    {t:'Zayıf alanları ekiple paylaş, haftalık mikro-eğitim uygula, misafir geri bildirimlerini görünür kıl, metrikleri haftalık takip et.',c:true},
+    {t:'Tüm ekibe yazılı uyarı düzenle; ciddiyet mesajı vermek motivasyonu artırır.',c:false},
+    {t:'TUI\'den daha fazla eğitim materyali talep et; içerik eksikliği ana sorun.',c:false},
+    {t:'Puan metodolojisine itiraz et; subjektif değerlendirme sistemine güvenmek yanıltıcı.',c:false}
+  ]},
+  {pos:['leader'],cat:'TUI Blue — Pre-Opening',q:'TUI Blue Maviss açılışından 10 gün önce. 12 yeni personel henüz PMS eğitimi almadı. Shift leader olarak ne yaparsınız?',opts:[
+    {t:'Acil PMS eğitim takvimi hazırlar, deneyimli personeli mentor atar, açılışa kadar her gün simülasyon yaparım.',c:true},
+    {t:'GM\'i bilgilendirir; bu seviyedeki hazırlık açığı shift leader\'in kapasitesini aşıyor.',c:false},
+    {t:'İlk hafta deneyimli personeli öne koyar, yenileri gözlemci olarak çalıştırırım.',c:false},
+    {t:'Eğitim talebini yazılı olarak İK\'ya iletir; resmi onay olmadan eğitim düzenleyemem.',c:false}
+  ]},
+  {pos:['leader'],cat:'TUI Blue — FAM Trip',q:'Ani bir FAM trip: 6 TUI acenta temsilcisi geliyor. Rezervasyon yok, 2 oda müsait, ekip hazırlıksız. Ne yaparsınız?',opts:[
+    {t:'Temsilcileri isimle karşıla, mevcut odaları hazırlat, GM\'i bilgilendir, tesis turunu bizzat yönet.',c:true},
+    {t:'"Rezervasyon olmadan ağırlama mümkün değil" derim; prosedür dışı misafir kabul etmek risk.',c:false},
+    {t:'Temsilcilere standart misafir prosedürü uygular; herkese eşit muamele profesyonellik.',c:false},
+    {t:'Tüm odaları onlara verir, akşam gelen rezervasyonları başka otele yönlendiririm.',c:false}
+  ]},
+  {pos:['leader'],cat:'TUI Blue — Upselling Etik',q:'Ekibiniz upselling baskısı nedeniyle misafirlere ihtiyaç duymadıkları hizmetleri satıyor. Bunu öğrendiniz. Tutumunuz?',opts:[
+    {t:'Ekiple konuşur: upselling misafire değer katmalı, zorla satış TUI kalite skorunu ve güveni zedeler.',c:true},
+    {t:'Upselling bir satış tekniğidir; misafir razı oluyorsa etik sorun yoktur.',c:false},
+    {t:'Hedeflere ulaşıldığı sürece yöntem sorgulanmaz; sonuç önemlidir.',c:false},
+    {t:'Durumu GM\'e raporlar; disiplin kararı benim değil, yönetimin sorumluluğu.',c:false}
+  ]},
+],
+
+// ─── ORTAK GENEL SORULAR (her iki otel, pozisyon bazlı) ───
+clerk:[
+  {pos:['clerk'],cat:'Ön Büro — Temel',q:'PMS\'in resepsiyonist için birincil işlevi nedir?',opts:[
+    {t:'Rezervasyon, check-in/out, fatura ve oda yönetimini tek sistemde yönetmek.',c:true},
+    {t:'Misafir memnuniyet anketlerini toplamak ve raporlamak.',c:false},
+    {t:'Kat hizmetleri ve bakım taleplerini koordine etmek.',c:false},
+    {t:'Personel maaş ve vardiya çizelgesini tutmak.',c:false}
+  ]},
+  {pos:['clerk'],cat:'Ön Büro — Upselling',q:'Upselling ile misafiri zorla satışa yönlendirme arasındaki temel fark nedir?',opts:[
+    {t:'Upselling misafirin gerçek ihtiyacına değer katar; zorla satış sadece gelir odaklıdır.',c:true},
+    {t:'Upselling daha pahalı ürünler önermektir; zorla satış da aynı şeydir, fark yoktur.',c:false},
+    {t:'Upselling yalnızca VIP misafirlere uygulanır; standart misafirlere zorlama sayılır.',c:false},
+    {t:'Upselling geliri artırır; etik kaygı ikincil plandadır.',c:false}
+  ]},
+],
+night:[
+  {pos:['night'],cat:'Gece Denetimi — Temel',q:'Night audit\'in temel amacı nedir?',opts:[
+    {t:'Günlük hesapları kapatmak, tutarsızlıkları doğrulamak ve yeni günü sisteme açmak.',c:true},
+    {t:'Gece gelen misafirleri kayıt altına alarak sabah müdürüne raporlamak.',c:false},
+    {t:'Kasa sayımı yaparak güvenli muhafazayı sağlamak.',c:false},
+    {t:'Enerji tasarrufu için sistemlerin gece moduna alınmasını koordine etmek.',c:false}
+  ]},
+  {pos:['night'],cat:'Gece — Bağımsız Karar',q:'Gece vardiyasında müdüre ulaşamıyorsunuz. Acil bir karar almanız gerekiyor. Ne yaparsınız?',opts:[
+    {t:'Yetki alanımda olan kararı alır, gerekçesiyle belgeler, sabah müdüre brifingte sunarım.',c:true},
+    {t:'Hiçbir karar almadan misafiri bekletirim; yetkisiz eylem daha büyük risk.',c:false},
+    {t:'Kararı başka bir otel yöneticisine danışarak alırım.',c:false},
+    {t:'Tüm seçenekleri misafire sunarak onu karar vermeye davet ederim.',c:false}
+  ]},
+],
+leader:[
+  {pos:['leader'],cat:'Shift Leader — Vardiya Devri',q:'Etkili bir vardiya devir tesliminde mutlaka yer alması gereken bilgiler nelerdir?',opts:[
+    {t:'Bekleyen görevler, VIP geliş/çıkışlar, açık şikayetler, kasa bakiyesi, olağandışı olaylar.',c:true},
+    {t:'Yalnızca toplam misafir sayısı ve sabah arrival listesi yeterlidir.',c:false},
+    {t:'Detaylı bilgiye gerek yok; logbook imzası sürekliliği sağlar.',c:false},
+    {t:'Sadece şikayet ve acil durumlar; rutin bilgi sonraki vardiyayı bunaltır.',c:false}
+  ]},
+  {pos:['leader'],cat:'Shift Leader — Personel Yönetimi',q:'Bir personel misafirle tartışıyor. Shift leader olarak ilk adım nedir?',opts:[
+    {t:'Personeli ortamdan sessizce çeker, misafiri bizzat devralırım.',c:true},
+    {t:'Personelin yanında durur, misafirin haklı olup olmadığını değerlendiririm.',c:false},
+    {t:'Güvenliği çağırırım; fiziksel müdahale ihtimaline karşı hazırlıklı olmak gerekir.',c:false},
+    {t:'İki tarafı da dinleyerek arabuluculuk yaparım; tarafsız kalmalıyım.',c:false}
+  ]},
 ],
 },
 
@@ -576,10 +800,10 @@ function buildQuestions(){
   const langQ=shuffle([...new Set(langPool)]).slice(0,langCount);
 
   // Otelcilik sorularını topla
-  const hospKey=ST.hotel==='tui'?'tui_'+ST.pos:ST.pos;
-  const hotelSpecific=(QB.hosp[hospKey]||[]).filter(q=>q.pos.includes(ST.pos));
+  const hotelSpecificKey = (ST.hotel==='tui'?'tui':'siam') + '_' + ST.pos;
+  const hotelSpecific=(QB.hosp[hotelSpecificKey]||[]).filter(q=>q.pos.includes(ST.pos));
   const generic=(QB.hosp[ST.pos]||[]).filter(q=>q.pos.includes(ST.pos));
-  const hotelCount=Math.min(hotelSpecific.length,Math.round(hospCount*0.6));
+  const hotelCount=Math.min(hotelSpecific.length,Math.round(hospCount*0.65));
   const genericCount=hospCount-hotelCount;
   const hospQ=[...shuffle([...hotelSpecific]).slice(0,hotelCount),...shuffle([...generic]).slice(0,genericCount)];
 
