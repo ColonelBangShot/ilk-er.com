@@ -774,242 +774,248 @@ leader:[
 
 // ── Hospitality Questions — ENGLISH (for EN / DE / RU selections) ──
 hosp_en:{
+// ════════════ SIAM ELEGANCE — CLERK (EN) ════════════
 siam_clerk:[
-  {pos:['clerk'],cat:'Siam Elegance — Guest Relations',q:'A returning Siam Elegance guest checks in. Their PMS profile has detailed preferences noted. What is the correct approach?',opts:[
+  {pos:['clerk'],cat:'Siam Elegance — Guest Relations',q:'A returning Siam Elegance guest checks in. Their PMS profile has preferences noted. What is the correct approach?',opts:[
     {t:'Greet by name, apply notes in advance, and say "Everything is ready" without asking again.',c:true},
-    {t:'Ask the guest to confirm preferences since they may have changed since last visit.',c:false},
-    {t:'Process a standard check-in first, then ask about preferences during room escort.',c:false},
-    {t:'Forward the profile notes to the supervisor to handle the personalised greeting.',c:false}
+    {t:'Ask the guest to confirm preferences since they may have changed.',c:false},
+    {t:'Process standard check-in first, then ask about preferences.',c:false},
+    {t:'Forward the profile notes to the supervisor to handle the personalisation.',c:false}
   ]},
-  {pos:['clerk'],cat:'Siam Elegance — Ultra AI',q:'An ultra all-inclusive guest asks about the private infinity pool access hours and you are not certain. What do you do?',opts:[
-    {t:'Say "Let me get you the exact information" and call the relevant department; return with a definitive answer within two minutes.',c:true},
-    {t:'Say "Everything is included, you may use it any time" to ensure the guest leaves satisfied.',c:false},
-    {t:'Direct the guest straight to the pool attendant who will know better.',c:false},
-    {t:'Suggest they download the hotel app where all details are in the digital guide.',c:false}
+  {pos:['clerk'],cat:'Siam Elegance — Ultra AI',q:'A Siam Elegance guest asks about pool private zone hours. You are not certain. What do you do?',opts:[
+    {t:'Say "Let me find the exact information for you," call the relevant department, and reply within two minutes.',c:true},
+    {t:'Say "Everything is included, you can use it anytime" to keep the guest happy.',c:false},
+    {t:'Direct the guest to the pool attendant — they know better.',c:false},
+    {t:'Recommend downloading the hotel app where all details are listed.',c:false}
   ]},
-  {pos:['clerk'],cat:'Siam Elegance — Service Recovery',q:'At 22:30 a guest requests strawberries and champagne in their room. À la carte service is closed. What do you do?',opts:[
-    {t:'Coordinate with the duty manager to find an alternative solution and inform the guest; saying "no" is the last resort.',c:true},
-    {t:'Inform the guest that à la carte service closes at this hour and opens at 08:00.',c:false},
-    {t:'Direct the guest to the 24-hour snack bar where a fruit plate may be available.',c:false},
-    {t:'Offer alternatives from the room service menu — wine instead of champagne.',c:false}
+  {pos:['clerk'],cat:'Siam Elegance — Service Recovery',q:'At 22:30 a Siam Elegance guest requests strawberries and champagne in their room. À la carte service is closed. What do you do?',opts:[
+    {t:'Coordinate with the duty manager to find an alternative solution; saying "no" is the last resort.',c:true},
+    {t:'Tell the guest à la carte closes at 22:00 and direct them to the 24-hour snack bar.',c:false},
+    {t:'Offer a substitute from the room service menu — wine instead of champagne.',c:false},
+    {t:'Apologise and explain that nothing can be done outside operating hours.',c:false}
   ]},
-  {pos:['clerk'],cat:'Siam Elegance — VIP',q:'A guest says their honeymoon package room had no preparations. The error was in reservations. Your immediate response?',opts:[
-    {t:'Apologise sincerely first, dispatch the setup team to the room, and offer welcome drinks while the guest waits.',c:true},
-    {t:'Review the reservation in the system to verify the package was actually booked before acting.',c:false},
-    {t:'Call the reservations department to clarify whose fault it is and then initiate the process.',c:false},
-    {t:'Say "I\'ll have your room ready, please wait in the lobby 20 minutes" and start the process.',c:false}
+  {pos:['clerk'],cat:'Siam Elegance — VIP',q:'A honeymoon couple says no room preparations were done despite their package. The error is in reservations. Your first response?',opts:[
+    {t:'Apologise sincerely, dispatch the setup team to the room immediately, and offer welcome drinks while they wait.',c:true},
+    {t:'Verify the reservation record first to confirm whether the package was actually purchased.',c:false},
+    {t:'Contact the reservations agent responsible and ask them to intervene.',c:false},
+    {t:'Apologise and assure the couple it will be corrected as soon as possible.',c:false}
   ]},
-  {pos:['clerk'],cat:'Siam Elegance — Billing',q:'A guest at check-out disputes minibar charges, claiming they did not consume the items. Others are watching. What do you do?',opts:[
-    {t:'Discreetly invite the guest to a private area, review the bill together, and correct it immediately if there is an error.',c:true},
-    {t:'Ask housekeeping to carry out a minibar inspection before doing anything.',c:false},
-    {t:'Tell the guest the system records automatically and perhaps their companion consumed the items.',c:false},
-    {t:'Note the complaint and advise that any refund requires manager approval.',c:false}
+  {pos:['clerk'],cat:'Siam Elegance — Billing',q:'A guest disputes mini-bar charges at check-out while other guests are waiting. How do you handle this?',opts:[
+    {t:'Invite the guest to a private area, review the folio together, and correct any error immediately.',c:true},
+    {t:'Ask the guest to wait while housekeeping conducts a mini-bar verification.',c:false},
+    {t:'Tell the guest the system records automatically and politely suggest someone else may have used it.',c:false},
+    {t:'Note the complaint and process a refund after manager approval.',c:false}
   ]},
 ],
+// ════════════ TUI BLUE MAVISS — CLERK (EN) ════════════
 tui_clerk:[
-  {pos:['clerk'],cat:'TUI Blue — Blue Feel Good',q:'According to TUI Blue\'s "Blue Feel Good" philosophy, what is expected of a receptionist during check-in?',opts:[
-    {t:'Address by name, make eye contact, provide proactive information — turn the procedure into a personalised experience.',c:true},
-    {t:'Complete check-in as quickly as possible and send the guest to their room without delay.',c:false},
-    {t:'Complete the TUI quality form first, then direct the guest; paperwork must be complete.',c:false},
-    {t:'Greet warmly and deliver the full facility tour covering every point in sequence.',c:false}
+  {pos:['clerk'],cat:'TUI Blue — Blue Feel Good',q:'According to the TUI Blue "Blue Feel Good" philosophy, what behaviour is expected from a receptionist during check-in?',opts:[
+    {t:'Address the guest by name, make eye contact, and provide proactive information — turning the procedure into a personalised experience.',c:true},
+    {t:'Complete check-in as fast as possible so the guest reaches their room without delay.',c:false},
+    {t:'Complete the TUI quality form first, then direct the guest to the room.',c:false},
+    {t:'Give a warm greeting and deliver the full facilities briefing point by point.',c:false}
   ]},
-  {pos:['clerk'],cat:'TUI Blue — Digital',q:'A guest completed online check-in via the TUI App but some fields are missing. What do you do at the desk?',opts:[
-    {t:'Politely complete the missing details, process correctly in the PMS, and keep the experience flowing without interruption.',c:true},
-    {t:'Reopen the form entirely because the online check-in is incomplete.',c:false},
-    {t:'Direct the guest to the IT support line; an app issue is a technical team responsibility.',c:false},
-    {t:'Leave the empty fields blank and finalise the check-in; the guest can complete it later.',c:false}
+  {pos:['clerk'],cat:'TUI Blue — Digital',q:'A guest who completed online check-in via the TUI App has some fields missing. What do you do at the desk?',opts:[
+    {t:'Fill in the missing fields courteously, process them in the PMS, and keep the flow uninterrupted.',c:true},
+    {t:'Tell the guest the online check-in is incomplete and restart the form from scratch.',c:false},
+    {t:'Direct the guest to the IT support line — it is a technical issue.',c:false},
+    {t:'Leave the empty fields blank and complete check-in; the guest can fill them in later.',c:false}
   ]},
-  {pos:['clerk'],cat:'TUI Blue — Quality Score',q:'What are the critical factors lowering TUI Quality Score and how does a receptionist contribute directly?',opts:[
-    {t:'First-contact quality; greeting by name, accurate information, and complaint resolution speed directly impact the score.',c:true},
-    {t:'Restaurant quality and room cleanliness are the dominant factors; reception has minimal influence.',c:false},
-    {t:'TUI Quality Score is only processed at year-end; it has no connection to daily operations.',c:false},
-    {t:'The score is determined entirely by personal guest expectations; reception can do little.',c:false}
+  {pos:['clerk'],cat:'TUI Blue — Quality Score',q:'What is the most critical factor affecting the TUI Quality Score, and how does a receptionist directly contribute?',opts:[
+    {t:'First-contact quality: greeting by name, accurate information, and speed of complaint resolution directly impact the score.',c:true},
+    {t:'Restaurant quality and room cleanliness account for the largest share; reception has minimal influence.',c:false},
+    {t:'The TUI Quality Score is processed only at year-end; it has no connection to daily operations.',c:false},
+    {t:'Guest personal expectations are the determining factor; reception can do very little.',c:false}
   ]},
-  {pos:['clerk'],cat:'TUI Blue — Local Living',q:'A TUI Blue guest says "I don\'t want tours — I want to see the real Antalya." What is the correct response?',opts:[
-    {t:'Offer personalised local experience recommendations: authentic markets, hidden coves, local restaurants — not the standard tour catalogue.',c:true},
-    {t:'Direct them to the tour desk where specialised guides can provide better information.',c:false},
-    {t:'Explain that TUI\'s recommended places are safe and quality-assured, and suggest the official tour catalogue.',c:false},
-    {t:'Say "The city centre can be chaotic — our in-house activities are excellent too."',c:false}
+  {pos:['clerk'],cat:'TUI Blue — Local Living',q:'A TUI Blue guest says: "I do not want tourist trips — I want to experience the real Antalya." What is the correct response?',opts:[
+    {t:'Offer personalised local recommendations: markets, secluded coves, authentic restaurants — not the standard tour catalogue.',c:true},
+    {t:'Direct the guest to the tour desk; specialists have better information.',c:false},
+    {t:'Recommend the official TUI tour options, explaining they are safe and high-quality.',c:false},
+    {t:'Mention that the resort\'s own activities are also excellent and very convenient.',c:false}
   ]},
-  {pos:['clerk'],cat:'TUI Blue — Service Standard',q:'Welcome Drink and facility introduction are standard at TUI Blue Maviss check-in. The guest says "Let\'s skip it." What do you do?',opts:[
-    {t:'"Of course — here is your room card. I\'m here whenever you need anything." Respect their preference.',c:true},
-    {t:'Insist it will only take five minutes; it is a TUI standard.',c:false},
-    {t:'Acknowledge and escort them to the room but hand a printed introduction.',c:false},
-    {t:'Inform the manager; it is not your decision whether to skip a standard procedure.',c:false}
+  {pos:['clerk'],cat:'TUI Blue — Service',q:'Welcome Drink and a facilities tour are standard at TUI Blue Maviss check-in. The guest says "Let\'s skip it." How do you respond?',opts:[
+    {t:'"Of course, here is your key card; I am here whenever you need me." Respect their preference.',c:true},
+    {t:'Explain it is a TUI standard and offer to make it brief — just five minutes.',c:false},
+    {t:'Say "Understood" and hand them a printed facilities guide instead.',c:false},
+    {t:'Inform the duty manager and let them decide whether to skip the standard procedure.',c:false}
   ]},
 ],
+// ════════════ SIAM ELEGANCE — NIGHT (EN) ════════════
 siam_night:[
-  {pos:['night'],cat:'Siam Elegance — Night Audit',q:'During the night audit you discover a guest\'s SPA service has been billed twice. What do you do?',opts:[
-    {t:'Document the duplicate, correct it in the PMS, record it in the duty report, and notify the manager in the morning.',c:true},
-    {t:'Wake the guest to inform them; transparency builds trust.',c:false},
-    {t:'Leave it for the morning shift; correcting without SPA confirmation may breach procedure.',c:false},
-    {t:'Call the SPA department for approval before making any correction.',c:false}
+  {pos:['night'],cat:'Siam Elegance — Night Audit',q:'During the night audit you find a guest has been charged twice for the same SPA service. What do you do?',opts:[
+    {t:'Document the duplicate, correct it in the PMS, log it in the night report, and inform the manager in the morning.',c:true},
+    {t:'Wake the guest to inform them; transparency is important and builds trust.',c:false},
+    {t:'Leave the folio for the morning shift; correcting without SPA approval may not be correct procedure.',c:false},
+    {t:'Call the SPA department to get their approval before making any correction.',c:false}
   ]},
-  {pos:['night'],cat:'Siam Elegance — Guest Welfare',q:'At 02:00 you notice a guest sitting alone in the lobby, visibly distressed. How do you approach?',opts:[
-    {t:'Approach quietly, ask "May I help you?", listen, and involve the duty manager if needed.',c:true},
-    {t:'Send security first; approaching an unknown situation without backup is risky.',c:false},
-    {t:'Gently suggest they return to their room; the lobby must stay calm for other guests.',c:false},
-    {t:'Observe from a distance; it may pass on its own and intervention may not be needed.',c:false}
+  {pos:['night'],cat:'Siam Elegance — Emergency',q:'At 02:00 you notice a guest alone in the lobby, visibly distressed. Your approach?',opts:[
+    {t:'Approach quietly, ask "May I help you?", listen attentively, and involve the duty manager if needed.',c:true},
+    {t:'Send security first; approaching an unknown situation without backup can be risky.',c:false},
+    {t:'Gently suggest they return to their room; the lobby must remain calm for other guests.',c:false},
+    {t:'Observe from a distance; the situation may resolve itself without intervention.',c:false}
   ]},
-  {pos:['night'],cat:'Siam Elegance — Occupancy',q:'During the night audit the PMS occupancy data does not match the physical room status. What do you do?',opts:[
-    {t:'Cross-reference the physical room list with the PMS, document all discrepancies, and conduct a physical check with security if needed.',c:true},
-    {t:'Assume the system is correct and defer to the PMS; leave it for morning.',c:false},
-    {t:'Mark all apparently empty rooms as occupied to eliminate the risk of error.',c:false},
-    {t:'Call housekeeping for confirmation and update the system based on their response.',c:false}
+  {pos:['night'],cat:'Siam Elegance — Discrepancy',q:'The night audit shows a mismatch between PMS occupancy data and the physical room status. What do you do?',opts:[
+    {t:'Cross-reference the physical room list against the PMS, document all discrepancies, and conduct a physical check with security if needed.',c:true},
+    {t:'Assume the system is correct and leave the issue for the morning.',c:false},
+    {t:'Mark all apparently vacant rooms as occupied to eliminate error risk.',c:false},
+    {t:'Call housekeeping for confirmation and update the system accordingly.',c:false}
   ]},
-  {pos:['night'],cat:'Siam Elegance — Walk-in',q:'A walk-in guest arrives at night. The system shows no availability but one room is physically free. What do you do?',opts:[
-    {t:'Apply the walk-in procedure, take ID and payment, record correctly in the PMS, and note it in the duty report.',c:true},
-    {t:'Tell the guest the system shows full and apologise; the system is the authority.',c:false},
-    {t:'Wake the manager; opening a room without authorisation may violate procedure.',c:false},
-    {t:'Direct the guest to a nearby hotel; taking a risk at this hour is inadvisable.',c:false}
+  {pos:['night'],cat:'Siam Elegance — Walk-in',q:'A walk-in guest arrives at night. The system shows no availability, but physically one room is free. What do you do?',opts:[
+    {t:'Apply the walk-in procedure, take ID and payment, record correctly in the PMS, and add to the night report.',c:true},
+    {t:'Tell the guest "The system shows full occupancy" and apologise.',c:false},
+    {t:'Wake the duty manager; opening a room without authorisation may breach procedure.',c:false},
+    {t:'Direct the guest to a nearby hotel; taking risks at this hour is inadvisable.',c:false}
   ]},
-  {pos:['night'],cat:'Siam Elegance — Emergency',q:'A guest is showing signs of a cardiac episode in the middle of the night. Your first action?',opts:[
-    {t:'Call 112.',c:true},
-    {t:'Call the hotel physician first; internal medical protocol must be exhausted before involving outside services.',c:false},
-    {t:'Wake the duty manager; critical decisions must not be taken without an authorised person present.',c:false},
-    {t:'Wake the guest\'s family from their room; next of kin must be informed before any action.',c:false}
+  {pos:['night'],cat:'Siam Elegance — Medical',q:'A guest appears to be having a cardiac episode. What is the very first thing you do?',opts:[
+    {t:'Call emergency services (112).',c:true},
+    {t:'Call the hotel doctor first; internal medical protocols should be tried before involving external services.',c:false},
+    {t:'Wake the duty manager; critical decisions must not be made without an authorised person present.',c:false},
+    {t:'Go to the guest\'\2 room and inform their family members first.',c:false}
   ]},
 ],
+// ════════════ TUI BLUE MAVISS — NIGHT (EN) ════════════
 tui_night:[
-  {pos:['night'],cat:'TUI Blue — Charter Operations',q:'A TUI charter flight is delayed by 4 hours; 48 guests will arrive at 06:00 instead of 02:00. What is your first action?',opts:[
-    {t:'Coordinate housekeeping, arrange welcome refreshments, confirm rooms are ready, and align with the transfer company.',c:true},
-    {t:'Contact the TUI representative; the delay notification must come through official channels.',c:false},
-    {t:'Leave a note for the morning shift; the night team\'s capacity is insufficient for this volume.',c:false},
-    {t:'Call the bus company to cancel and reschedule the transfer.',c:false}
+  {pos:['night'],cat:'TUI Blue — Charter Operations',q:'A TUI charter flight is delayed by 4 hours; 48 guests will arrive at 06:00 instead of 02:00. What is your first priority?',opts:[
+    {t:'Notify housekeeping, arrange welcome refreshments, confirm rooms are ready, and coordinate with the transfer company.',c:true},
+    {t:'Call the TUI representative; the delay notification must come through an official channel.',c:false},
+    {t:'Leave a note for the morning shift; the night team does not have the capacity for this many guests.',c:false},
+    {t:'Cancel and rebook the transfer with the bus company.',c:false}
   ]},
-  {pos:['night'],cat:'TUI Blue — System Outage',q:'The TUI reservation system goes offline at night. A guest with a booking arrives. What do you do?',opts:[
-    {t:'Use offline backup records, complete check-in manually, and note all details in the duty report.',c:true},
-    {t:'Tell the guest "The system is offline — please return at 07:00"; entering incorrect data is worse.',c:false},
-    {t:'Call the TUI emergency line and wait for the system to recover while hosting the guest in the lobby.',c:false},
-    {t:'Take the guest\'s booking number and send them to the room; complete the record in the morning.',c:false}
+  {pos:['night'],cat:'TUI Blue — System Down',q:'The TUI reservation system goes offline at night. A guest with a reservation arrives. What do you do?',opts:[
+    {t:'Use offline backup records, complete check-in manually, and log all details in the night report.',c:true},
+    {t:'Tell the guest "The system is down, please come back at 07:00."',c:false},
+    {t:'Call the TUI emergency line and wait for the system to recover while accommodating the guest in the lobby.',c:false},
+    {t:'Take the guest\'\2 reservation number, send them to the room, and complete the record in the morning.',c:false}
   ]},
-  {pos:['night'],cat:'TUI Blue — Tour Representative',q:'A TUI tour representative calls at night to urgently relay a group complaint. What is the correct approach?',opts:[
-    {t:'Take a full note of the complaint, inform the duty manager, and add it as a priority item for the morning briefing.',c:true},
-    {t:'Say "Please speak with management in the morning"; this falls outside night reception\'s authority.',c:false},
-    {t:'Direct them to the TUI central complaints line; that is the official channel.',c:false},
-    {t:'Attempt to resolve the matter independently; waking the manager should be a last resort.',c:false}
+  {pos:['night'],cat:'TUI Blue — Tour Rep',q:'A TUI tour representative calls at night to escalate an urgent group complaint. What is the correct approach?',opts:[
+    {t:'Record the complaint in full, inform the duty manager, and add it as a priority item for the morning briefing.',c:true},
+    {t:'Tell them "Please speak with management in the morning"; this is outside night reception\'\2 authority.',c:false},
+    {t:'Direct them to the TUI central line — the official escalation channel.',c:false},
+    {t:'Try to resolve the situation independently; waking the manager is a last resort.',c:false}
   ]},
-  {pos:['night'],cat:'TUI Blue — Survey Data',q:'During the night audit you notice guest satisfaction data that should be entered into the TUI system is incomplete. What do you do?',opts:[
-    {t:'Complete what can be verified, note the source for gaps, and leave a clear handover note; never fabricate data.',c:true},
-    {t:'Fill all fields with reasonable estimates; missing data lowers the system score.',c:false},
+  {pos:['night'],cat:'TUI Blue — Survey Data',q:'During the night audit, guest satisfaction data required for the TUI system is missing. What do you do?',opts:[
+    {t:'Complete what is available, note the source of gaps, and leave a handover note for the morning team. Never fabricate data.',c:true},
+    {t:'Fill all fields with reasonable estimates; incomplete data lowers the system score.',c:false},
     {t:'Leave the entire survey blank; partial data can be misleading.',c:false},
-    {t:'Close the system temporarily so the morning team starts fresh.',c:false}
+    {t:'Temporarily shut down the system so the morning team can start fresh.',c:false}
   ]},
-  {pos:['night'],cat:'TUI Blue — Early Departure',q:'At midnight a TUI guest checks out early and requests a partial refund for unused nights. Policy does not allow refunds. What do you do?',opts:[
-    {t:'Explain the policy clearly, record the request in detail, and direct the guest to speak with management in the morning; I do not approve refunds unilaterally.',c:true},
-    {t:'Say "No refunds" firmly and close the matter; I have no authority to act at night.',c:false},
-    {t:'Approve a partial refund; it is late and arguing is unproductive.',c:false},
-    {t:'Create a TUI central request for them to call the guest and approve.',c:false}
+  {pos:['night'],cat:'TUI Blue — Early Departure',q:'A TUI guest checks out early at night and requests a partial refund for remaining nights. Policy states no refund. What do you do?',opts:[
+    {t:'Explain the policy clearly, record the request in detail, and direct the guest to the morning manager. Do not approve a refund on your own authority.',c:true},
+    {t:'Say "No refunds possible" and close the matter quickly; you have no authority at night.',c:false},
+    {t:'Approve a partial refund; it is late, and arguing is counterproductive.',c:false},
+    {t:'Create a TUI central request so they can contact the guest and approve it.',c:false}
   ]},
 ],
+// ════════════ SIAM ELEGANCE — SHIFT LEADER (EN) ════════════
 siam_leader:[
-  {pos:['leader'],cat:'Siam Elegance — Crisis Management',q:'High season: simultaneously — 3-room overbooking, VIP arrival, 12-person lobby queue, 1 staff member sick. What is your priority sequence?',opts:[
-    {t:'Open a dedicated lane for the VIP, initiate transfer logistics for overbooking, deploy available staff to the queue, request cover for the sick colleague.',c:true},
-    {t:'Resolve the queue first; the greatest number of guests are waiting here and overall satisfaction is the priority.',c:false},
-    {t:'Call the manager and hand over the entire situation; multiple simultaneous crises exceed shift leader authority.',c:false},
-    {t:'Tell the overbooking guests to wait in their rooms while you resolve everything else.',c:false}
+  {pos:['leader'],cat:'Siam Elegance — Crisis Management',q:'Simultaneously: 3-room overbooking, VIP arrival, 12-person lobby queue, 1 staff member sick. What is the correct priority order?',opts:[
+    {t:'Handle VIP via a dedicated channel, launch overbooking transfer logistics, redirect available staff to the queue, and request sick-cover support.',c:true},
+    {t:'Clear the queue first — the highest number of guests are waiting there.',c:false},
+    {t:'Call the manager and hand over everything; simultaneous crises of this scale exceed shift leader authority.',c:false},
+    {t:'Ask the overbooking guests to wait in their rooms while you address the other issues.',c:false}
   ]},
-  {pos:['leader'],cat:'Siam Elegance — Service Recovery',q:'A Siam Elegance guest has reported issues across different departments over 5 days. As Shift Leader, what do you do?',opts:[
+  {pos:['leader'],cat:'Siam Elegance — Service Recovery',q:'A Siam Elegance guest has reported recurring issues across five days and three departments. As Shift Leader, what is your response?',opts:[
     {t:'Take personal ownership, conduct a structured recovery conversation, prepare a cross-departmental incident report, and brief the GM.',c:true},
-    {t:'Forward each complaint to the relevant department and ask them to coordinate since they share the same guest.',c:false},
-    {t:'Ask the guest to submit complaints in writing; verbal reports are insufficient for the record.',c:false},
-    {t:'Offer a complimentary SPA session or room upgrade; a concrete gesture is the fastest resolution.',c:false}
+    {t:'Forward each complaint to the relevant department; ask them to coordinate since the issues all come from the same guest.',c:false},
+    {t:'Ask the guest to submit their complaints in writing for proper record-keeping.',c:false},
+    {t:'Offer a complimentary SPA session or room upgrade — concrete gestures resolve situations fastest.',c:false}
   ]},
-  {pos:['leader'],cat:'Siam Elegance — Honeymoon Recovery',q:'A couple with a honeymoon package says "Nothing was prepared in our room." The fault is in reservations. Your first 3 minutes?',opts:[
-    {t:'Apologise, move the couple to the lounge, dispatch the setup team to the room, and organise a personal touch — the investigation comes second.',c:true},
-    {t:'Check the reservation in the system first to confirm the package was actually purchased.',c:false},
-    {t:'Find the responsible reservations colleague and have them intervene; this is their area.',c:false},
-    {t:'Offer a standard apology and say it will be corrected as soon as possible, then start the process.',c:false}
+  {pos:['leader'],cat:'Siam Elegance — Honeymoon Recovery',q:'A honeymoon couple finds their room unprepared despite their package. Error is in reservations. What do you do in the first 3 minutes?',opts:[
+    {t:'Apologise sincerely, escort the couple to the lounge, dispatch the setup team to the room, and organise a personal gesture (champagne, flowers).',c:true},
+    {t:'Check the reservation in the system first — confirm the package was genuinely purchased.',c:false},
+    {t:'Locate the responsible reservations staff and have them intervene.',c:false},
+    {t:'Offer a standard apology and assure them it will be corrected shortly.',c:false}
   ]},
-  {pos:['leader'],cat:'Siam Elegance — Incident Reporting',q:'A guest slipped and was injured in the lobby during your shift. As Shift Leader, what are the mandatory reporting steps?',opts:[
-    {t:'Call 112 → immediate GM notification → incident report (time, witnesses, actions) → photographic documentation for insurance → duty log entry.',c:true},
-    {t:'Completing the incident report is sufficient; the GM is only contacted for severe cases.',c:false},
-    {t:'Inform the guest\'s family first; official records cannot be opened without family consent.',c:false},
-    {t:'Security cameras are already recording; additional documentation is redundant.',c:false}
+  {pos:['leader'],cat:'Siam Elegance — Incident Report',q:'A guest fell in the lobby and was injured during your shift. What are your mandatory reporting steps as Shift Leader?',opts:[
+    {t:'Call 112 → notify GM immediately → complete incident report (time, witnesses, actions taken) → photographic documentation → log in shift notes.',c:true},
+    {t:'Completing the incident report is sufficient; GM is only contacted for serious cases.',c:false},
+    {t:'Inform the guest\'\2 family first; opening a formal record without family consent is unethical.',c:false},
+    {t:'Security cameras are already recording; additional documentation is unnecessary.',c:false}
   ]},
-  {pos:['leader'],cat:'Siam Elegance — Revenue',q:'What is "RevPAR" and how does a Shift Leader at an ultra all-inclusive property like Siam Elegance contribute to it?',opts:[
-    {t:'RevPAR = occupancy × average rate; a Shift Leader contributes through upselling, room upgrades, and F&B cross-selling.',c:true},
-    {t:'RevPAR is a revenue management department metric; the Shift Leader has no operational influence on it.',c:false},
-    {t:'RevPAR measures occupancy only; it has no relationship to room rate.',c:false},
-    {t:'In ultra all-inclusive properties, upselling is not applicable; RevPAR remains fixed.',c:false}
+  {pos:['leader'],cat:'Siam Elegance — Revenue',q:'What is RevPAR, and how does a Shift Leader at an Ultra All-Inclusive property like Siam Elegance directly contribute to it?',opts:[
+    {t:'RevPAR = occupancy × average rate; Shift Leader contributes through upselling, room upgrades, and F&B cross-selling.',c:true},
+    {t:'RevPAR is a revenue management department metric; Shift Leader has no operational impact on it.',c:false},
+    {t:'RevPAR measures only occupancy rate; it has no relation to room pricing.',c:false},
+    {t:'In an Ultra AI property, upselling is irrelevant since everything is included.',c:false}
   ]},
 ],
+// ════════════ TUI BLUE MAVISS — SHIFT LEADER (EN) ════════════
 tui_leader:[
-  {pos:['leader'],cat:'TUI Blue — Brand Audit',q:'A TUI Brand Auditor is arriving today. Your team appears unprepared. It is 07:00. What do you do?',opts:[
-    {t:'Run a 15-minute rapid briefing: reinforce critical SOPs, inspect the physical area, clarify each team member\'s role.',c:true},
-    {t:'Explain the real situation to the auditor and let them observe normal conditions rather than a prepared environment.',c:false},
-    {t:'Put experienced staff at the front and keep new staff in the background — risk minimisation strategy.',c:false},
-    {t:'Call the GM to request postponement; presenting unprepared is a greater risk.',c:false}
+  {pos:['leader'],cat:'TUI Blue — Brand Audit',q:'A TUI Brand Audit is today and your team appears unprepared. It is 07:00. What do you do as Shift Leader?',opts:[
+    {t:'Run a 15-minute rapid briefing: review critical SOPs, inspect the physical area, clarify each team member\'\2 role.',c:true},
+    {t:'Explain the situation to the auditor and let them see the real daily reality rather than a staged performance.',c:false},
+    {t:'Position experienced staff at the front and keep new staff in the background — risk minimisation.',c:false},
+    {t:'Call the GM and request a postponement; entering the audit unprepared is a greater risk.',c:false}
   ]},
-  {pos:['leader'],cat:'TUI Blue — Quality Recovery',q:'TUI Quality Review shows lower scores than last season. Main issue: guest information gaps. Your 30-day action plan?',opts:[
-    {t:'Share the weak areas transparently with the team, run weekly micro-training sessions, make guest feedback visible, and track metrics weekly.',c:true},
-    {t:'Issue written warnings to the entire team; demonstrating seriousness motivates improvement.',c:false},
-    {t:'Request more training materials from TUI; content deficiency is the root cause.',c:false},
-    {t:'Challenge the scoring methodology; the subjective assessment system is unreliable.',c:false}
+  {pos:['leader'],cat:'TUI Blue — Quality Recovery',q:'The TUI Quality Review shows a lower score than the previous season. Root cause: guest information gaps. Your 30-day action plan?',opts:[
+    {t:'Share weak areas transparently with the team, run weekly micro-training sessions, make guest feedback visible, and track metrics weekly.',c:true},
+    {t:'Issue written warnings to all team members to signal seriousness.',c:false},
+    {t:'Request more training materials from TUI; content gaps are the core issue.',c:false},
+    {t:'Challenge the scoring methodology; subjective assessment systems are unreliable.',c:false}
   ]},
-  {pos:['leader'],cat:'TUI Blue — Pre-Opening',q:'TUI Blue Maviss opens in 10 days. 12 new staff have not received PMS training. As Shift Leader, what do you do?',opts:[
+  {pos:['leader'],cat:'TUI Blue — Pre-Opening',q:'TUI Blue Maviss opens in 10 days. Twelve new staff have not yet received PMS training. What do you do as Shift Leader?',opts:[
     {t:'Build an emergency PMS training schedule, assign experienced staff as mentors, and run daily simulations until opening.',c:true},
-    {t:'Inform the GM; a preparedness gap of this scale exceeds shift leader capacity.',c:false},
-    {t:'Put experienced staff in front-facing roles for the first week and keep new staff as observers.',c:false},
-    {t:'Submit a formal training request to HR in writing; training cannot be organised without official approval.',c:false}
+    {t:'Inform the GM; a preparation gap of this scale is beyond shift leader capacity.',c:false},
+    {t:'Put experienced staff in front for the first week and let new staff observe.',c:false},
+    {t:'Submit a training request to HR in writing; no training can be arranged without formal approval.',c:false}
   ]},
-  {pos:['leader'],cat:'TUI Blue — FAM Trip',q:'A surprise FAM trip: 6 TUI agency representatives arrive. No reservation, 2 rooms available, team unprepared. What do you do?',opts:[
-    {t:'Greet by name, prepare the available rooms, notify the GM, and personally manage the facility tour.',c:true},
-    {t:'Explain that hosting without a reservation is not possible; acting outside procedure is a risk.',c:false},
+  {pos:['leader'],cat:'TUI Blue — FAM Trip',q:'6 TUI preferred-partner agency representatives arrive unannounced for a FAM trip. No reservation, 2 rooms available, team unprepared. What do you do?',opts:[
+    {t:'Greet representatives by name, prepare the available rooms, notify the GM, and personally lead the property tour.',c:true},
+    {t:'Explain that hosting without a reservation is not procedurally possible.',c:false},
     {t:'Apply the standard guest procedure; equal treatment is professionalism.',c:false},
-    {t:'Allocate all rooms to them and redirect evening reservation guests to another hotel.',c:false}
+    {t:'Allocate all available rooms to them and redirect tonight\'\2 reservation guests to another hotel.',c:false}
   ]},
-  {pos:['leader'],cat:'TUI Blue — Upselling Ethics',q:'You learn that your team is selling services guests do not actually need due to upselling pressure. Your response?',opts:[
-    {t:'Speak directly with the team: upselling must add genuine value; forced selling damages TUI quality score and guest trust.',c:true},
-    {t:'Upselling is a sales technique; if the guest agrees it is not an ethical issue.',c:false},
-    {t:'As long as targets are met, the method is not questioned; results matter.',c:false},
-    {t:'Report it to the GM; disciplinary decisions belong to management, not the shift leader.',c:false}
+  {pos:['leader'],cat:'TUI Blue — Upselling Ethics',q:'You discover your team has been selling services guests do not need due to upselling pressure. Your position?',opts:[
+    {t:'Speak with the team: upselling must add value to the guest; forced selling damages TUI quality scores and erodes trust.',c:true},
+    {t:'Upselling is a sales technique; if the guest agrees, there is no ethical problem.',c:false},
+    {t:'Results matter; method is not questioned as long as targets are met.',c:false},
+    {t:'Report to the GM; the disciplinary decision belongs to management, not to me.',c:false}
   ]},
 ],
+// ════════════ SHARED GENERAL QUESTIONS — ENGLISH ════════════
 clerk:[
-  {pos:['clerk'],cat:'Front Office — Core',q:'What is the primary function of a PMS for a receptionist?',opts:[
-    {t:'To manage reservations, check-in/out, billing, and room allocation in a single integrated system.',c:true},
+  {pos:['clerk'],cat:'Front Office — Fundamentals',q:'What is the primary function of a PMS for a receptionist?',opts:[
+    {t:'To manage reservations, check-in/out, billing, and room status in a single integrated system.',c:true},
     {t:'To collect and report guest satisfaction surveys.',c:false},
     {t:'To coordinate housekeeping and maintenance requests.',c:false},
-    {t:'To manage staff payroll and shift scheduling.',c:false}
+    {t:'To manage staff payroll and shift schedules.',c:false}
   ]},
-  {pos:['clerk'],cat:'Front Office — Upselling',q:'What is the fundamental difference between upselling and high-pressure selling?',opts:[
-    {t:'Upselling adds genuine value to the guest\'s needs; high-pressure selling is purely revenue-driven.',c:true},
-    {t:'Upselling means recommending more expensive products; high-pressure selling is the same thing.',c:false},
-    {t:'Upselling is only appropriate for VIP guests; for standard guests it counts as pressure.',c:false},
-    {t:'Upselling increases revenue; ethical concerns are secondary.',c:false}
+  {pos:['clerk'],cat:'Front Office — Upselling',q:'What is the fundamental difference between upselling and a forced sale?',opts:[
+    {t:'Upselling adds genuine value to the guest\'\2 experience; a forced sale is purely revenue-driven.',c:true},
+    {t:'Upselling means recommending more expensive products; there is no practical difference.',c:false},
+    {t:'Upselling applies only to VIP guests; offering to standard guests counts as forcing a sale.',c:false},
+    {t:'Upselling increases revenue; ethical considerations are secondary.',c:false}
   ]},
 ],
 night:[
   {pos:['night'],cat:'Night Audit — Core',q:'What is the primary purpose of the night audit?',opts:[
-    {t:'To close daily accounts, verify all transactions, and open the next business day in the system.',c:true},
-    {t:'To record guests who arrive at night and report to the morning manager.',c:false},
-    {t:'To count the cash and secure it for overnight safekeeping.',c:false},
-    {t:'To switch systems to night mode for energy saving.',c:false}
+    {t:'To close daily revenue accounts, verify all transactions, and open the new business day in the system.',c:true},
+    {t:'To record night arrivals and report them to the morning manager.',c:false},
+    {t:'To conduct a cash count and ensure secure storage.',c:false},
+    {t:'To coordinate switching hotel systems to night-saving mode.',c:false}
   ]},
-  {pos:['night'],cat:'Night — Independent Decision',q:'During your shift you cannot reach the manager but an urgent decision is needed. What do you do?',opts:[
-    {t:'Make the decision within my authority, document it with full reasoning, and present it at the morning briefing.',c:true},
-    {t:'Take no action and let the guest wait; an unauthorised decision carries greater risk.',c:false},
-    {t:'Consult a manager from a neighbouring hotel for guidance.',c:false},
+  {pos:['night'],cat:'Night — Independent Decision',q:'You cannot reach the duty manager during the night shift. An urgent decision must be made. What do you do?',opts:[
+    {t:'Make the decision within your authority, document it with full reasoning, and present it to the manager at the morning briefing.',c:true},
+    {t:'Take no action and keep the guest waiting; unauthorised action creates greater risk.',c:false},
+    {t:'Call a manager from another hotel for advice.',c:false},
     {t:'Present all options to the guest and invite them to decide.',c:false}
   ]},
 ],
 leader:[
-  {pos:['leader'],cat:'Shift Leader — Handover',q:'What information must always be included in an effective shift handover briefing?',opts:[
-    {t:'Pending tasks, VIP movements, open complaints, cash balance, and any unusual incidents.',c:true},
-    {t:'Only the total guest count and the morning arrivals list.',c:false},
-    {t:'A signed logbook entry is sufficient; no verbal detail is needed.',c:false},
-    {t:'Only complaints and emergencies; routine information overloads the incoming shift.',c:false}
+  {pos:['leader'],cat:'Shift Leader — Handover',q:'What information is non-negotiable in an effective shift handover?',opts:[
+    {t:'Pending tasks, VIP arrivals and departures, open complaints, cash balance, and any unusual incidents.',c:true},
+    {t:'Only the total guest count and the next day\'\2 arrival list.',c:false},
+    {t:'A signed logbook entry ensures continuity; no further detail is needed.',c:false},
+    {t:'Only complaints and emergencies; routine information overwhelms the incoming shift.',c:false}
   ]},
-  {pos:['leader'],cat:'Shift Leader — Staff Management',q:'You see a staff member arguing with a guest. What is your first action as Shift Leader?',opts:[
-    {t:'Quietly remove the staff member from the interaction and take over the guest personally.',c:true},
+  {pos:['leader'],cat:'Shift Leader — Team Management',q:'You see a staff member arguing with a guest. What is your first step?',opts:[
+    {t:'Quietly remove the staff member from the interaction and personally take over with the guest.',c:true},
     {t:'Stand beside the staff member and assess whether the guest is actually right.',c:false},
-    {t:'Call security in case the situation escalates to physical intervention.',c:false},
+    {t:'Call security in case the situation escalates.',c:false},
     {t:'Listen to both parties and act as a neutral mediator.',c:false}
   ]},
 ],
 },
-
 };
 
 // ═══════════════════════════════════════════
@@ -1065,14 +1071,14 @@ function buildQuestions(){
   }
   const langQ=shuffle([...new Set(langPool)]).slice(0,langCount);
 
-  // Otelcilik sorularını topla
-  const hospDB = ST.lang === 'tr' ? QB.hosp_tr : QB.hosp_en;
+  // Otelcilik sorularını topla — dile göre doğru havuz seç
+  const hospPool = (ST.lang === 'tr') ? QB.hosp_tr : QB.hosp_en;
   const hotelSpecificKey = (ST.hotel==='tui'?'tui':'siam') + '_' + ST.pos;
-  const hotelSpecific=(hospDB[hotelSpecificKey]||[]).filter(q=>q.pos.includes(ST.pos));
-  const generic=(hospDB[ST.pos]||[]).filter(q=>q.pos.includes(ST.pos));
-  const hotelCount=Math.min(hotelSpecific.length,Math.round(hospCount*0.65));
-  const genericCount=hospCount-hotelCount;
-  const hospQ=[...shuffle([...hotelSpecific]).slice(0,hotelCount),...shuffle([...generic]).slice(0,genericCount)];
+  const hotelSpecific = (hospPool[hotelSpecificKey]||[]).filter(q=>q.pos.includes(ST.pos));
+  const generic = (hospPool[ST.pos]||[]).filter(q=>q.pos.includes(ST.pos));
+  const hotelCount = Math.min(hotelSpecific.length, Math.round(hospCount*0.65));
+  const genericCount = hospCount - hotelCount;
+  const hospQ = [...shuffle([...hotelSpecific]).slice(0,hotelCount), ...shuffle([...generic]).slice(0,genericCount)];
 
   return shuffle([...langQ,...hospQ]).map(q=>({...q,opts:shuffle([...q.opts])}));
 }
