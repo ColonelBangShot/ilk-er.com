@@ -7,37 +7,20 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-:root {
-  --gold: #C9A84C; --gold-light: #E8C97A; --gold-dim: rgba(201,168,76,0.15);
-  --dark: #080808; --dark2: #111111; --dark3: #1C1C1C; --dark4: #252525;
-  --text: #F2EDE4; --text-muted: #7A776F; --text-mid: #B8B3AB;
-  --danger: #D95F5F; --success: #4CAF82;
-  --border: rgba(201,168,76,0.18); --border-dim: rgba(255,255,255,0.06);
-}
+:root{--gold:#C9A84C;--gold-light:#E8C97A;--gold-dim:rgba(201,168,76,0.15);--dark:#080808;--dark2:#111111;--dark3:#1C1C1C;--dark4:#252525;--text:#F2EDE4;--text-muted:#7A776F;--text-mid:#B8B3AB;--danger:#D95F5F;--success:#4CAF82;--border:rgba(201,168,76,0.18);--border-dim:rgba(255,255,255,0.06)}
 *{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth}
 body{font-family:'DM Sans',sans-serif;background:var(--dark);color:var(--text);min-height:100vh;overflow-x:hidden}
-
-/* SCREENS */
 .screen{display:none;min-height:100vh;animation:fadeIn 0.4s ease}
 .screen.active{display:flex;flex-direction:column}
 @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-
-/* DECORATIVE BG */
 .bg-deco{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
 .bg-deco::before{content:'';position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,0.06) 0%,transparent 70%);top:-200px;right:-200px}
 .bg-deco::after{content:'';position:absolute;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,0.04) 0%,transparent 70%);bottom:-100px;left:-100px}
-
-/* STEP WRAPPER */
 .step-wrap{position:relative;z-index:1;flex:1;display:flex;align-items:center;justify-content:center;padding:2rem 1rem}
 .card{background:var(--dark2);border:1px solid var(--border);border-radius:20px;padding:2.5rem 2rem;max-width:520px;width:100%}
-
-/* HEADER BADGE */
 .hotel-badge{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--border);border-radius:100px;padding:5px 14px;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:1.5rem;background:var(--gold-dim)}
 .card-title{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:600;line-height:1.2;margin-bottom:0.5rem}
 .card-sub{color:var(--text-muted);font-size:13px;line-height:1.7;margin-bottom:1.8rem}
-
-/* HOTEL SELECT */
 .hotel-grid{display:grid;gap:10px;margin-bottom:1.5rem}
 .hotel-opt{background:var(--dark3);border:1px solid var(--border-dim);border-radius:14px;padding:1.1rem 1.3rem;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:12px}
 .hotel-opt:hover{border-color:var(--gold);background:rgba(201,168,76,0.05)}
@@ -48,8 +31,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--dark);color:var(--text);m
 .opt-check::after{content:'✓';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11px;color:#000;opacity:0;transition:opacity 0.2s}
 .opt-label{font-size:14px;font-weight:500}
 .opt-sub{font-size:11px;color:var(--text-muted);margin-top:2px}
-
-/* POSITION CARDS */
 .pos-grid{display:grid;gap:10px;margin-bottom:1.5rem}
 .pos-card{background:var(--dark3);border:1.5px solid var(--border-dim);border-radius:14px;padding:1.2rem 1.3rem;cursor:pointer;transition:all 0.2s}
 .pos-card:hover{border-color:rgba(201,168,76,0.5);background:rgba(201,168,76,0.04)}
@@ -60,51 +41,35 @@ body{font-family:'DM Sans',sans-serif;background:var(--dark);color:var(--text);m
 .badge-standard{background:rgba(76,175,130,0.15);color:#4CAF82;border:1px solid rgba(76,175,130,0.3)}
 .badge-medium{background:rgba(201,168,76,0.15);color:var(--gold);border:1px solid var(--border)}
 .badge-hard{background:rgba(217,95,95,0.15);color:var(--danger);border:1px solid rgba(217,95,95,0.3)}
-
-/* LANGUAGE GRID */
 .lang-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:1.5rem}
 .lang-btn{background:var(--dark3);border:1px solid var(--border-dim);border-radius:12px;padding:0.9rem;cursor:pointer;transition:all 0.15s;text-align:center}
 .lang-btn:hover{border-color:var(--gold);background:rgba(201,168,76,0.05)}
 .lang-btn.selected{border-color:var(--gold);background:rgba(201,168,76,0.1)}
 .lang-name{font-size:14px;font-weight:600;margin-bottom:2px}
 .lang-native{font-size:11px;color:var(--text-muted)}
-
-/* LEVEL GRID */
 .level-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:1.5rem}
 .level-btn{background:var(--dark3);border:1px solid var(--border-dim);border-radius:12px;padding:0.8rem 0.5rem;cursor:pointer;transition:all 0.15s;text-align:center}
 .level-btn:hover{border-color:var(--gold)}
 .level-btn.selected{border-color:var(--gold);background:rgba(201,168,76,0.1)}
 .level-code{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:700;color:var(--gold)}
 .level-name{font-size:10px;color:var(--text-muted);margin-top:2px}
-
-/* FORM */
 .form-group{margin-bottom:1rem}
 .form-label{font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px;display:block}
 .form-input{width:100%;background:var(--dark3);border:1px solid var(--border-dim);border-radius:10px;padding:0.8rem 1rem;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;transition:border-color 0.2s}
 .form-input:focus{border-color:var(--gold)}
 .form-input::placeholder{color:var(--text-muted)}
-
-/* BUTTON */
 .btn-gold{width:100%;background:var(--gold);color:#000;border:none;border-radius:12px;padding:0.9rem;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all 0.2s;letter-spacing:0.05em}
 .btn-gold:hover{background:var(--gold-light);transform:translateY(-1px)}
 .btn-gold:disabled{opacity:0.4;cursor:not-allowed;transform:none}
 .btn-outline{width:100%;background:transparent;color:var(--text);border:1px solid var(--border-dim);border-radius:12px;padding:0.85rem;font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;transition:all 0.2s;margin-top:8px}
 .btn-outline:hover{border-color:var(--gold);color:var(--gold)}
-
-/* WARN BOX */
 .warn-box{background:rgba(217,95,95,0.08);border:1px solid rgba(217,95,95,0.25);border-radius:12px;padding:1rem 1.2rem;font-size:12px;line-height:1.7;color:#E8A5A5;margin-bottom:1.5rem}
-
-/* DIVIDER */
 .divider{display:flex;align-items:center;gap:12px;margin:1.2rem 0;color:var(--text-muted);font-size:11px;letter-spacing:0.1em;text-transform:uppercase}
 .divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border-dim)}
-
-/* SUMMARY ROW */
 .summary-row{display:flex;justify-content:space-between;align-items:center;padding:0.6rem 0;border-bottom:1px solid var(--border-dim);font-size:13px}
 .summary-row:last-child{border:none}
 .summary-label{color:var(--text-muted)}
 .summary-value{font-weight:600;color:var(--gold)}
-
-/* QUIZ SCREEN */
 #quiz-screen{background:var(--dark)}
 .quiz-header{position:sticky;top:0;z-index:50;background:rgba(8,8,8,0.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--border-dim);padding:0.8rem 1.5rem;display:flex;align-items:center;gap:1rem}
 .quiz-title{font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:600;color:var(--gold);flex:1}
@@ -113,7 +78,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--dark);color:var(--text);m
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
 .progress-bar-wrap{height:3px;background:var(--dark3)}
 .progress-bar{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold-light));transition:width 0.4s ease}
-
 .quiz-body{flex:1;display:flex;align-items:flex-start;justify-content:center;padding:2rem 1rem}
 .q-card{max-width:600px;width:100%}
 .q-meta{display:flex;align-items:center;gap:10px;margin-bottom:1.2rem}
@@ -135,16 +99,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--dark);color:var(--text);m
 .btn-next{background:var(--gold);color:#000;border:none;border-radius:10px;padding:0.75rem 1.8rem;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;opacity:0;pointer-events:none}
 .btn-next.visible{opacity:1;pointer-events:all}
 .btn-next:hover{background:var(--gold-light)}
-
-/* OVERLAY */
 .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:100;align-items:center;justify-content:center;padding:1rem}
 .overlay.show{display:flex}
 .ov-card{background:var(--dark2);border:1px solid var(--border);border-radius:20px;padding:2.5rem 2rem;max-width:420px;width:100%;text-align:center}
 .ov-icon{font-size:3rem;margin-bottom:1rem}
 .ov-title{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:600;margin-bottom:0.8rem}
 .ov-text{font-size:13px;color:var(--text-muted);line-height:1.7;margin-bottom:1.5rem}
-
-/* RESULT */
 .result-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1.5rem}
 .result-stat{background:var(--dark3);border:1px solid var(--border-dim);border-radius:14px;padding:1.2rem;text-align:center}
 .result-num{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:700;color:var(--gold)}
@@ -155,8 +115,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--dark);color:var(--text);m
 .score-ring .track{stroke:var(--dark3)}
 .score-ring .fill{stroke:var(--gold);stroke-dasharray:251;stroke-dashoffset:251;transition:stroke-dashoffset 1s ease}
 .score-pct{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:700;color:var(--gold)}
-
-/* STEP INDICATOR */
 .steps{display:flex;gap:6px;margin-bottom:1.5rem}
 .step-dot{flex:1;height:3px;border-radius:100px;background:var(--dark4);transition:background 0.3s}
 .step-dot.done{background:var(--gold)}
@@ -166,214 +124,127 @@ body{font-family:'DM Sans',sans-serif;background:var(--dark);color:var(--text);m
 <body>
 <div class="bg-deco"></div>
 
-<!-- ══ STEP 1: HOTEL SELECT ══ -->
+<!-- STEP 1: HOTEL -->
 <div class="screen active" id="s-hotel">
   <div class="step-wrap">
     <div class="card">
-      <div class="steps">
-        <div class="step-dot active" id="dot1"></div>
-        <div class="step-dot" id="dot2"></div>
-        <div class="step-dot" id="dot3"></div>
-        <div class="step-dot" id="dot4"></div>
-        <div class="step-dot" id="dot5"></div>
-      </div>
+      <div class="steps"><div class="step-dot active"></div><div class="step-dot"></div><div class="step-dot"></div><div class="step-dot"></div><div class="step-dot"></div></div>
       <div class="hotel-badge">Front Office Assessment</div>
       <h1 class="card-title">Başvurduğunuz Oteli Seçin</h1>
-      <p class="card-sub">Hangi tesisimize başvuru yapıyorsunuz? Sınav bu tesise özel değerlendirme kriterleri içerecektir.</p>
+      <p class="card-sub">Hangi tesisimize başvuru yapıyorsunuz?</p>
       <div class="hotel-grid">
         <div class="hotel-opt" data-hotel="siam" onclick="selectHotel(this)">
           <div class="opt-check"></div>
-          <div>
-            <div class="opt-label">Siam Elegance Hotels & SPA</div>
-            <div class="opt-sub">Belek, Antalya — 5 Yıldız Ultra All Inclusive</div>
-          </div>
+          <div><div class="opt-label">Siam Elegance Hotels & SPA</div><div class="opt-sub">Belek, Antalya — 5 Yıldız Ultra All Inclusive</div></div>
         </div>
         <div class="hotel-opt" data-hotel="tui" onclick="selectHotel(this)">
           <div class="opt-check"></div>
-          <div>
-            <div class="opt-label">TUI Blue Maviss</div>
-            <div class="opt-sub">Antalya — TUI Blue Collection</div>
-          </div>
+          <div><div class="opt-label">TUI Blue Maviss</div><div class="opt-sub">Antalya — TUI Blue Collection</div></div>
         </div>
       </div>
-      <button class="btn-gold" id="btn-hotel" disabled onclick="goToStep('s-pos')">Devam Et →</button>
+      <button class="btn-gold" id="btn-hotel" disabled onclick="goTo('s-pos')">Devam Et →</button>
     </div>
   </div>
 </div>
 
-<!-- ══ STEP 2: POSITION ══ -->
+<!-- STEP 2: POSITION -->
 <div class="screen" id="s-pos">
   <div class="step-wrap">
     <div class="card">
-      <div class="steps">
-        <div class="step-dot done"></div>
-        <div class="step-dot active" id="dot2b"></div>
-        <div class="step-dot"></div>
-        <div class="step-dot"></div>
-        <div class="step-dot"></div>
-      </div>
-      <div class="hotel-badge" id="hotel-badge-pos">Front Office Assessment</div>
+      <div class="steps"><div class="step-dot done"></div><div class="step-dot active"></div><div class="step-dot"></div><div class="step-dot"></div><div class="step-dot"></div></div>
+      <div class="hotel-badge" id="badge-pos">Front Office Assessment</div>
       <h1 class="card-title">Başvurduğunuz Pozisyon</h1>
-      <p class="card-sub">Sınav içeriği ve zorluğu seçtiğiniz pozisyona göre kişiselleştirilecektir.</p>
+      <p class="card-sub">Sınav zorluğu seçtiğiniz pozisyona göre belirlenir.</p>
       <div class="pos-grid">
         <div class="pos-card" data-pos="clerk" onclick="selectPos(this)">
           <div class="pos-name">Reception Clerk</div>
-          <div class="pos-desc">Misafir karşılama, check-in/out, temel ön büro operasyonları.</div>
+          <div class="pos-desc">Check-in/out, misafir karşılama, temel ön büro işlemleri.</div>
           <span class="pos-badge badge-standard">Standart Seviye</span>
         </div>
         <div class="pos-card" data-pos="night" onclick="selectPos(this)">
           <div class="pos-name">Gece Resepsiyonisti</div>
-          <div class="pos-desc">Gece denetimi, night audit, acil durum yönetimi, bağımsız karar verme.</div>
+          <div class="pos-desc">Night audit, gece denetimi, acil durum yönetimi, bağımsız karar verme.</div>
           <span class="pos-badge badge-medium">Orta-Üst Seviye</span>
         </div>
         <div class="pos-card" data-pos="leader" onclick="selectPos(this)">
           <div class="pos-name">Shift Leader</div>
-          <div class="pos-desc">Vardiya yönetimi, ekip koordinasyonu, gelir yönetimi, üst düzey misafir ilişkileri, kriz yönetimi.</div>
+          <div class="pos-desc">Ekip yönetimi, kriz yönetimi, operasyonel liderlik, revenue awareness, kurumsal raporlama.</div>
           <span class="pos-badge badge-hard">İleri Seviye</span>
         </div>
       </div>
-      <button class="btn-gold" id="btn-pos" disabled onclick="goToStep('s-lang')">Devam Et →</button>
-      <button class="btn-outline" onclick="goToStep('s-hotel')">← Geri</button>
+      <button class="btn-gold" id="btn-pos" disabled onclick="goTo('s-lang')">Devam Et →</button>
+      <button class="btn-outline" onclick="goTo('s-hotel')">← Geri</button>
     </div>
   </div>
 </div>
 
-<!-- ══ STEP 3: LANGUAGE ══ -->
+<!-- STEP 3: LANGUAGE -->
 <div class="screen" id="s-lang">
   <div class="step-wrap">
     <div class="card">
-      <div class="steps">
-        <div class="step-dot done"></div>
-        <div class="step-dot done"></div>
-        <div class="step-dot active"></div>
-        <div class="step-dot"></div>
-        <div class="step-dot"></div>
-      </div>
+      <div class="steps"><div class="step-dot done"></div><div class="step-dot done"></div><div class="step-dot active"></div><div class="step-dot"></div><div class="step-dot"></div></div>
       <div class="hotel-badge">Dil Seçimi</div>
       <h1 class="card-title">Sınav Dilini Seçin</h1>
       <p class="card-sub">Dil sorularının hangi dilde sorulmasını istiyorsunuz? En iyi bildiğiniz dili seçin.</p>
       <div class="lang-grid">
-        <div class="lang-btn" data-lang="en" onclick="selectLang(this)">
-          <div class="lang-name">🇬🇧 English</div>
-          <div class="lang-native">İngilizce</div>
-        </div>
-        <div class="lang-btn" data-lang="de" onclick="selectLang(this)">
-          <div class="lang-name">🇩🇪 Deutsch</div>
-          <div class="lang-native">Almanca</div>
-        </div>
-        <div class="lang-btn" data-lang="ru" onclick="selectLang(this)">
-          <div class="lang-name">🇷🇺 Русский</div>
-          <div class="lang-native">Rusça</div>
-        </div>
-        <div class="lang-btn" data-lang="tr" onclick="selectLang(this)">
-          <div class="lang-name">🇹🇷 Türkçe</div>
-          <div class="lang-native">Türkçe</div>
-        </div>
+        <div class="lang-btn" data-lang="en" onclick="selectLang(this)"><div class="lang-name">🇬🇧 English</div><div class="lang-native">İngilizce</div></div>
+        <div class="lang-btn" data-lang="de" onclick="selectLang(this)"><div class="lang-name">🇩🇪 Deutsch</div><div class="lang-native">Almanca</div></div>
+        <div class="lang-btn" data-lang="ru" onclick="selectLang(this)"><div class="lang-name">🇷🇺 Русский</div><div class="lang-native">Rusça</div></div>
+        <div class="lang-btn" data-lang="tr" onclick="selectLang(this)"><div class="lang-name">🇹🇷 Türkçe</div><div class="lang-native">Türkçe</div></div>
       </div>
-      <button class="btn-gold" id="btn-lang" disabled onclick="goToStep('s-level')">Devam Et →</button>
-      <button class="btn-outline" onclick="goToStep('s-pos')">← Geri</button>
+      <button class="btn-gold" id="btn-lang" disabled onclick="goTo('s-level')">Devam Et →</button>
+      <button class="btn-outline" onclick="goTo('s-pos')">← Geri</button>
     </div>
   </div>
 </div>
 
-<!-- ══ STEP 4: LEVEL ══ -->
+<!-- STEP 4: LEVEL -->
 <div class="screen" id="s-level">
   <div class="step-wrap">
     <div class="card">
-      <div class="steps">
-        <div class="step-dot done"></div>
-        <div class="step-dot done"></div>
-        <div class="step-dot done"></div>
-        <div class="step-dot active"></div>
-        <div class="step-dot"></div>
-      </div>
-      <div class="hotel-badge" id="level-lang-badge">Dil Seviyesi</div>
+      <div class="steps"><div class="step-dot done"></div><div class="step-dot done"></div><div class="step-dot done"></div><div class="step-dot active"></div><div class="step-dot"></div></div>
+      <div class="hotel-badge" id="badge-level">Dil Seviyesi</div>
       <h1 class="card-title">Dil Seviyenizi Seçin</h1>
-      <p class="card-sub">Sınav soruları seçtiğiniz seviyeye uygun zorlukta olacaktır. Lütfen gerçek seviyenizi seçin.</p>
+      <p class="card-sub">Lütfen gerçek seviyenizi seçin. Sorular bu seviyeye göre kalibre edilecektir.</p>
       <div class="level-grid">
-        <div class="level-btn" data-lvl="a1" onclick="selectLevel(this)">
-          <div class="level-code">A1</div>
-          <div class="level-name">Başlangıç</div>
-        </div>
-        <div class="level-btn" data-lvl="a2" onclick="selectLevel(this)">
-          <div class="level-code">A2</div>
-          <div class="level-name">Temel</div>
-        </div>
-        <div class="level-btn" data-lvl="b1" onclick="selectLevel(this)">
-          <div class="level-code">B1</div>
-          <div class="level-name">Orta</div>
-        </div>
-        <div class="level-btn" data-lvl="b2" onclick="selectLevel(this)">
-          <div class="level-code">B2</div>
-          <div class="level-name">Üst Orta</div>
-        </div>
-        <div class="level-btn" data-lvl="c1" onclick="selectLevel(this)">
-          <div class="level-code">C1</div>
-          <div class="level-name">İleri</div>
-        </div>
-        <div class="level-btn" data-lvl="c2" onclick="selectLevel(this)">
-          <div class="level-code">C2</div>
-          <div class="level-name">Yetkin</div>
-        </div>
+        <div class="level-btn" data-lvl="a1" onclick="selectLevel(this)"><div class="level-code">A1</div><div class="level-name">Başlangıç</div></div>
+        <div class="level-btn" data-lvl="a2" onclick="selectLevel(this)"><div class="level-code">A2</div><div class="level-name">Temel</div></div>
+        <div class="level-btn" data-lvl="b1" onclick="selectLevel(this)"><div class="level-code">B1</div><div class="level-name">Orta</div></div>
+        <div class="level-btn" data-lvl="b2" onclick="selectLevel(this)"><div class="level-code">B2</div><div class="level-name">Üst Orta</div></div>
+        <div class="level-btn" data-lvl="c1" onclick="selectLevel(this)"><div class="level-code">C1</div><div class="level-name">İleri</div></div>
+        <div class="level-btn" data-lvl="c2" onclick="selectLevel(this)"><div class="level-code">C2</div><div class="level-name">Yetkin</div></div>
       </div>
-      <button class="btn-gold" id="btn-level" disabled onclick="goToStep('s-info')">Devam Et →</button>
-      <button class="btn-outline" onclick="goToStep('s-lang')">← Geri</button>
+      <button class="btn-gold" id="btn-level" disabled onclick="goTo('s-info')">Devam Et →</button>
+      <button class="btn-outline" onclick="goTo('s-lang')">← Geri</button>
     </div>
   </div>
 </div>
 
-<!-- ══ STEP 5: INFO + START ══ -->
+<!-- STEP 5: INFO -->
 <div class="screen" id="s-info">
   <div class="step-wrap">
     <div class="card">
-      <div class="steps">
-        <div class="step-dot done"></div>
-        <div class="step-dot done"></div>
-        <div class="step-dot done"></div>
-        <div class="step-dot done"></div>
-        <div class="step-dot active"></div>
-      </div>
+      <div class="steps"><div class="step-dot done"></div><div class="step-dot done"></div><div class="step-dot done"></div><div class="step-dot done"></div><div class="step-dot active"></div></div>
       <div class="hotel-badge">Sınav Özeti</div>
       <h1 class="card-title">Hazır mısınız?</h1>
-      <p class="card-sub">Sınav bilgilerinizi kontrol edin ve adınızı girerek başlayın.</p>
+      <p class="card-sub">Bilgilerinizi kontrol edip adınızı girin.</p>
       <div style="margin-bottom:1.5rem;border:1px solid var(--border-dim);border-radius:14px;overflow:hidden">
-        <div class="summary-row" style="padding:0.7rem 1rem">
-          <span class="summary-label">Tesis</span>
-          <span class="summary-value" id="sum-hotel">—</span>
-        </div>
-        <div class="summary-row" style="padding:0.7rem 1rem">
-          <span class="summary-label">Pozisyon</span>
-          <span class="summary-value" id="sum-pos">—</span>
-        </div>
-        <div class="summary-row" style="padding:0.7rem 1rem">
-          <span class="summary-label">Dil & Seviye</span>
-          <span class="summary-value" id="sum-lang">—</span>
-        </div>
-        <div class="summary-row" style="padding:0.7rem 1rem">
-          <span class="summary-label">Soru Sayısı</span>
-          <span class="summary-value" id="sum-q">20</span>
-        </div>
-        <div class="summary-row" style="padding:0.7rem 1rem">
-          <span class="summary-label">Süre</span>
-          <span class="summary-value" id="sum-time">25 dakika</span>
-        </div>
+        <div class="summary-row" style="padding:0.7rem 1rem"><span class="summary-label">Tesis</span><span class="summary-value" id="sum-hotel">—</span></div>
+        <div class="summary-row" style="padding:0.7rem 1rem"><span class="summary-label">Pozisyon</span><span class="summary-value" id="sum-pos">—</span></div>
+        <div class="summary-row" style="padding:0.7rem 1rem"><span class="summary-label">Dil / Seviye</span><span class="summary-value" id="sum-lang">—</span></div>
+        <div class="summary-row" style="padding:0.7rem 1rem"><span class="summary-label">Soru Sayısı</span><span class="summary-value" id="sum-q">20</span></div>
+        <div class="summary-row" style="padding:0.7rem 1rem"><span class="summary-label">Süre</span><span class="summary-value" id="sum-time">25 dk</span></div>
       </div>
-      <div class="warn-box">⚠️ Sınav başladıktan sonra <strong>tam ekrandan çıkamazsınız</strong>. Sekme değiştirme veya ekran küçültme durumunda sınavınız <strong>otomatik geçersiz sayılır</strong>.</div>
-      <div class="form-group">
-        <label class="form-label">Ad Soyad</label>
-        <input class="form-input" id="inp-name" type="text" placeholder="Adınızı ve soyadınızı girin" oninput="checkInfo()">
-      </div>
-      <div class="form-group">
-        <label class="form-label">E-posta</label>
-        <input class="form-input" id="inp-email" type="email" placeholder="e-posta adresiniz" oninput="checkInfo()">
-      </div>
+      <div class="warn-box">⚠️ Sınav başladıktan sonra tam ekrandan çıkamazsınız. Sekme değiştirme durumunda sınavınız <strong>otomatik geçersiz sayılır</strong>.</div>
+      <div class="form-group"><label class="form-label">Ad Soyad</label><input class="form-input" id="inp-name" type="text" placeholder="Adınızı ve soyadınızı girin" oninput="checkInfo()"></div>
+      <div class="form-group"><label class="form-label">E-posta</label><input class="form-input" id="inp-email" type="email" placeholder="E-posta adresiniz" oninput="checkInfo()"></div>
       <button class="btn-gold" id="btn-start" disabled onclick="startExam()">Sınava Başla →</button>
-      <button class="btn-outline" onclick="goToStep('s-level')">← Geri</button>
+      <button class="btn-outline" onclick="goTo('s-level')">← Geri</button>
     </div>
   </div>
 </div>
 
-<!-- ══ QUIZ SCREEN ══ -->
+<!-- QUIZ -->
 <div class="screen" id="quiz-screen">
   <div class="quiz-header">
     <div class="quiz-title" id="quiz-title">Front Office Assessment</div>
@@ -382,671 +253,444 @@ body{font-family:'DM Sans',sans-serif;background:var(--dark);color:var(--text);m
   <div class="progress-bar-wrap"><div class="progress-bar" id="q-progress" style="width:0%"></div></div>
   <div class="quiz-body">
     <div class="q-card">
-      <div class="q-meta">
-        <span class="q-num" id="q-num">Soru 1 / 20</span>
-        <span class="q-cat" id="q-cat">Kategori</span>
-      </div>
-      <div class="q-text" id="q-text">Soru yükleniyor...</div>
+      <div class="q-meta"><span class="q-num" id="q-num">Soru 1 / 20</span><span class="q-cat" id="q-cat">Kategori</span></div>
+      <div class="q-text" id="q-text">Yükleniyor...</div>
       <div class="options-list" id="options-list"></div>
-      <div class="q-nav">
-        <button class="btn-next" id="btn-next" onclick="nextQuestion()">Sonraki →</button>
-      </div>
+      <div class="q-nav"><button class="btn-next" id="btn-next" onclick="nextQuestion()">Sonraki →</button></div>
     </div>
   </div>
 </div>
 
-<!-- ══ RESULT SCREEN ══ -->
+<!-- RESULT -->
 <div class="screen" id="s-result">
   <div class="step-wrap">
     <div class="card" style="text-align:center">
-      <div class="score-ring">
-        <svg viewBox="0 0 90 90"><circle class="track" cx="45" cy="45" r="40"/><circle class="fill" id="score-fill" cx="45" cy="45" r="40"/></svg>
-        <div class="score-pct" id="score-pct">0%</div>
-      </div>
+      <div class="score-ring"><svg viewBox="0 0 90 90"><circle class="track" cx="45" cy="45" r="40"/><circle class="fill" id="score-fill" cx="45" cy="45" r="40"/></svg><div class="score-pct" id="score-pct">0%</div></div>
       <div class="hotel-badge" style="margin:0 auto 1rem">Sınav Tamamlandı</div>
       <h1 class="card-title" id="result-title">Teşekkürler!</h1>
-      <p class="card-sub" id="result-sub">Değerlendirmeniz tamamlandı. Sonuçlarınız İnsan Kaynakları ekibimize iletilmiştir; başvurunuz incelendikten sonra sizinle en kısa sürede iletişime geçilecektir.</p>
+      <p class="card-sub" id="result-sub">Değerlendirmeniz tamamlandı.</p>
       <div class="result-grid">
-        <div class="result-stat">
-          <div class="result-num" id="r-correct">0</div>
-          <div class="result-lbl">Doğru</div>
-        </div>
-        <div class="result-stat">
-          <div class="result-num" id="r-wrong">0</div>
-          <div class="result-lbl">Yanlış</div>
-        </div>
-        <div class="result-stat">
-          <div class="result-num" id="r-score">0</div>
-          <div class="result-lbl">Puan</div>
-        </div>
-        <div class="result-stat">
-          <div class="result-num" id="r-time">0:00</div>
-          <div class="result-lbl">Süre</div>
-        </div>
+        <div class="result-stat"><div class="result-num" id="r-correct">0</div><div class="result-lbl">Doğru</div></div>
+        <div class="result-stat"><div class="result-num" id="r-wrong">0</div><div class="result-lbl">Yanlış</div></div>
+        <div class="result-stat"><div class="result-num" id="r-score">0</div><div class="result-lbl">Puan</div></div>
+        <div class="result-stat"><div class="result-num" id="r-time">0:00</div><div class="result-lbl">Süre</div></div>
       </div>
       <p style="font-size:12px;color:var(--text-muted);line-height:1.7">İnsan Kaynakları ekibimiz sonuçlarınızı değerlendirip en kısa sürede sizinle iletişime geçecektir.</p>
     </div>
   </div>
 </div>
 
-<!-- ══ OVERLAYS ══ -->
+<!-- OVERLAYS -->
 <div class="overlay" id="ov-warn">
-  <div class="ov-card">
-    <div class="ov-icon">⚠️</div>
-    <h2 class="ov-title">Uyarı!</h2>
-    <p class="ov-text">Tam ekrandan çıktınız veya sekme değiştirdiniz. Lütfen hemen geri dönün! Tekrar edilmesi halinde sınavınız geçersiz sayılacaktır.</p>
-    <button class="btn-gold" onclick="dismissWarn()">Geri Dön</button>
-  </div>
+  <div class="ov-card"><div class="ov-icon">⚠️</div><h2 class="ov-title">Uyarı!</h2><p class="ov-text">Tam ekrandan çıktınız veya sekme değiştirdiniz. Tekrar edilmesi halinde sınavınız geçersiz sayılır.</p><button class="btn-gold" onclick="dismissWarn()">Geri Dön</button></div>
 </div>
 <div class="overlay" id="ov-invalid">
-  <div class="ov-card">
-    <div class="ov-icon">❌</div>
-    <h2 class="ov-title">Sınav Geçersiz</h2>
-    <p class="ov-text">Kural ihlali tespit edildi. Sınavınız otomatik olarak geçersiz sayılmıştır. Yeniden katılım için İnsan Kaynakları ile iletişime geçiniz.</p>
-  </div>
+  <div class="ov-card"><div class="ov-icon">❌</div><h2 class="ov-title">Sınav Geçersiz</h2><p class="ov-text">Kural ihlali tespit edildi. Sınavınız otomatik olarak geçersiz sayılmıştır. Yeniden katılım için İnsan Kaynakları ile iletişime geçiniz.</p></div>
 </div>
 
 <script>
-// ══════════════════════════════════════════
-// STATE
-// ══════════════════════════════════════════
-let state = {
-  hotel: null, pos: null, lang: null, level: null,
-  name: '', email: '',
-  questions: [], current: 0, answers: [],
-  correct: 0, startTime: null,
-  timer: null, timeLeft: 0,
-  violations: 0, invalidated: false
-};
+// ═══════════════════════════════════════════
+// CONFIG — web3forms access key
+// ═══════════════════════════════════════════
+const W3F_KEY = 'YOUR_WEB3FORMS_KEY'; // <-- buraya key gelecek
 
-// ══════════════════════════════════════════
-// QUESTION BANK
-// ══════════════════════════════════════════
-// Structure: { lang, level[], pos[], cat, q, opts:[{t,c}] }
-// c: true = correct
-
+// ═══════════════════════════════════════════
+// SORU BANKASI
+// ═══════════════════════════════════════════
 const QB = {
-  // ─── ENGLISH ───
-  en: {
-    // A1
-    a1: [
-      {pos:['clerk','night','leader'],cat:'English – A1',q:'How do you greet a guest at the front desk?',opts:[{t:'Good morning! How can I help you?',c:true},{t:'What do you want?',c:false},{t:'Go away, we are busy.',c:false},{t:'Come back later.',c:false}]},
-      {pos:['clerk','night','leader'],cat:'English – A1',q:'A guest says: "I want a room." What do you say?',opts:[{t:'Of course! For how many nights?',c:true},{t:'We don\'t have rooms.',c:false},{t:'Maybe tomorrow.',c:false},{t:'Ask at the bar.',c:false}]},
-      {pos:['clerk','night','leader'],cat:'English – A1',q:'What does "check-out" mean?',opts:[{t:'Leaving the hotel and paying the bill.',c:true},{t:'Ordering food.',c:false},{t:'Swimming in the pool.',c:false},{t:'Booking a tour.',c:false}]},
-      {pos:['clerk','night','leader'],cat:'English – A1',q:'A guest asks: "Where is the restaurant?" You say:',opts:[{t:'It\'s on the ground floor, to the left.',c:true},{t:'I don\'t know.',c:false},{t:'Not my job.',c:false},{t:'Ask someone else.',c:false}]},
-      {pos:['clerk','night','leader'],cat:'English – A1',q:'What is the correct spelling?',opts:[{t:'Reservation',c:true},{t:'Rezervation',c:false},{t:'Reservasion',c:false},{t:'Reservetion',c:false}]},
-    ],
-    // A2
-    a2: [
-      {pos:['clerk','night','leader'],cat:'English – A2',q:'A guest is not happy with their room. What do you say first?',opts:[{t:'I\'m sorry to hear that. Let me check what we can do for you.',c:true},{t:'That\'s not my problem.',c:false},{t:'The room is fine, don\'t complain.',c:false},{t:'You should have booked better.',c:false}]},
-      {pos:['clerk','night','leader'],cat:'English – A2',q:'Choose the correct phrase for check-in:',opts:[{t:'May I have your passport and reservation confirmation?',c:true},{t:'Give me your papers now.',c:false},{t:'Show passport or go away.',c:false},{t:'Did you book or not?',c:false}]},
-      {pos:['clerk','night','leader'],cat:'English – A2',q:'A guest calls and says: "I\'d like to extend my stay." What do you do?',opts:[{t:'Check availability and offer options for the requested dates.',c:true},{t:'Say "no" without checking.',c:false},{t:'Transfer to housekeeping.',c:false},{t:'Ask them to call again tomorrow.',c:false}]},
-      {pos:['clerk','night','leader'],cat:'English – A2',q:'What is a "wake-up call"?',opts:[{t:'A phone call to wake a guest at a requested time.',c:true},{t:'A fire alarm.',c:false},{t:'A complaint call.',c:false},{t:'A billing notification.',c:false}]},
-      {pos:['clerk','night','leader'],cat:'English – A2',q:'Which phrase is most professional for a phone greeting?',opts:[{t:'Good evening, Front Desk, this is [name] speaking. How may I assist you?',c:true},{t:'Hello, what do you want?',c:false},{t:'Front desk. Speak.',c:false},{t:'Yeah, how can I help?',c:false}]},
-    ],
-    // B1
-    b1: [
-      {pos:['clerk','night','leader'],cat:'English – B1',q:'A guest complains that their room smells like smoke, though it\'s a non-smoking room. What is your first action?',opts:[{t:'Sincerely apologize and immediately arrange a room move, then inform housekeeping to inspect the room.',c:true},{t:'Tell the guest they are wrong.',c:false},{t:'Offer a discount without resolving the problem.',c:false},{t:'Ask the guest to wait and do nothing.',c:false}]},
-      {pos:['clerk','night','leader'],cat:'English – B1',q:'A guest asks you to recommend a local restaurant. Which answer is best?',opts:[{t:'I\'d be happy to! Based on your preferences, may I suggest a few options? We also have a restaurant guide at the desk.',c:true},{t:'I don\'t know anything about restaurants.',c:false},{t:'Just go outside and look.',c:false},{t:'Google it.',c:false}]},
-      {pos:['clerk','night','leader'],cat:'English – B1',q:'What does "upselling" mean in the context of hotel front office?',opts:[{t:'Offering a guest a higher room category or additional service to increase revenue.',c:true},{t:'Selling the hotel.',c:false},{t:'Charging guests extra without permission.',c:false},{t:'Lying about room features.',c:false}]},
-      {pos:['clerk','night','leader'],cat:'English – B1',q:'A VIP guest arrives. What should you do differently compared to a standard check-in?',opts:[{t:'Greet by name, escort to room, offer amenities, ensure all preferences are pre-arranged.',c:true},{t:'Nothing, treat all guests the same way.',c:false},{t:'Ask them to wait longer.',c:false},{t:'Charge a higher rate without informing them.',c:false}]},
-      {pos:['clerk','night','leader'],cat:'English – B1',q:'How would you politely tell a guest that their requested room type is unavailable?',opts:[{t:'I\'m afraid that room type isn\'t available for your dates. However, I\'d love to offer you an upgrade to our [alternative] at the same rate.',c:true},{t:'Sorry, we don\'t have it.',c:false},{t:'You should have booked earlier.',c:false},{t:'No rooms available, goodbye.',c:false}]},
-    ],
-    // B2
-    b2: [
-      {pos:['clerk','night','leader'],cat:'English – B2',q:'A guest threatens to post a negative review unless given a free night. How do you respond?',opts:[{t:'Acknowledge their frustration, offer a genuine solution within policy, but do not capitulate to threats.',c:true},{t:'Give them a free night immediately.',c:false},{t:'Tell them to post whatever they want.',c:false},{t:'Ignore them.',c:false}]},
-      {pos:['clerk','night','leader'],cat:'English – B2',q:'What is the difference between a "guarantee" and a "prepaid" reservation?',opts:[{t:'A guarantee secures the reservation with a credit card but charges upon departure; prepaid is charged in advance.',c:true},{t:'They are exactly the same.',c:false},{t:'A guarantee means no payment is needed.',c:false},{t:'Prepaid means the guest can cancel anytime.',c:false}]},
-      {pos:['night','leader'],cat:'English – B2',q:'During the night audit, you discover a significant discrepancy in the daily revenue report. What is the correct procedure?',opts:[{t:'Document the discrepancy, cross-reference all transactions, escalate to the night manager and prepare a detailed report.',c:true},{t:'Correct the numbers quietly.',c:false},{t:'Leave it for the morning shift.',c:false},{t:'Delete the incorrect entry.',c:false}]},
-      {pos:['clerk','night','leader'],cat:'English – B2',q:'A guest\'s credit card is declined during check-in. How do you handle this professionally?',opts:[{t:'Discreetly inform the guest, suggest an alternative payment method, and offer to hold their luggage while they resolve it.',c:true},{t:'Announce it loudly at the desk.',c:false},{t:'Refuse check-in immediately without explanation.',c:false},{t:'Accept cash without documenting it.',c:false}]},
-      {pos:['clerk','night','leader'],cat:'English – B2',q:'What is the purpose of a "No-Show" policy?',opts:[{t:'To charge a penalty when a guest with a guaranteed reservation doesn\'t arrive without cancelling.',c:true},{t:'To prevent guests from checking in late.',c:false},{t:'To automatically upgrade rooms.',c:false},{t:'To block guests from rebooking.',c:false}]},
-    ],
-    // C1
-    c1: [
-      {pos:['clerk','night','leader'],cat:'English – C1',q:'How would you articulate the difference between "overbooking strategy" and "overselling" to a new colleague?',opts:[{t:'Overbooking is a calculated revenue strategy based on historical no-show data; overselling is taking more reservations than capacity without data justification.',c:true},{t:'They are the same thing.',c:false},{t:'Overbooking is illegal; overselling is not.',c:false},{t:'Overbooking means selling rooms at a higher price.',c:false}]},
-      {pos:['clerk','night','leader'],cat:'English – C1',q:'A diplomat arrives with immunity status and behaves aggressively toward staff. How do you navigate this?',opts:[{t:'Calmly de-escalate, document the incident thoroughly, involve management and legal if needed, maintaining professionalism throughout.',c:true},{t:'Call the police immediately.',c:false},{t:'Ask them to leave the hotel.',c:false},{t:'Do nothing because of their immunity.',c:false}]},
-      {pos:['night','leader'],cat:'English – C1',q:'What are the key components of an effective handover briefing between shifts?',opts:[{t:'Pending tasks, VIP arrivals/departures, maintenance issues, complaint follow-ups, cash balance, and any unusual incidents.',c:true},{t:'Only the guest count.',c:false},{t:'Room cleaning status only.',c:false},{t:'Nothing verbal, just sign the logbook.',c:false}]},
-      {pos:['leader'],cat:'English – C1',q:'Your front desk team is consistently underperforming in upselling metrics. What is your management approach?',opts:[{t:'Identify root causes (training gaps, motivation, knowledge), set clear targets, implement coaching sessions and recognition programs.',c:true},{t:'Write them all up immediately.',c:false},{t:'Do the upselling yourself.',c:false},{t:'Report to GM and do nothing further.',c:false}]},
-      {pos:['clerk','night','leader'],cat:'English – C1',q:'How do GDPR regulations impact front office operations in a European hotel?',opts:[{t:'Guest data must be collected with consent, stored securely, used only for stated purposes, and deleted upon request.',c:true},{t:'They don\'t affect hotels.',c:false},{t:'Guests\' data can be shared with anyone.',c:false},{t:'Only affects online bookings.',c:false}]},
-    ],
-    // C2
-    c2: [
-      {pos:['leader'],cat:'English – C2',q:'Articulate a comprehensive Revenue Management philosophy for a 505-room luxury all-inclusive resort and its implications for front office KPIs.',opts:[{t:'RevPAR optimization through dynamic pricing, channel management, length-of-stay controls, and demand forecasting, with FO KPIs including upsell conversion rate, ADR, and guest satisfaction scores.',c:true},{t:'Just sell all rooms at the same price.',c:false},{t:'Revenue management is only the GM\'s concern.',c:false},{t:'Focus only on occupancy, not rate.',c:false}]},
-      {pos:['leader','night'],cat:'English – C2',q:'Critically evaluate the ethical implications of incentivizing front desk staff with upselling commissions.',opts:[{t:'While incentives drive performance, they may conflict with genuine guest needs; a balanced approach ties commissions to both revenue metrics and guest satisfaction scores.',c:true},{t:'Commissions are always unethical.',c:false},{t:'Only use commissions, ignore satisfaction.',c:false},{t:'Upselling itself is unethical.',c:false}]},
-      {pos:['leader'],cat:'English – C2',q:'You are opening a new resort. Design the front office onboarding program for 30 new staff within 3 weeks before opening.',opts:[{t:'Phased approach: brand values and SOP training week 1, PMS and systems training week 2, role-play simulations and dry runs week 3, with daily debriefs.',c:true},{t:'Hand them a manual and hope for the best.',c:false},{t:'Only train the shift leaders.',c:false},{t:'Onboarding can wait until after opening.',c:false}]},
-      {pos:['clerk','night','leader'],cat:'English – C2',q:'Analyze how AI concierge systems might transform the traditional front office role over the next decade.',opts:[{t:'AI will automate routine transactions (check-in, info queries) while elevating the human role toward complex guest relations, complaint resolution, and emotional intelligence.',c:true},{t:'AI will completely replace all front office staff.',c:false},{t:'AI has no relevance to hospitality.',c:false},{t:'AI will only affect back-office roles.',c:false}]},
-      {pos:['leader'],cat:'English – C2',q:'A major OTA threatens to reduce your hotel\'s ranking unless you lower rates. How do you respond strategically?',opts:[{t:'Analyze rate parity, evaluate the OTA\'s contribution to your channel mix, consult revenue management, and negotiate from a position of diversified distribution.',c:true},{t:'Immediately lower rates.',c:false},{t:'Ignore the OTA.',c:false},{t:'Remove the hotel from all OTAs.',c:false}]},
-    ],
-  },
-  // ─── GERMAN ───
-  de: {
-    a1: [
-      {pos:['clerk','night','leader'],cat:'Deutsch – A1',q:'Wie begrüßen Sie einen Gast an der Rezeption?',opts:[{t:'Guten Tag! Wie kann ich Ihnen helfen?',c:true},{t:'Was wollen Sie?',c:false},{t:'Gehen Sie weg.',c:false},{t:'Kommen Sie später.',c:false}]},
-      {pos:['clerk','night','leader'],cat:'Deutsch – A1',q:'Ein Gast sagt: "Ich möchte ein Zimmer." Was antworten Sie?',opts:[{t:'Natürlich! Für wie viele Nächte?',c:true},{t:'Wir haben keine Zimmer.',c:false},{t:'Vielleicht morgen.',c:false},{t:'Fragen Sie an der Bar.',c:false}]},
-      {pos:['clerk','night','leader'],cat:'Deutsch – A1',q:'Was bedeutet "Check-out"?',opts:[{t:'Das Hotel verlassen und die Rechnung bezahlen.',c:true},{t:'Essen bestellen.',c:false},{t:'Im Pool schwimmen.',c:false},{t:'Eine Tour buchen.',c:false}]},
-      {pos:['clerk','night','leader'],cat:'Deutsch – A1',q:'Ein Gast fragt: "Wo ist das Restaurant?" Sie sagen:',opts:[{t:'Es ist im Erdgeschoss, links.',c:true},{t:'Ich weiß es nicht.',c:false},{t:'Das ist nicht mein Job.',c:false},{t:'Fragen Sie jemand anderen.',c:false}]},
-      {pos:['clerk','night','leader'],cat:'Deutsch – A1',q:'Was ist die richtige Schreibweise?',opts:[{t:'Reservierung',c:true},{t:'Reservirung',c:false},{t:'Reserferung',c:false},{t:'Reserverung',c:false}]},
-    ],
-    a2: [
-      {pos:['clerk','night','leader'],cat:'Deutsch – A2',q:'Ein Gast ist unzufrieden mit seinem Zimmer. Was sagen Sie zuerst?',opts:[{t:'Das tut mir leid. Lassen Sie mich sehen, was ich für Sie tun kann.',c:true},{t:'Das ist nicht mein Problem.',c:false},{t:'Das Zimmer ist in Ordnung.',c:false},{t:'Sie hätten besser buchen sollen.',c:false}]},
-      {pos:['clerk','night','leader'],cat:'Deutsch – A2',q:'Wählen Sie den richtigen Satz beim Check-in:',opts:[{t:'Darf ich Ihren Reisepass und Ihre Buchungsbestätigung sehen?',c:true},{t:'Geben Sie mir Ihre Papiere.',c:false},{t:'Pass zeigen oder weggehen.',c:false},{t:'Haben Sie gebucht oder nicht?',c:false}]},
-      {pos:['clerk','night','leader'],cat:'Deutsch – A2',q:'Was ist ein "Weckruf"?',opts:[{t:'Ein Telefonanruf, um einen Gast zu einer gewünschten Uhrzeit zu wecken.',c:true},{t:'Ein Feueralarm.',c:false},{t:'Ein Beschwerdenanruf.',c:false},{t:'Eine Rechnungsbenachrichtigung.',c:false}]},
-      {pos:['clerk','night','leader'],cat:'Deutsch – A2',q:'Welcher Satz ist am professionellsten für einen Telefongruß?',opts:[{t:'Guten Abend, Rezeption, hier spricht [Name]. Wie kann ich Ihnen helfen?',c:true},{t:'Hallo, was wollen Sie?',c:false},{t:'Rezeption. Sprechen.',c:false},{t:'Ja, kann ich helfen?',c:false}]},
-      {pos:['clerk','night','leader'],cat:'Deutsch – A2',q:'Ein Gast möchte seinen Aufenthalt verlängern. Was tun Sie?',opts:[{t:'Verfügbarkeit prüfen und Optionen für die gewünschten Daten anbieten.',c:true},{t:'Sofort „Nein" sagen.',c:false},{t:'An den Housekeeping weiterleiten.',c:false},{t:'Bitten Sie sie, morgen zurückzurufen.',c:false}]},
-    ],
-    b1: [
-      {pos:['clerk','night','leader'],cat:'Deutsch – B1',q:'Ein Gast beschwert sich, dass sein Nichtraucherzimmer nach Rauch riecht. Was ist Ihre erste Maßnahme?',opts:[{t:'Aufrichtig entschuldigen, sofort einen Zimmerwechsel veranlassen und den Housekeeping informieren.',c:true},{t:'Dem Gast sagen, dass er falsch liegt.',c:false},{t:'Einen Rabatt anbieten ohne das Problem zu lösen.',c:false},{t:'Den Gast warten lassen und nichts tun.',c:false}]},
-      {pos:['clerk','night','leader'],cat:'Deutsch – B1',q:'Was bedeutet "Upselling" im Hotelkontext?',opts:[{t:'Einem Gast eine höhere Zimmerkategorie oder zusätzliche Leistungen anbieten, um den Umsatz zu steigern.',c:true},{t:'Das Hotel verkaufen.',c:false},{t:'Gäste ohne Erlaubnis extra belasten.',c:false},{t:'Über Zimmereigenschaften lügen.',c:false}]},
-      {pos:['clerk','night','leader'],cat:'Deutsch – B1',q:'Ein VIP-Gast kommt an. Was machen Sie anders als beim Standard-Check-in?',opts:[{t:'Mit Namen begrüßen, zum Zimmer begleiten, Annehmlichkeiten anbieten, alle Wünsche im Voraus arrangieren.',c:true},{t:'Nichts, alle Gäste gleich behandeln.',c:false},{t:'Länger warten lassen.',c:false},{t:'Einen höheren Preis berechnen.',c:false}]},
-      {pos:['clerk','night','leader'],cat:'Deutsch – B1',q:'Wie teilen Sie einem Gast höflich mit, dass sein Wunschzimmertyp nicht verfügbar ist?',opts:[{t:'Leider ist dieser Zimmertyp für Ihre Daten nicht verfügbar. Ich würde Ihnen jedoch gerne zum gleichen Preis ein Upgrade auf unser [Alternative] anbieten.',c:true},{t:'Tut mir leid, haben wir nicht.',c:false},{t:'Sie hätten früher buchen sollen.',c:false},{t:'Keine Zimmer verfügbar, auf Wiedersehen.',c:false}]},
-      {pos:['clerk','night','leader'],cat:'Deutsch – B1',q:'Was ist die korrekte Vorgehensweise bei einem Nachtaudit-Fehler?',opts:[{t:'Abweichung dokumentieren, alle Transaktionen prüfen, an den Manager melden.',c:true},{t:'Die Zahlen stillschweigend korrigieren.',c:false},{t:'Für die Frühschicht liegenlassen.',c:false},{t:'Den falschen Eintrag löschen.',c:false}]},
-    ],
-    b2: [
-      {pos:['clerk','night','leader'],cat:'Deutsch – B2',q:'Ein Gast droht mit einer negativen Bewertung, wenn er keine Gratisnacht bekommt. Wie reagieren Sie?',opts:[{t:'Frustration anerkennen, eine echte Lösung innerhalb der Richtlinien anbieten, aber nicht auf Drohungen eingehen.',c:true},{t:'Sofort eine Gratisnacht gewähren.',c:false},{t:'Sagen, er soll schreiben, was er will.',c:false},{t:'Ignorieren.',c:false}]},
-      {pos:['clerk','night','leader'],cat:'Deutsch – B2',q:'Was ist der Unterschied zwischen einer "garantierten" und einer "vorausbezahlten" Reservierung?',opts:[{t:'Garantiert sichert die Buchung per Kreditkarte, Abbuchung bei Abreise; vorausbezahlt wird vorab berechnet.',c:true},{t:'Sie sind identisch.',c:false},{t:'Garantiert bedeutet keine Zahlung.',c:false},{t:'Vorausbezahlt kann jederzeit storniert werden.',c:false}]},
-      {pos:['clerk','night','leader'],cat:'Deutsch – B2',q:'Wie gehen Sie professionell vor, wenn die Kreditkarte eines Gastes beim Check-in abgelehnt wird?',opts:[{t:'Den Gast diskret informieren, eine alternative Zahlungsmethode vorschlagen, Gepäck aufbewahren während er es klärt.',c:true},{t:'Laut am Tresen ankündigen.',c:false},{t:'Sofort ohne Erklärung ablehnen.',c:false},{t:'Bargeld ohne Dokumentation akzeptieren.',c:false}]},
-      {pos:['night','leader'],cat:'Deutsch – B2',q:'Welche Schlüsselkomponenten gehören zu einer effektiven Schichtübergabe?',opts:[{t:'Offene Aufgaben, VIP-An/Abreisen, Wartungsprobleme, Beschwerden, Kassenstand, besondere Vorfälle.',c:true},{t:'Nur die Gästezahl.',c:false},{t:'Nur den Reinigungsstatus.',c:false},{t:'Nur das Logbuch unterschreiben.',c:false}]},
-      {pos:['clerk','night','leader'],cat:'Deutsch – B2',q:'Was ist der Zweck einer "No-Show"-Richtlinie?',opts:[{t:'Eine Gebühr erheben, wenn ein Gast mit garantierter Buchung ohne Stornierung nicht erscheint.',c:true},{t:'Verhindern, dass Gäste spät einchecken.',c:false},{t:'Zimmer automatisch upgraden.',c:false},{t:'Gäste von Neubuchungen ausschließen.',c:false}]},
-    ],
-    c1: [
-      {pos:['leader'],cat:'Deutsch – C1',q:'Was sind die zentralen Elemente eines effektiven Revenue-Managements für ein Luxusresort?',opts:[{t:'RevPAR-Optimierung durch dynamische Preisgestaltung, Channel Management, Aufenthaltsdauerkontrolle und Nachfrageprognosen.',c:true},{t:'Nur Zimmerpreise erhöhen.',c:false},{t:'Revenue Management ist nur Chefsache.',c:false},{t:'Fokus nur auf Auslastung, nicht auf Rate.',c:false}]},
-      {pos:['clerk','night','leader'],cat:'Deutsch – C1',q:'Wie erklären Sie einem neuen Kollegen den Unterschied zwischen "Overbooking-Strategie" und "Überverkauf"?',opts:[{t:'Overbooking ist eine kalkulierte Strategie basierend auf No-Show-Daten; Überverkauf nimmt mehr Buchungen an als kapazitätsmäßig gerechtfertigt.',c:true},{t:'Beides ist dasselbe.',c:false},{t:'Overbooking ist illegal.',c:false},{t:'Overbooking bedeutet teurere Zimmer verkaufen.',c:false}]},
-      {pos:['leader'],cat:'Deutsch – C1',q:'Ihr Front-Desk-Team zeigt schwache Upselling-Kennzahlen. Wie gehen Sie als Führungskraft vor?',opts:[{t:'Ursachen identifizieren, klare Ziele setzen, Coaching implementieren und Anerkennungsprogramme einführen.',c:true},{t:'Alle sofort abmahnen.',c:false},{t:'Das Upselling selbst übernehmen.',c:false},{t:'Nichts tun außer dem GM berichten.',c:false}]},
-      {pos:['night','leader'],cat:'Deutsch – C1',q:'Ein Diplomat mit Immunität verhält sich aggressiv gegenüber Mitarbeitern. Wie gehen Sie vor?',opts:[{t:'Ruhig deeskalieren, Vorfall dokumentieren, Management und ggf. Rechtsbeistand einbeziehen, professionell bleiben.',c:true},{t:'Sofort die Polizei rufen.',c:false},{t:'Bitten Sie ihn, das Hotel zu verlassen.',c:false},{t:'Nichts tun wegen der Immunität.',c:false}]},
-      {pos:['clerk','night','leader'],cat:'Deutsch – C1',q:'Wie wirken sich DSGVO-Vorschriften auf den Hotelbetrieb aus?',opts:[{t:'Gästedaten müssen mit Einwilligung gesammelt, sicher gespeichert, zweckgebunden genutzt und auf Anfrage gelöscht werden.',c:true},{t:'Sie betreffen Hotels nicht.',c:false},{t:'Daten können frei geteilt werden.',c:false},{t:'Nur für Online-Buchungen relevant.',c:false}]},
-    ],
-    c2: [
-      {pos:['leader'],cat:'Deutsch – C2',q:'Entwickeln Sie ein umfassendes Onboarding-Programm für 30 neue Frontdesk-Mitarbeiter in 3 Wochen vor der Hoteleröffnung.',opts:[{t:'Phasierter Ansatz: Markenwerte & SOP-Schulung Woche 1, PMS & Systemschulung Woche 2, Rollenspiele & Probeläufe Woche 3, mit täglichen Debriefs.',c:true},{t:'Ein Handbuch aushändigen und hoffen.',c:false},{t:'Nur Shift Leader schulen.',c:false},{t:'Onboarding kann nach der Eröffnung warten.',c:false}]},
-      {pos:['leader','night'],cat:'Deutsch – C2',q:'Analysieren Sie kritisch die ethischen Implikationen von Upselling-Provisionen für Rezeptionisten.',opts:[{t:'Provisionen steigern zwar die Leistung, können aber im Widerspruch zu echten Gästebedürfnissen stehen; ein ausgewogener Ansatz verknüpft Provisionen mit Umsatz und Gästezufriedenheit.',c:true},{t:'Provisionen sind immer unethisch.',c:false},{t:'Nur Provisionen nutzen, Zufriedenheit ignorieren.',c:false},{t:'Upselling selbst ist unethisch.',c:false}]},
-      {pos:['clerk','night','leader'],cat:'Deutsch – C2',q:'Analysieren Sie, wie KI-Concierge-Systeme die traditionelle Frontoffice-Rolle verändern könnten.',opts:[{t:'KI übernimmt Routinetransaktionen (Check-in, Infoanfragen), während die menschliche Rolle sich zu komplexen Gästebeziehungen und emotionaler Intelligenz entwickelt.',c:true},{t:'KI wird alle Mitarbeiter ersetzen.',c:false},{t:'KI ist für die Hotellerie irrelevant.',c:false},{t:'KI betrifft nur das Back-Office.',c:false}]},
-      {pos:['leader'],cat:'Deutsch – C2',q:'Ein großes OTA droht, das Hotel-Ranking zu senken, wenn Sie die Raten nicht senken. Wie reagieren Sie strategisch?',opts:[{t:'Preisparität analysieren, OTA-Beitrag zum Channel-Mix bewerten, Revenue Management konsultieren, aus einer Position diversifizierter Distribution verhandeln.',c:true},{t:'Raten sofort senken.',c:false},{t:'Das OTA ignorieren.',c:false},{t:'Sich von allen OTAs entfernen.',c:false}]},
-      {pos:['leader'],cat:'Deutsch – C2',q:'Formulieren Sie eine umfassende Revenue-Management-Philosophie für ein 505-Zimmer-Luxusresort und ihre Auswirkungen auf Front-Office-KPIs.',opts:[{t:'RevPAR-Optimierung durch dynamische Preisgestaltung, Channel Management, Aufenthaltsdauerkontrolle, Nachfrageprognosen; FO-KPIs: Upsell-Konversionsrate, ADR, Gästezufriedenheit.',c:true},{t:'Alle Zimmer zum gleichen Preis verkaufen.',c:false},{t:'Revenue Management ist nur Chefsache.',c:false},{t:'Nur auf Auslastung fokussieren.',c:false}]},
-    ],
-  },
-  // ─── RUSSIAN ───
-  ru: {
-    a1: [
-      {pos:['clerk','night','leader'],cat:'Русский – A1',q:'Как вы приветствуете гостя на рецепции?',opts:[{t:'Добрый день! Чем могу помочь?',c:true},{t:'Что вам нужно?',c:false},{t:'Уходите, мы заняты.',c:false},{t:'Приходите позже.',c:false}]},
-      {pos:['clerk','night','leader'],cat:'Русский – A1',q:'Гость говорит: «Я хочу номер». Что вы скажете?',opts:[{t:'Конечно! На сколько ночей?',c:true},{t:'У нас нет номеров.',c:false},{t:'Может быть, завтра.',c:false},{t:'Спросите у бара.',c:false}]},
-      {pos:['clerk','night','leader'],cat:'Русский – A1',q:'Что означает «чек-аут»?',opts:[{t:'Выезд из отеля и оплата счёта.',c:true},{t:'Заказ еды.',c:false},{t:'Плавание в бассейне.',c:false},{t:'Бронирование экскурсии.',c:false}]},
-      {pos:['clerk','night','leader'],cat:'Русский – A1',q:'Гость спрашивает: «Где ресторан?» Вы говорите:',opts:[{t:'Он на первом этаже, слева.',c:true},{t:'Я не знаю.',c:false},{t:'Это не моя работа.',c:false},{t:'Спросите кого-нибудь другого.',c:false}]},
-      {pos:['clerk','night','leader'],cat:'Русский – A1',q:'Какое написание правильное?',opts:[{t:'Бронирование',c:true},{t:'Бронерование',c:false},{t:'Бранирование',c:false},{t:'Бронировани',c:false}]},
-    ],
-    a2: [
-      {pos:['clerk','night','leader'],cat:'Русский – A2',q:'Гость недоволен своим номером. Что вы скажете в первую очередь?',opts:[{t:'Мне жаль это слышать. Позвольте посмотреть, что я могу для вас сделать.',c:true},{t:'Это не моя проблема.',c:false},{t:'Номер в порядке, не жалуйтесь.',c:false},{t:'Вам нужно было лучше бронировать.',c:false}]},
-      {pos:['clerk','night','leader'],cat:'Русский – A2',q:'Выберите правильную фразу при заселении:',opts:[{t:'Могу я увидеть ваш паспорт и подтверждение бронирования?',c:true},{t:'Давайте ваши бумаги сейчас.',c:false},{t:'Паспорт или уходите.',c:false},{t:'Вы вообще бронировали?',c:false}]},
-      {pos:['clerk','night','leader'],cat:'Русский – A2',q:'Что такое «побудка»?',opts:[{t:'Телефонный звонок для пробуждения гостя в нужное время.',c:true},{t:'Пожарная сигнализация.',c:false},{t:'Звонок с жалобой.',c:false},{t:'Уведомление о счёте.',c:false}]},
-      {pos:['clerk','night','leader'],cat:'Русский – A2',q:'Какая фраза наиболее профессиональна для телефонного приветствия?',opts:[{t:'Добрый вечер, стойка регистрации, меня зовут [имя]. Чем могу помочь?',c:true},{t:'Привет, что хотите?',c:false},{t:'Рецепция. Говорите.',c:false},{t:'Да, могу помочь?',c:false}]},
-      {pos:['clerk','night','leader'],cat:'Русский – A2',q:'Гость хочет продлить проживание. Что вы делаете?',opts:[{t:'Проверить наличие номеров и предложить варианты на нужные даты.',c:true},{t:'Сразу сказать «нет».',c:false},{t:'Перевести на хаускипинг.',c:false},{t:'Попросить перезвонить завтра.',c:false}]},
-    ],
-    b1: [
-      {pos:['clerk','night','leader'],cat:'Русский – B1',q:'Гость жалуется, что в номере для некурящих пахнет дымом. Каков ваш первый шаг?',opts:[{t:'Искренне извиниться, немедленно организовать смену номера и сообщить в хаускипинг.',c:true},{t:'Сказать гостю, что он ошибается.',c:false},{t:'Предложить скидку, не решив проблему.',c:false},{t:'Попросить подождать и ничего не делать.',c:false}]},
-      {pos:['clerk','night','leader'],cat:'Русский – B1',q:'Что означает «апселлинг» в контексте стойки регистрации?',opts:[{t:'Предложение гостю более высокой категории номера или дополнительных услуг для увеличения дохода.',c:true},{t:'Продажа отеля.',c:false},{t:'Взимание дополнительной платы без разрешения.',c:false},{t:'Ложь о характеристиках номера.',c:false}]},
-      {pos:['clerk','night','leader'],cat:'Русский – B1',q:'Прибывает VIP-гость. Что вы делаете иначе, чем при стандартном заселении?',opts:[{t:'Приветствовать по имени, проводить в номер, предложить удобства, убедиться, что все пожелания выполнены заранее.',c:true},{t:'Ничего, относиться ко всем одинаково.',c:false},{t:'Заставить ждать дольше.',c:false},{t:'Взимать более высокий тариф.',c:false}]},
-      {pos:['clerk','night','leader'],cat:'Русский – B1',q:'Как вежливо сообщить гостю, что запрошенный тип номера недоступен?',opts:[{t:'К сожалению, этот тип номера недоступен на ваши даты. Однако я бы с удовольствием предложил вам апгрейд до [альтернатива] по той же цене.',c:true},{t:'Извините, нет.',c:false},{t:'Надо было бронировать раньше.',c:false},{t:'Номеров нет, до свидания.',c:false}]},
-      {pos:['clerk','night','leader'],cat:'Русский – B1',q:'Что следует делать при обнаружении ошибки в ночном аудите?',opts:[{t:'Задокументировать расхождение, сверить все транзакции, доложить менеджеру.',c:true},{t:'Тихо исправить цифры.',c:false},{t:'Оставить для утренней смены.',c:false},{t:'Удалить неверную запись.',c:false}]},
-    ],
-    b2: [
-      {pos:['clerk','night','leader'],cat:'Русский – B2',q:'Гость угрожает оставить негативный отзыв, если не получит бесплатную ночь. Как вы реагируете?',opts:[{t:'Признать разочарование, предложить реальное решение в рамках политики, но не уступать угрозам.',c:true},{t:'Немедленно дать бесплатную ночь.',c:false},{t:'Пусть пишет что хочет.',c:false},{t:'Проигнорировать.',c:false}]},
-      {pos:['clerk','night','leader'],cat:'Русский – B2',q:'В чём разница между «гарантированным» и «предоплаченным» бронированием?',opts:[{t:'Гарантированное обеспечивается кредитной картой, оплата при выезде; предоплаченное списывается заранее.',c:true},{t:'Они одинаковы.',c:false},{t:'Гарантированное не требует оплаты.',c:false},{t:'Предоплата может быть отменена в любой момент.',c:false}]},
-      {pos:['night','leader'],cat:'Русский – B2',q:'Каковы ключевые компоненты эффективной передачи смены?',opts:[{t:'Незавершённые задачи, VIP-заезды/выезды, проблемы с техническим обслуживанием, жалобы, кассовый баланс, необычные инциденты.',c:true},{t:'Только количество гостей.',c:false},{t:'Только статус уборки.',c:false},{t:'Только подпись в журнале.',c:false}]},
-      {pos:['clerk','night','leader'],cat:'Русский – B2',q:'Как профессионально поступить, если кредитная карта гостя отклонена при заселении?',opts:[{t:'Дискретно сообщить гостю, предложить альтернативный способ оплаты, предложить сохранить багаж.',c:true},{t:'Громко объявить у стойки.',c:false},{t:'Немедленно отказать без объяснений.',c:false},{t:'Принять наличные без документирования.',c:false}]},
-      {pos:['clerk','night','leader'],cat:'Русский – B2',q:'Какова цель политики «no-show»?',opts:[{t:'Взимать штраф, если гость с гарантированным бронированием не приехал без отмены.',c:true},{t:'Не допускать поздних заездов.',c:false},{t:'Автоматически улучшать номера.',c:false},{t:'Блокировать гостей от повторного бронирования.',c:false}]},
-    ],
-    c1: [
-      {pos:['leader'],cat:'Русский – C1',q:'Сформулируйте разницу между стратегией овербукинга и перепродажей для нового коллеги.',opts:[{t:'Овербукинг — рассчитанная стратегия на основе данных о no-show; перепродажа — приём бронирований сверх вместимости без обоснования данными.',c:true},{t:'Это одно и то же.',c:false},{t:'Овербукинг незаконен.',c:false},{t:'Овербукинг значит продавать дороже.',c:false}]},
-      {pos:['clerk','night','leader'],cat:'Русский – C1',q:'Дипломат с иммунитетом ведёт себя агрессивно по отношению к персоналу. Как вы действуете?',opts:[{t:'Спокойно деэскалировать, тщательно задокументировать инцидент, привлечь руководство и юристов при необходимости, сохраняя профессионализм.',c:true},{t:'Немедленно вызвать полицию.',c:false},{t:'Попросить покинуть отель.',c:false},{t:'Ничего не делать из-за иммунитета.',c:false}]},
-      {pos:['night','leader'],cat:'Русский – C1',q:'Какие ключевые элементы должна содержать эффективная передача смены?',opts:[{t:'Незавершённые задачи, VIP-заезды/выезды, проблемы обслуживания, жалобы, кассовый баланс, особые инциденты.',c:true},{t:'Только количество гостей.',c:false},{t:'Только статус уборки.',c:false},{t:'Только журнал.',c:false}]},
-      {pos:['leader'],cat:'Русский – C1',q:'Ваша стойка регистрации стабильно показывает слабые показатели апселлинга. Каков ваш управленческий подход?',opts:[{t:'Определить причины, установить чёткие цели, провести коучинг и внедрить программы признания.',c:true},{t:'Немедленно оформить нарушения.',c:false},{t:'Самому заниматься апселлингом.',c:false},{t:'Доложить GM и больше ничего не делать.',c:false}]},
-      {pos:['clerk','night','leader'],cat:'Русский – C1',q:'Как GDPR влияет на работу стойки регистрации в европейском отеле?',opts:[{t:'Данные гостей должны собираться с согласия, надёжно храниться, использоваться только по назначению и удаляться по запросу.',c:true},{t:'Не влияет на отели.',c:false},{t:'Данные можно передавать кому угодно.',c:false},{t:'Касается только онлайн-бронирований.',c:false}]},
-    ],
-    c2: [
-      {pos:['leader'],cat:'Русский – C2',q:'Сформулируйте комплексную философию управления доходами для 505-комнатного люксового курорта и её влияние на KPI стойки регистрации.',opts:[{t:'Оптимизация RevPAR через динамическое ценообразование, управление каналами, контроль длительности проживания и прогнозирование спроса; KPI: конверсия апселлинга, ADR, удовлетворённость гостей.',c:true},{t:'Продавать все номера по одной цене.',c:false},{t:'Управление доходами — только забота GM.',c:false},{t:'Фокус только на заполняемости.',c:false}]},
-      {pos:['leader','night'],cat:'Русский – C2',q:'Критически оцените этические последствия стимулирования персонала стойки регистрации комиссионными с апселлинга.',opts:[{t:'Стимулы повышают результативность, но могут конфликтовать с реальными потребностями гостей; сбалансированный подход связывает комиссии с доходом и удовлетворённостью гостей.',c:true},{t:'Комиссионные всегда неэтичны.',c:false},{t:'Использовать только комиссии, игнорировать удовлетворённость.',c:false},{t:'Апселлинг сам по себе неэтичен.',c:false}]},
-      {pos:['clerk','night','leader'],cat:'Русский – C2',q:'Проанализируйте, как системы ИИ-консьержа могут трансформировать традиционную роль стойки регистрации.',opts:[{t:'ИИ автоматизирует рутинные операции (заселение, информационные запросы), повышая роль человека в сложных гостевых отношениях и эмоциональном интеллекте.',c:true},{t:'ИИ полностью заменит весь персонал.',c:false},{t:'ИИ не имеет отношения к гостеприимству.',c:false},{t:'ИИ затронет только бэк-офис.',c:false}]},
-      {pos:['leader'],cat:'Русский – C2',q:'Разработайте комплексную программу онбординга для 30 новых сотрудников стойки регистрации за 3 недели до открытия отеля.',opts:[{t:'Поэтапный подход: ценности бренда и СОП неделя 1, PMS и системы неделя 2, ролевые игры и репетиции неделя 3, с ежедневными разборами.',c:true},{t:'Выдать руководство и надеяться на лучшее.',c:false},{t:'Обучить только старших смены.',c:false},{t:'Онбординг может подождать до открытия.',c:false}]},
-      {pos:['leader'],cat:'Русский – C2',q:'Крупный OTA угрожает снизить рейтинг отеля, если вы не снизите тарифы. Как вы реагируете стратегически?',opts:[{t:'Проанализировать паритет ставок, оценить вклад OTA в микс каналов, проконсультироваться с управлением доходами и вести переговоры с позиции диверсифицированного распределения.',c:true},{t:'Немедленно снизить тарифы.',c:false},{t:'Игнорировать OTA.',c:false},{t:'Убрать отель со всех OTA.',c:false}]},
-    ],
-  },
-  // ─── TURKISH ───
-  tr: {
-    a1: [
-      {pos:['clerk','night','leader'],cat:'Türkçe – A1',q:'Resepsiyonda bir misafiri nasıl karşılarsınız?',opts:[{t:'İyi günler! Size nasıl yardımcı olabilirim?',c:true},{t:'Ne istiyorsunuz?',c:false},{t:'Meşgulüz, gidin.',c:false},{t:'Sonra gelin.',c:false}]},
-      {pos:['clerk','night','leader'],cat:'Türkçe – A1',q:'Check-out ne demektir?',opts:[{t:'Otelden ayrılmak ve faturayı ödemek.',c:true},{t:'Yemek sipariş etmek.',c:false},{t:'Havuzda yüzmek.',c:false},{t:'Tur rezervasyonu yapmak.',c:false}]},
-      {pos:['clerk','night','leader'],cat:'Türkçe – A1',q:'Misafir "Restoranınız nerede?" diye soruyor. Ne dersiniz?',opts:[{t:'Zemin katta, solunuzda efendim.',c:true},{t:'Bilmiyorum.',c:false},{t:'Bu benim işim değil.',c:false},{t:'Başkasına sorun.',c:false}]},
-      {pos:['clerk','night','leader'],cat:'Türkçe – A1',q:'Hangi yazım doğrudur?',opts:[{t:'Rezervasyon',c:true},{t:'Rezarvasyon',c:false},{t:'Rezervetion',c:false},{t:'Rezevasyon',c:false}]},
-      {pos:['clerk','night','leader'],cat:'Türkçe – A1',q:'"Oda servisi" ne anlama gelir?',opts:[{t:'Misafirin odasına yemek ve içecek getirme hizmeti.',c:true},{t:'Odayı temizleme.',c:false},{t:'Misafiri uyandırma.',c:false},{t:'Bagaj taşıma.',c:false}]},
-    ],
-    a2: [
-      {pos:['clerk','night','leader'],cat:'Türkçe – A2',q:'Misafir odasından memnun değil. İlk olarak ne dersiniz?',opts:[{t:'Üzgünüm, anlıyorum. Hemen çözüm üretmeye çalışacağım.',c:true},{t:'Bu benim sorunum değil.',c:false},{t:'Oda gayet iyi, şikâyet etmeyin.',c:false},{t:'Daha iyi rezervasyon yaptırmalıydınız.',c:false}]},
-      {pos:['clerk','night','leader'],cat:'Türkçe – A2',q:'Check-in sırasında hangi cümle doğrudur?',opts:[{t:'Pasaportunuzu ve rezervasyon onayınızı alabilir miyim efendim?',c:true},{t:'Belgelerinizi verin hemen.',c:false},{t:'Pasaport ver yoksa git.',c:false},{t:'Rezervasyon yaptırdın mı?',c:false}]},
-      {pos:['clerk','night','leader'],cat:'Türkçe – A2',q:'"Sabah uyandırma servisi" ne demektir?',opts:[{t:'Misafirin istediği saatte telefon açarak uyandırma.',c:true},{t:'Yangın alarmı.',c:false},{t:'Şikâyet araması.',c:false},{t:'Fatura bildirimi.',c:false}]},
-      {pos:['clerk','night','leader'],cat:'Türkçe – A2',q:'Telefona en profesyonel nasıl cevap verilir?',opts:[{t:'İyi akşamlar, Resepsiyon, ben [isim]. Size nasıl yardımcı olabilirim?',c:true},{t:'Alo ne istiyorsunuz?',c:false},{t:'Resepsiyon. Buyurun.',c:false},{t:'Evet, var mısınız?',c:false}]},
-      {pos:['clerk','night','leader'],cat:'Türkçe – A2',q:'Misafir konaklamasını uzatmak istiyor. Ne yaparsınız?',opts:[{t:'Müsaitliği kontrol edip istenen tarihler için seçenekler sunarım.',c:true},{t:'Kontrol etmeden "hayır" derim.',c:false},{t:'Kat hizmetlerine yönlendiririm.',c:false},{t:'Yarın aramasını söylerim.',c:false}]},
-    ],
-    b1: [
-      {pos:['clerk','night','leader'],cat:'Türkçe – B1',q:'Misafir sigara içilmeyen odada sigara kokusu olduğundan şikâyetçi. İlk adımınız nedir?',opts:[{t:'Özür dileyip hemen oda değişikliği ayarlar, durumu kat hizmetlerine bildiririm.',c:true},{t:'Misafire yanılıyor derim.',c:false},{t:'Sorunu çözmeden indirim teklif ederim.',c:false},{t:'Beklemesini söyleyip hiçbir şey yapmam.',c:false}]},
-      {pos:['clerk','night','leader'],cat:'Türkçe – B1',q:'Otelcilik bağlamında "üst satış" (upselling) ne anlama gelir?',opts:[{t:'Gelir artırmak için misafire daha üst kategori oda veya ek hizmet önermek.',c:true},{t:'Oteli satmak.',c:false},{t:'İzinsiz ek ücret almak.',c:false},{t:'Oda özellikleri hakkında yalan söylemek.',c:false}]},
-      {pos:['clerk','night','leader'],cat:'Türkçe – B1',q:'VIP misafir geldiğinde standart check-in\'den farklı olarak ne yaparsınız?',opts:[{t:'İsmini söyleyerek karşılar, odaya eşlik eder, ikramları sunar, tercihlerin önceden hazırlanmasını sağlarım.',c:true},{t:'Hiçbir şey, herkese eşit davranırım.',c:false},{t:'Daha uzun bekletirim.',c:false},{t:'Bilgi vermeden daha yüksek tarife uygularım.',c:false}]},
-      {pos:['clerk','night','leader'],cat:'Türkçe – B1',q:'Talep edilen oda tipi müsait değil. Nasıl kibarca bildirirsiniz?',opts:[{t:'Maalesef o oda tipi bu tarihlerde müsait değil. Ancak size aynı ücretle [alternatif] kategorisine ücretsiz yükseltme teklif edebilir miyim?',c:true},{t:'Yok efendim, özür dileriz.',c:false},{t:'Daha erken rezervasyon yaptırmalıydınız.',c:false},{t:'Oda yok, güle güle.',c:false}]},
-      {pos:['clerk','night','leader'],cat:'Türkçe – B1',q:'Gece denetiminde (night audit) hata bulursanız ne yaparsınız?',opts:[{t:'Farkı belgeler, tüm işlemleri çapraz kontrol eder, müdüre rapor ederim.',c:true},{t:'Rakamları sessizce düzeltirim.',c:false},{t:'Sabah vardiyasına bırakırım.',c:false},{t:'Yanlış girişi silerim.',c:false}]},
-    ],
-    b2: [
-      {pos:['clerk','night','leader'],cat:'Türkçe – B2',q:'Misafir olumsuz yorum yapacağını söyleyerek bedava gece talep ediyor. Nasıl yanıt verirsiniz?',opts:[{t:'Hayal kırıklığını kabul eder, politika çerçevesinde gerçek bir çözüm sunar, tehdide boyun eğmem.',c:true},{t:'Hemen bedava gece veririm.',c:false},{t:'İstediğini yazsın derim.',c:false},{t:'Görmezden gelirim.',c:false}]},
-      {pos:['clerk','night','leader'],cat:'Türkçe – B2',q:'"Garantili rezervasyon" ile "ön ödemeli rezervasyon" arasındaki fark nedir?',opts:[{t:'Garantili kredi kartıyla güvence altına alınır, çıkışta ücretlendirilir; ön ödemeli peşinen tahsil edilir.',c:true},{t:'İkisi aynı şeydir.',c:false},{t:'Garantili ödeme gerektirmez.',c:false},{t:'Ön ödemeli her zaman iptal edilebilir.',c:false}]},
-      {pos:['clerk','night','leader'],cat:'Türkçe – B2',q:'Check-in sırasında misafirin kredi kartı reddedildi. Nasıl profesyonelce karşılarsınız?',opts:[{t:'Misafiri gizlice bilgilendirir, alternatif ödeme yöntemi önerir, siz hallederken bagajını saklayabileceğimizi belirtirim.',c:true},{t:'Tüm misafirlerin duyabileceği şekilde söylerim.',c:false},{t:'Açıklama yapmadan check-in\'i reddederim.',c:false},{t:'Belgeleme yapmadan nakit alırım.',c:false}]},
-      {pos:['night','leader'],cat:'Türkçe – B2',q:'Etkin bir vardiya devir tesliminin temel unsurları nelerdir?',opts:[{t:'Bekleyen görevler, VIP geliş/çıkışlar, bakım sorunları, şikâyet takipleri, kasa bakiyesi, olağandışı olaylar.',c:true},{t:'Sadece misafir sayısı.',c:false},{t:'Sadece temizlik durumu.',c:false},{t:'Sadece logbook imzası.',c:false}]},
-      {pos:['clerk','night','leader'],cat:'Türkçe – B2',q:'"No-show" politikasının amacı nedir?',opts:[{t:'İptal etmeden gelmeyen garantili rezervasyon sahibinden ceza ücreti almak.',c:true},{t:'Geç check-in\'i önlemek.',c:false},{t:'Odaları otomatik yükseltmek.',c:false},{t:'Misafirlerin yeniden rezervasyon yapmasını engellemek.',c:false}]},
-    ],
-    c1: [
-      {pos:['leader'],cat:'Türkçe – C1',q:'Yeni bir meslektaşınıza "overbooking stratejisi" ile "fazla satış" arasındaki farkı nasıl açıklarsınız?',opts:[{t:'Overbooking, geçmiş no-show verilerine dayalı hesaplanmış bir stratejidir; fazla satış ise kapasite justifikasyonu olmadan aşırı rezervasyon almaktır.',c:true},{t:'İkisi aynı şeydir.',c:false},{t:'Overbooking yasadışıdır.',c:false},{t:'Overbooking daha pahalı odalar satmak demektir.',c:false}]},
-      {pos:['leader'],cat:'Türkçe – C1',q:'Resepsiyon ekibiniz sürekli düşük üst satış (upselling) metrikleri gösteriyor. Yönetsel yaklaşımınız nedir?',opts:[{t:'Temel nedenleri (eğitim eksikliği, motivasyon) tespit eder, net hedefler koyar, koçluk seansları ve ödüllendirme programları uygularım.',c:true},{t:'Hepsine hemen tutanak tutarım.',c:false},{t:'Üst satışı kendim yaparım.',c:false},{t:'Sadece GM\'e raporlar, başka bir şey yapmam.',c:false}]},
-      {pos:['clerk','night','leader'],cat:'Türkçe – C1',q:'Diplomatik dokunulmazlığı olan bir misafir personele saldırgan davranıyor. Nasıl hareket edersiniz?',opts:[{t:'Sakin şekilde durumu yatıştırır, olayı ayrıntılı belgeler, gerekirse yönetim ve hukuki birim devreye girer, profesyonelliği koruyorum.',c:true},{t:'Derhal polisi ararım.',c:false},{t:'Oteli terk etmesini isterim.',c:false},{t:'Dokunulmazlığı nedeniyle hiçbir şey yapmam.',c:false}]},
-      {pos:['night','leader'],cat:'Türkçe – C1',q:'KVKK\'nın otel resepsiyonu operasyonlarına etkileri nelerdir?',opts:[{t:'Misafir verileri onaylı toplanmalı, güvenli depolanmalı, yalnızca belirtilen amaçla kullanılmalı ve talep üzerine silinmelidir.',c:true},{t:'Otelleri etkilemez.',c:false},{t:'Veriler herkesle paylaşılabilir.',c:false},{t:'Yalnızca online rezervasyonları etkiler.',c:false}]},
-      {pos:['leader'],cat:'Türkçe – C1',q:'Lüks bir all-inclusive resort için etkin bir gelir yönetimi felsefesinin temel bileşenleri nelerdir?',opts:[{t:'Dinamik fiyatlandırma, kanal yönetimi, kalış süresi kontrolü ve talep tahminleriyle RevPAR optimizasyonu.',c:true},{t:'Tüm odaları sabit fiyatla satmak.',c:false},{t:'Gelir yönetimi sadece GM\'in işi.',c:false},{t:'Yalnızca doluluk oranına odaklanmak.',c:false}]},
-    ],
-    c2: [
-      {pos:['leader'],cat:'Türkçe – C2',q:'505 odalı lüks bir all-inclusive resort için kapsamlı gelir yönetimi felsefesini ve bunun resepsiyon KPI\'larına yansımalarını açıklayınız.',opts:[{t:'Dinamik fiyatlandırma, kanal yönetimi, kalış süresi kontrolü ve talep tahminleriyle RevPAR optimizasyonu; Resepsiyon KPI\'ları: üst satış dönüşüm oranı, ADR ve misafir memnuniyeti.',c:true},{t:'Tüm odaları aynı fiyata satmak.',c:false},{t:'Gelir yönetimi sadece GM\'in işi.',c:false},{t:'Sadece doluluk oranına odaklanmak.',c:false}]},
-      {pos:['leader','night'],cat:'Türkçe – C2',q:'Resepsiyon personeline üst satış komisyonu verilmesinin etik sonuçlarını eleştirel olarak değerlendiriniz.',opts:[{t:'Komisyonlar performansı artırsa da gerçek misafir ihtiyaçlarıyla çelişebilir; dengeli bir yaklaşım, komisyonları hem gelir hem misafir memnuniyet puanlarına bağlamalıdır.',c:true},{t:'Komisyonlar her zaman etik dışıdır.',c:false},{t:'Yalnızca komisyon kullan, memnuniyeti yok say.',c:false},{t:'Üst satışın kendisi etik dışıdır.',c:false}]},
-      {pos:['clerk','night','leader'],cat:'Türkçe – C2',q:'Yapay zekâ concierge sistemlerinin geleneksel resepsiyon rolünü önümüzdeki on yılda nasıl dönüştürebileceğini analiz ediniz.',opts:[{t:'Yapay zekâ rutin işlemleri otomatize ederken insan rolü, karmaşık misafir ilişkileri ve duygusal zekâ gerektiren görevlere doğru evrilecektir.',c:true},{t:'Yapay zekâ tüm personelin yerini alacak.',c:false},{t:'Yapay zekânın otelcilikle ilgisi yoktur.',c:false},{t:'Yapay zekâ yalnızca arka ofisi etkileyecek.',c:false}]},
-      {pos:['leader'],cat:'Türkçe – C2',q:'Yeni açılacak bir resort için 30 yeni resepsiyon personelinin otel açılışından 3 hafta önce onboarding programını tasarlayınız.',opts:[{t:'Aşamalı yaklaşım: marka değerleri ve SOP eğitimi 1. hafta, PMS ve sistem eğitimi 2. hafta, rol yapma simülasyonları ve ön açılış provası 3. hafta, günlük değerlendirme toplantılarıyla.',c:true},{t:'El kitabını ver, gerisini kendi bulsun.',c:false},{t:'Yalnızca vardiya liderlerini eğit.',c:false},{t:'Onboarding açılış sonrasına ertelenebilir.',c:false}]},
-      {pos:['leader'],cat:'Türkçe – C2',q:'Büyük bir OTA, tариfleri düşürmediğiniz takdirde otelinizin sıralamasını düşüreceğini söylüyor. Stratejik tepkiniz ne olur?',opts:[{t:'Tarife paritesini analiz eder, OTA\'nın kanal karmasına katkısını değerlendirir, gelir yönetimiyle koordine eder, çeşitlendirilmiş dağıtım pozisyonundan müzakere ederim.',c:true},{t:'Tarifleri hemen düşürürüm.',c:false},{t:'OTA\'yı görmezden gelirim.',c:false},{t:'Tüm OTA\'lardan çıkarım.',c:false}]},
-    ],
-  },
-  // ─── HOSPITALITY KNOWLEDGE (all languages, pos-specific) ───
-  hospitality: {
-    clerk: [
-      {pos:['clerk'],cat:'Otelcilik Bilgisi',q:'PMS nedir?',opts:[{t:'Property Management System — otelin rezervasyon, check-in/out ve fatura süreçlerini yöneten yazılım.',c:true},{t:'Personel maaş sistemi.',c:false},{t:'Misafir memnuniyet anketi.',c:false},{t:'Kat hizmetleri takip programı.',c:false}]},
-      {pos:['clerk'],cat:'Otelcilik Bilgisi',q:'All-inclusive bir otelde check-in sırasında misafire ne verilmelidir?',opts:[{t:'Oda kartı, all-inclusive bilekliği/kartı, otel haritası ve hizmetler hakkında bilgi.',c:true},{t:'Sadece oda kartı.',c:false},{t:'Sadece fatura.',c:false},{t:'Hiçbir şey verilmez.',c:false}]},
-      {pos:['clerk'],cat:'Otelcilik Bilgisi',q:'Misafir check-in yapmak istiyor ancak odası henüz hazır değil. En uygun yaklaşım hangisidir?',opts:[{t:'Misafirden özür dileyerek bagajını almayı teklif edin, lobi veya restoranı kullanmasını önerin ve oda hazır olduğunda haber verin.',c:true},{t:'Odaya gidemezsiniz deyin.',c:false},{t:'Misafiri otelden çıkartın.',c:false},{t:'Odaya kilitsiz girmesine izin verin.',c:false}]},
-      {pos:['clerk'],cat:'Otelcilik Bilgisi',q:'Misafir odasındaki kasayı kullanmak istiyor ama nasıl çalıştığını bilmiyor. Ne yaparsınız?',opts:[{t:'Kasanın kullanımını kibarca açıklarım ya da odaya giderek gösteririm.',c:true},{t:'Bu benim işim değil derim.',c:false},{t:'Kasa bozuk derim.',c:false},{t:'Güvenliği gönderirim.',c:false}]},
-      {pos:['clerk'],cat:'Otelcilik Bilgisi',q:'"ADR" ne demektir?',opts:[{t:'Average Daily Rate — günlük ortalama oda geliri.',c:true},{t:'Ek gün rezervasyonu.',c:false},{t:'Otomatik istek defteri.',c:false},{t:'Aktivite güncelleme raporu.',c:false}]},
-    ],
-    night: [
-      {pos:['night'],cat:'Gece Resepsiyonu',q:'Night audit\'ın temel amacı nedir?',opts:[{t:'Günlük gelir ve hesapların kapanmasını, doğrulanmasını ve raporlanmasını sağlamak.',c:true},{t:'Odaları temizlemek.',c:false},{t:'Gece misafirlerini kayıt altına almak.',c:false},{t:'Sabah kahvaltısını hazırlamak.',c:false}]},
-      {pos:['night'],cat:'Gece Resepsiyonu',q:'Gece vardiyasında otelde yangın alarmı çalıyor. İlk ne yaparsınız?',opts:[{t:'Acil prosedürü devreye alır, güvenlik ve itfaiyeyi arar, misafir tahliyesini koordine ederim.',c:true},{t:'Alarm kapanana kadar beklerim.',c:false},{t:'Sadece kendi katıma bakarım.',c:false},{t:'Sabah müdürünü beklerim.',c:false}]},
-      {pos:['night'],cat:'Gece Resepsiyonu',q:'Gece saatinde tıbbi yardım isteyen bir misafir var. Nasıl hareket edersiniz?',opts:[{t:'Derhal ambulans çağırır, misafirin yanında kalır, yönetimi bilgilendiririm.',c:true},{t:'Sabaha kadar beklemesini söylerim.',c:false},{t:'Eczaneye gitmesini öneririm.',c:false},{t:'Kapıyı açıp bırakırım.',c:false}]},
-      {pos:['night'],cat:'Gece Resepsiyonu',q:'Gece check-in\'de misafir rezervasyonu yok ama oda müsait. Ne yaparsınız?',opts:[{t:'Walk-in prosedürünü uygular, kimlik ve ödeme alır, PMS\'e kaydederim.',c:true},{t:'Otel dolu derim.',c:false},{t:'Rezervasyonsuz giremez derim.',c:false},{t:'Sabah gelmesini söylerim.',c:false}]},
-      {pos:['night'],cat:'Gece Resepsiyonu',q:'Night audit\'ta kasa farkı tespit ettiniz. Ne yaparsınız?',opts:[{t:'Tüm işlemleri tek tek kontrol eder, farkı belgeler, bir üst amire yazılı olarak bildiririm.',c:true},{t:'Kasadan para koyar kapatırım.',c:false},{t:'Sabaha bırakırım.',c:false},{t:'Hiçbir şey yapmam.',c:false}]},
-    ],
-    leader: [
-      {pos:['leader'],cat:'Vardiya Liderliği',q:'Shift leader olarak bir vardiyada en kritik sorumluluğunuz nedir?',opts:[{t:'Ekibin operasyonel verimliliğini sağlamak, misafir memnuniyetini yönetmek ve tüm standartlara uyumu denetlemek.',c:true},{t:'Sadece check-in yapmak.',c:false},{t:'Kat hizmetlerini koordine etmek.',c:false},{t:'Muhasebe raporları hazırlamak.',c:false}]},
-      {pos:['leader'],cat:'Vardiya Liderliği',q:'Resepsiyonda kuyruk uzuyor ve iki personel yetersiz kalıyor. Ne yaparsınız?',opts:[{t:'Mevcut personeli önceliklendiririm, gerekirse ek personel çağırır ya da kendim müdahil olur, misafirlere bekleme süresi hakkında bilgi veririm.',c:true},{t:'Misafirlerin beklemesine izin veririm.',c:false},{t:'Müdürü arayıp beklerim.',c:false},{t:'Bir sonraki vardiyaya kalmasını söylerim.',c:false}]},
-      {pos:['leader'],cat:'Vardiya Liderliği',q:'Bir personel misafirle tartışmaya girmiş. Nasıl yönetirsiniz?',opts:[{t:'Müdahale ederek personeli sakinleştiririm, misafirle birebir ilgilenirim, sonrasında personelle durumu değerlendiririm.',c:true},{t:'Müdahale etmem.',c:false},{t:'Personele hak veririm.',c:false},{t:'Misafiri otelden çıkarırım.',c:false}]},
-      {pos:['leader'],cat:'Vardiya Liderliği',q:'Otelde overbooking durumu oluştu. Walk-in misafire oda veremiyorsunuz. Ne yaparsınız?',opts:[{t:'Misafirden özür diler, yakın bir otele transferi organize eder, tüm masrafları üstleniriz ve geri dönüş için öncelik tanırız.',c:true},{t:'Kapıda bekletiririm.',c:false},{t:'Parayı iade edip gönderirim.',c:false},{t:'Lobi koltuğunda gecelenmesini öneririm.',c:false}]},
-      {pos:['leader'],cat:'Vardiya Liderliği',q:'Shift leader olarak upselling metrikleriniz düşük. Ekip için hangi yöntemi uygularsınız?',opts:[{t:'Upselling eğitimi verir, rol yapma (role-play) senaryoları çalışır, hedef ve teşvik sistemi kurarım.',c:true},{t:'Herkese uyarı yazarım.',c:false},{t:'Upselling yapmamalarını söylerim.',c:false},{t:'Sadece rapor tutarım.',c:false}]},
-    ],
-  },
 
-  // ─── HOTEL-SPECIFIC QUESTIONS ───
-  hospitality_hotel: {
-    tui: {
-      clerk: [
-        {pos:['clerk'],cat:'TUI Blue — Konsept',q:'TUI Blue konseptinin "Blue Feel Good" felsefesi resepsiyonistin tutumuna nasıl yansımalıdır?',opts:[{t:'Her misafirle göz teması kurarak, ismiyle hitap ederek ve proaktif bilgi sunarak samimi ve kişiselleştirilmiş bir deneyim oluşturmak.',c:true},{t:'Sadece check-in işlemlerini hızlı yapmak.',c:false},{t:'Şikayetleri yöneticiye iletmek.',c:false},{t:'Resmi ve mesafeli bir tutum sergilemek.',c:false}]},
-        {pos:['clerk'],cat:'TUI Blue — Konsept',q:'TUI Blue otellerde "Local Living" deneyimi ne anlama gelir ve resepsiyonistin katkısı nedir?',opts:[{t:'Misafirlere destinasyonun kültürünü, yerel lezzetleri ve özgün aktiviteleri tanıtmak; yerel deneyim önerileri sunmak.',c:true},{t:'Sadece standart tur paketleri önermek.',c:false},{t:'Misafirlerin otelden çıkmamasını sağlamak.',c:false},{t:'Yerel kültürle ilgilenmemek.',c:false}]},
-        {pos:['clerk'],cat:'TUI Blue — Kalite',q:'TUI Blue değerlendirme sisteminde "TUI Quality Score" neden kritiktir?',opts:[{t:'Misafir memnuniyetini ölçer, TUI dağıtım kanallarındaki görünürlüğü doğrudan etkiler ve bir sonraki sezon doluluk oranını belirler.',c:true},{t:'Sadece şikayetleri kayıt altına alır.',c:false},{t:'Sadece yöneticileri ilgilendirir.',c:false},{t:'Otel yıldız sayısını belirler.',c:false}]},
-        {pos:['clerk'],cat:'TUI Blue — Servis',q:'TUI Blue Maviss\'te misafir check-in sırasında "Welcome Drink" ikramı ve tesisin tanıtımı standart prosedürün parçasıdır. Misafir "Bu zorunlu mu?" diye sorarsa ne dersiniz?',opts:[{t:'Bu sizin için hazırladığımız bir karşılama jesti; isterseniz atlayabiliriz, ama sizi tesisimizle tanıştırmak istiyoruz.',c:true},{t:'Evet zorunlu, bekleyin.',c:false},{t:'Hayır, direkt odanıza gidebilirsiniz.',c:false},{t:'Bu kural, uygulamak zorundayım.',c:false}]},
-        {pos:['clerk'],cat:'TUI Blue — Dijital',q:'TUI uygulamas\u0131 \u00fczerinden yap\u0131lan Online Check-in\'de misafir bilgileri eksik geldi. Ne yapars\u0131n\u0131z?',opts:[{t:'Eksik bilgileri kibarca tamamlar\u0131m, PMS\'e do\u011fru \u015fekilde i\u015flerim ve misafiri yava\u015flatmadan deneyimi ak\u0131c\u0131 tutarım.',c:true},{t:'Misafiri online check-in yapmad\u0131\u011f\u0131 i\u00e7in uyar\u0131r\u0131m.',c:false},{t:'Check-in\'i reddederim.',c:false},{t:'IT departman\u0131na bildirip misafiri bekletirim.',c:false}]},
-      ],
-      night: [
-        {pos:['night'],cat:'TUI Blue — Gece',q:'TUI Blue Maviss\'te gece vardiyas\u0131nda bir TUI tur operat\u00f6r temsilcisi acil \u015fikh\u00e2yet iletmek i\u00e7in arl\u0131yor. Nas\u0131l hareket edersiniz?',opts:[{t:'\u015fikh\u00e2yeti not al\u0131r, sakin ve profesyonel dinler, n\u00f6bet amirini bilgilendiririm; sabah \u00f6ncelikli olarak y\u00f6neticiye iletmek \u00fczere ayr\u0131nt\u0131l\u0131 tutanak tutarım.',c:true},{t:'Sabah aramas\u0131n\u0131 s\u00f6ylerim.',c:false},{t:'TUI\'ye g\u00f6ndermesini \u00f6neririm.',c:false},{t:'\u015fikh\u00e2yetle ilgilenmem.',c:false}]},
-        {pos:['night'],cat:'TUI Blue — Gece',q:'Gece denetiminde TUI misafir anket sistemine girilen memnuniyet verilerinde eksiklik fark ettiniz. Ne yapars\u0131n\u0131z?',opts:[{t:'Eksiklikleri belgeler, tamamlanabilecek olanlar\u0131 tamamlar, eksik verilerin nedenini not eder ve sabah sorumlusuna devrederim.',c:true},{t:'Sistemi kapatıp bırakırım.',c:false},{t:'Verileri tahmin ederek doldururum.',c:false},{t:'Sabah ekibini beklerim.',c:false}]},
-        {pos:['night'],cat:'TUI Blue — Gece',q:'TUI Blue Maviss\'e ba\u011flanacak charter uca\u011f\u0131 3 saat gecikmeli; 40 misafir 02:00 yerine 05:00\'de gelecek. Gece resepsiyonisti olarak ne haz\u0131rlarsin\u0131z?',opts:[{t:'Kat hizmetlerini bilgilendirir, kar\u015f\u0131lama ikramlar\u0131n\u0131 ayarlar, odalar\u0131n haz\u0131r oldu\u011funu teyit eder, transfer \u015firketi ile koordine ederim.',c:true},{t:'Sadece beklerim.',c:false},{t:'Sabah ekibine havale ederim.',c:false},{t:'Misafirlere ba\u015fka g\u00fcn gelmelerini \u00f6neririm.',c:false}]},
-        {pos:['night'],cat:'TUI Blue — Sistem',q:'Gece TUI rezervasyon sistemine eri\u015fim kesildi. Rezervasyon bilgilerine ula\u015fam\u0131yorsunuz. Ne yapars\u0131n\u0131z?',opts:[{t:'Yedek offline kay\u0131tlara ba\u015fvururum, TUI acil IT hatt\u0131n\u0131 arar\u0131m, misafir walk-in\'leri manuel prosed\u00fcrle kar\u015f\u0131larım.',c:true},{t:'Hi\u00e7 check-in yapmam.',c:false},{t:'Sistemi bekler, misafirleri bekletirim.',c:false},{t:'Rezervasyon numaras\u0131n\u0131 bo\u015f b\u0131rakarak kabul ederim.',c:false}]},
-        {pos:['night'],cat:'TUI Blue — Gece',q:'Gece yar\u0131s\u0131 TUI misafiri erken check-out yap\u0131yor ve k\u0131smi iade talep ediyor. Nas\u0131l yan\u0131t verirsiniz?',opts:[{t:'Kibarca politikay\u0131 a\u00e7\u0131klar\u0131m, misafirin talebini kay\u0131t alt\u0131na al\u0131r\u0131m ve sabah y\u00f6neticisiyle g\u00f6r\u00fc\u015fmesini \u00f6neririm; kendi inisiyatifimle iade yapmam.',c:true},{t:'\u0130adeyi hemen onaylay\u0131p i\u015flerim.',c:false},{t:'\u0130ade yap\u0131lamaz deyip konuyu kapatırım.',c:false},{t:'Misafiri g\u00fcvenlik ile \u00e7\u0131karırım.',c:false}]},
-      ],
-      leader: [
-        {pos:['leader'],cat:'TUI Blue — Liderlik',q:'TUI Blue Maviss\'in TUI kalite de\u011ferlendirmesinde \u00f6nceki sezonda d\u00fc\u015f\u00fck puan al\u0131nd\u0131. Shift leader olarak ekibinizi nas\u0131l motive edersiniz?',opts:[{t:'Zay\u0131f alanlar\u0131 ekiple \u015feffaf payla\u015f\u0131r, bireysel g\u00fc\u00e7l\u00fc y\u00f6nleri destekler, olumlu misafir geri bildirimlerini g\u00f6r\u00fcn\u00fcr k\u0131lar\u0131m.',c:true},{t:'Herkese tutanak d\u00fczenlerim.',c:false},{t:'TUI de\u011ferlendirmelerini \u00f6nemsemeyiz derim.',c:false},{t:'Hi\u00e7bir \u015fey yapmam.',c:false}]},
-        {pos:['leader'],cat:'TUI Blue — Deneyim',q:'TUI Blue Maviss\'te "Blue Moments" deneyim program\u0131n\u0131 bilen bir misafir beklentilerinin kar\u015flanmad\u0131\u011f\u0131n\u0131 s\u00f6yl\u00fcyor. Shift leader olarak nas\u0131l devreye girersiniz?',opts:[{t:'Misafirin beklentilerini birebir dinler, Blue Moments kapsam\u0131nda \u00f6zel bir jest organize eder ve sonucu misafir profiline not ederim.',c:true},{t:'Program\u0131n i\u00e7eri\u011fini bilmiyorum derim.',c:false},{t:'Tur temsilcisine y\u00f6nlendiririm.',c:false},{t:'Standart \u015fikayetprose\u0308d\u00fcr\u00fc uygularım.',c:false}]},
-        {pos:['leader'],cat:'TUI Blue — FAM Trip',q:'TUI Blue Maviss\'te bir TUI Preferred Partner seyahat acentas\u0131 temsilcisi ani FAM trip ile geliyor. Shift leader olarak nas\u0131l kar\u015f\u0131lars\u0131n\u0131z?',opts:[{t:'\u0130simle kar\u015f\u0131lar, \u00f6zel kar\u015f\u0131lama paketi haz\u0131rlar, tesis tan\u0131t\u0131m\u0131 organize eder, y\u00f6neticiyi bilgilendiririm.',c:true},{t:'Normal check-in prosed\u00fcr\u00fc uygularım.',c:false},{t:'Sabah y\u00f6netici gelene kadar bekletirim.',c:false},{t:'Rezervasyon olmadan giremez derim.',c:false}]},
-        {pos:['leader'],cat:'TUI Blue — Standart',q:'TUI Blue konseptinde "No Stress Check-in" standard\u0131 nedir ve shift leader olarak nas\u0131l uygulars\u0131n\u0131z?',opts:[{t:'Misafirin t\u00fcm \u00f6n kay\u0131t i\u015flemleri check-in \u00f6ncesi tamamlanm\u0131\u015f olur; misafir sadece kart al\u0131r ve odaya y\u00f6nlendirilir; s\u00fcre 3 dakikay\u0131 ge\u00e7mez.',c:true},{t:'Her misafirle 15 dakika vakit ge\u00e7irmek.',c:false},{t:'Check-in kuyrugunu kaldırmak.',c:false},{t:'Misafirin t\u00fcm belgelerini tekrar toplamak.',c:false}]},
-        {pos:['leader'],cat:'TUI Blue — Denetim',q:'TUI Blue Maviss\'in a\u00e7\u0131l\u0131\u015f sezonunda bir TUI Brand Audit \u00f6ncesinde \u00f6n b\u00fcronuzu nas\u0131l haz\u0131rlars\u0131n\u0131z?',opts:[{t:'T\u00fcm SOP\'lar\u0131 g\u00f6zden ge\u00e7iririm, fiziksel alan\u0131 TUI brand standartlar\u0131na g\u00f6re d\u00fczenlerim, ekiple rol yapma denemeleri yapar\u0131m.',c:true},{t:'Denetim g\u00fcn\u00fc biraz daha dikkatli olurum.',c:false},{t:'Sadece genel temizlik yaptırırım.',c:false},{t:'Denetcilere \u00f6zel muamele yaparım.',c:false}]},
-      ],
-    },
-    siam: {
-      clerk: [
-        {pos:['clerk'],cat:'Siam Elegance — Konsept',q:'Ultra All-Inclusive konseptinde misafir "ekstra \u00fccretli mi?" diye sorarsa ne yan\u0131t verilmelidir?',opts:[{t:'Pakete dahil olan t\u00fcm hizmetleri net a\u00e7\u0131klar\u0131m; dahil olmayan varsa kibar ve d\u00fcr\u00fcst bi\u00e7imde belirtirim.',c:true},{t:'Her \u015fey dahil derim, sorgulamadan.',c:false},{t:'Y\u00f6netici sorar derim.',c:false},{t:'Fiyat listesini uzatırım.',c:false}]},
-        {pos:['clerk'],cat:'Siam Elegance — Konsept',q:'Siam Elegance\'ta tekrar gelen (repeater) bir misafir check-in yap\u0131yor. \u00d6nceki kal\u0131\u015f\u0131ndan notlar\u0131 nas\u0131l kullanırsın\u0131z?',opts:[{t:'Misafiri ismiyle kar\u015f\u0131lar, \u00f6nceki tercihlerini (oda tipi, yast\u0131k, diyet) hat\u0131rlad\u0131\u011f\u0131m\u0131 belirterek ki\u015fisel bir kar\u015f\u0131lama sunarım.',c:true},{t:'S\u0131f\u0131rdan ba\u015flar\u0131m.',c:false},{t:'Misafirden tekrar liste doldurmas\u0131n\u0131 isterim.',c:false},{t:'Sadece standart check-in yaparım.',c:false}]},
-        {pos:['clerk'],cat:'Siam Elegance — Servis',q:'Siam Elegance\'ta SPA rezervasyonu yapmak isteyen misafir resepsiyona geliyor. Do\u011fru y\u00f6nlendirme nas\u0131l yap\u0131l\u0131r?',opts:[{t:'SPA resepsiyonuyla irtibat kurarak m\u00fcsait saatleri kontrol eder, misafirin tercihine g\u00f6re se\u00e7enek sunar ve onay sonras\u0131 PMS\'e i\u015flerim.',c:true},{t:'SPA\'ya gitsin kendisi baks\u0131n derim.',c:false},{t:'Sadece telefon numaras\u0131 veririm.',c:false},{t:'Rezervasyon yapamam derim.',c:false}]},
-        {pos:['clerk'],cat:'Siam Elegance — Servis',q:'5 y\u0131ld\u0131zl\u0131 Siam Elegance\'ta bir misafir ak\u015fam saatinde odas\u0131na \u00e7i\u00e7ek ve \u015farap istedi, ancak ilgili departman kapand\u0131. Ne yapars\u0131n\u0131z?',opts:[{t:'T\u00fcm se\u00e7enekleri de\u011ferlendiririm; n\u00f6bet m\u00fcd\u00fcr\u00fcyle koordineli olarak alternatif ikram organize eder, misafiri bilgilendiririm.',c:true},{t:'Departman kapal\u0131, yapamam derim.',c:false},{t:'Sabaha b\u0131rak\u0131r\u0131m.',c:false},{t:'Kendim \u00e7\u00f6z\u00fcm getiririm.',c:false}]},
-        {pos:['clerk'],cat:'Siam Elegance — VIP',q:'Siam Elegance\'ta VIP statüsündeki misafir için oda hazırlık kontrol listesinde neler olmalıdır?',opts:[{t:'Ki\u015fisel kar\u015f\u0131lama notu, meyve taba\u011f\u0131, \u00e7i\u00e7ek aranjman\u0131, \u00f6zel yatak konfigürasyonu, havlular ve tercih edilen minibar i\u00e7erikleri.',c:true},{t:'Sadece temiz oda.',c:false},{t:'Ekstra havlu.',c:false},{t:'Sadece standart ikram.',c:false}]},
-      ],
-      night: [
-        {pos:['night'],cat:'Siam Elegance — Gece',q:'Siam Elegance\'ta gece denetiminde misafir hesab\u0131na yanl\u0131\u015fl\u0131kla iki kez mini bar \u00fccreti yans\u0131t\u0131lm\u0131\u015f. Ne yapars\u0131n\u0131z?',opts:[{t:'Hatal\u0131 kayd\u0131 belgeler, d\u00fczeltme i\u015flemini PMS\'de yapar, hatay\u0131 n\u00f6bet raporuna i\u015fler ve sabah m\u00fcd\u00fcre bildiririm.',c:true},{t:'Sabaha b\u0131rak\u0131r\u0131m.',c:false},{t:'Misafiri uyand\u0131r\u0131p bilgilendiririm.',c:false},{t:'\u00c7ift kayd\u0131 onay olarak b\u0131rak\u0131r\u0131m.',c:false}]},
-        {pos:['night'],cat:'Siam Elegance — Gece',q:'Gece saatlerinde lobide yaln\u0131z a\u011flayan bir misafir g\u00f6rd\u00fcn\u00fcz. Nas\u0131l yakla\u015f\u0131rs\u0131n\u0131z?',opts:[{t:'Sessizce yan\u0131na yakla\u015f\u0131r, yard\u0131m edip edemeyece\u011fimi sorar, dinler ve gerekirse n\u00f6bet m\u00fcd\u00fcr\u00fcyle koordine ederim.',c:true},{t:'G\u00f6rmezden gelirim.',c:false},{t:'G\u00fcvenli\u011fi \u00e7a\u011f\u0131r\u0131r\u0131m.',c:false},{t:'Odas\u0131na gitmesini s\u00f6ylerim.',c:false}]},
-        {pos:['night'],cat:'Siam Elegance — Gece',q:'Siam Elegance gece denetiminde t\u00fcm odalar\u0131n doluluk verisi ile PMS aras\u0131nda uyumsuzluk var. Ne yapars\u0131n\u0131z?',opts:[{t:'Fiziksel oda durumu raporu ile PMS kayd\u0131n\u0131 kar\u015f\u0131la\u015ft\u0131r\u0131r, tutars\u0131zl\u0131klar\u0131 belgeler, gerekirse gece g\u00fcvenlikle fiziksel kontrol yapar\u0131m.',c:true},{t:'Sabaha bırakırım.',c:false},{t:'Sistem hatas\u0131 olarak kapatırım.',c:false},{t:'Fark\u0131 tahmin ederek doldururum.',c:false}]},
-      ],
-      leader: [
-        {pos:['leader'],cat:'Siam Elegance — Liderlik',q:'5 y\u0131ld\u0131zl\u0131 Ultra All-Inclusive Siam Elegance\'ta y\u00fcksek sezon doluluğunda \u00f6n b\u00fcro operasyonlar\u0131nda en kritik kriz senaryosu nedir?',opts:[{t:'Overbooking + uzun check-in kuyru\u011fu + VIP arrival \u00e7ak\u0131\u015fmas\u0131; \u00e7\u00f6z\u00fcm: ek personel, VIP ayr\u0131 hat, misafirlere proaktif ileti\u015fim.',c:true},{t:'Mini bar envanter a\u00e7\u0131\u011f\u0131.',c:false},{t:'Restoranın kapanması.',c:false},{t:'Yüzme havuzunun geçici kapanmas\u0131.',c:false}]},
-        {pos:['leader'],cat:'Siam Elegance — Liderlik',q:'Siam Elegance\'ta honeymoon paketi alan bir çift, s\u00fcrpriz haz\u0131rl\u0131klar\u0131n yap\u0131lmad\u0131\u011f\u0131n\u0131 \u00f6\u011freniyor. Shift leader olarak nas\u0131l kurtarırsın\u0131z?',opts:[{t:'\u00d6nce i\u00e7tenlikle \u00f6z\u00fcr diler, derhal odayu ki\u015fisel yapacak haz\u0131rl\u0131klar\u0131 ba\u015flat\u0131r (\u00e7i\u00e7ek, dekor, kek), \u00f6zel jestle \u00e7ifti \u015fa\u015f\u0131rtırım.',c:true},{t:'Rezervasyon ekibini su\u00e7lar\u0131m.',c:false},{t:'Sonraki g\u00fcn yap\u0131l\u0131r derim.',c:false},{t:'\u0130ndirim teklif edip ge\u00e7i\u015ftiririm.',c:false}]},
-        {pos:['leader'],cat:'Siam Elegance — KPI',q:'Siam Elegance\'ta \u00f6n b\u00fcro misafir memnuniyeti skoru d\u00fc\u015ft\u00fc. K\u00f6k neden analizi i\u00e7in hangi ad\u0131mlar\u0131 atar\u0131rs\u0131n\u0131z?',opts:[{t:'\u015fikayetkay\u0131tlar\u0131n\u0131, online yorumlar\u0131 ve departmanlar aras\u0131 ileti\u015fim kopukluklar\u0131n\u0131 analiz eder; ekiple bireysel g\u00f6r\u00fc\u015fmeler yaparak sorunun kayna\u011f\u0131n\u0131 tespit ederim.',c:true},{t:'Sadece survey sonu\u00e7lar\u0131na bakar\u0131m.',c:false},{t:'Ekipten \u00f6z\u00fcr dilemelerini isterim.',c:false},{t:'Daha \u00e7ok indirim yap\u0131lmas\u0131n\u0131 \u00f6neririm.',c:false}]},
-      ],
-    },
-  },
+en: {
+a1:[
+  {pos:['clerk','night','leader'],cat:'English A1',q:'How do you greet a guest arriving at the front desk?',opts:[{t:'Good morning, welcome! How may I help you?',c:true},{t:'Hi, you here to check in?',c:false},{t:'Name and booking, please.',c:false},{t:'Go ahead, I am listening.',c:false}]},
+  {pos:['clerk','night','leader'],cat:'English A1',q:'A guest says: "I have a reservation." What is your first response?',opts:[{t:'Certainly! May I have your name, please?',c:true},{t:'Okay, wait a moment.',c:false},{t:'Passport first.',c:false},{t:'Do you have the number?',c:false}]},
+  {pos:['clerk','night','leader'],cat:'English A1',q:'What does "check-out" mean in a hotel?',opts:[{t:'Leaving the hotel and completing the billing process.',c:true},{t:'Ordering food to the room.',c:false},{t:'Getting a room key.',c:false},{t:'Reserving a table at the restaurant.',c:false}]},
+  {pos:['clerk','night','leader'],cat:'English A1',q:'A guest asks: "Where is the swimming pool?" You reply:',opts:[{t:'The pool is on the ground floor, just follow the signs to the right.',c:true},{t:'I do not know, ask someone else.',c:false},{t:'Not my department.',c:false},{t:'It is somewhere outside.',c:false}]},
+  {pos:['clerk','night','leader'],cat:'English A1',q:'Which is the correct spelling?',opts:[{t:'Reservation',c:true},{t:'Rezervation',c:false},{t:'Resarvetion',c:false},{t:'Reservetion',c:false}]},
+],
+a2:[
+  {pos:['clerk','night','leader'],cat:'English A2',q:'A guest is unhappy with their room. What do you say first?',opts:[{t:'I am very sorry to hear that. Please allow me to look into this for you right away.',c:true},{t:'Sorry, nothing I can do.',c:false},{t:'The room was checked — it is fine.',c:false},{t:'I will pass your feedback to housekeeping.',c:false}]},
+  {pos:['clerk','night','leader'],cat:'English A2',q:'Which phrase is correct for a professional phone greeting?',opts:[{t:'Good evening, Front Desk, this is [name] speaking. How may I assist you?',c:true},{t:'Hello, front desk, what do you need?',c:false},{t:'Yes, how can I help?',c:false},{t:'Reception, go ahead.',c:false}]},
+  {pos:['clerk','night','leader'],cat:'English A2',q:'What is a "wake-up call"?',opts:[{t:'A scheduled phone call to wake a guest at their requested time.',c:true},{t:'A fire alarm signal.',c:false},{t:'A notification that the room is ready.',c:false},{t:'A complaint call from a guest.',c:false}]},
+  {pos:['clerk','night','leader'],cat:'English A2',q:'A guest wants to extend their stay. What do you do?',opts:[{t:'Check availability for the requested dates and present the options clearly.',c:true},{t:'Tell them to call back tomorrow.',c:false},{t:'Say no without checking.',c:false},{t:'Direct them to the reservations email.',c:false}]},
+  {pos:['clerk','night','leader'],cat:'English A2',q:'What does "no vacancy" mean?',opts:[{t:'The hotel has no available rooms at this time.',c:true},{t:'The parking lot is full.',c:false},{t:'The restaurant is fully booked.',c:false},{t:'The pool is closed.',c:false}]},
+],
+b1:[
+  {pos:['clerk','night','leader'],cat:'English B1',q:'A non-smoking room guest complains of a smoke smell. What is your immediate action?',opts:[{t:'Sincerely apologise, arrange an immediate room change, and notify housekeeping to inspect the original room.',c:true},{t:'Offer a discount and leave the guest in the same room.',c:false},{t:'Tell the guest the room passed inspection.',c:false},{t:'Note the complaint and act at the end of the shift.',c:false}]},
+  {pos:['clerk','night','leader'],cat:'English B1',q:'What does "upselling" mean in a hotel front office?',opts:[{t:'Proactively offering a guest a higher room category or additional service to enhance their experience and increase revenue.',c:true},{t:'Charging extra fees without the guest\'s knowledge.',c:false},{t:'Selling hotel merchandise at the front desk.',c:false},{t:'Upgrading guests only when a complaint arises.',c:false}]},
+  {pos:['clerk','night','leader'],cat:'English B1',q:'A VIP guest arrives. How does your check-in procedure differ from a standard arrival?',opts:[{t:'Greet by name, escort personally, pre-arrange room preferences, present amenities proactively, and ensure all profile notes are actioned.',c:true},{t:'Process the check-in faster to save time.',c:false},{t:'Let them go directly to their room without formalities.',c:false},{t:'Apply the same procedure but with a bigger smile.',c:false}]},
+  {pos:['clerk','night','leader'],cat:'English B1',q:'How do you politely inform a guest their requested room type is unavailable?',opts:[{t:'I am afraid that room type is not available for your dates. I would be delighted to offer you a complimentary upgrade to our [alternative] at no extra charge.',c:true},{t:'That room is taken, what else do you want?',c:false},{t:'Sorry, fully booked.',c:false},{t:'You should have booked earlier.',c:false}]},
+  {pos:['clerk','night','leader'],cat:'English B1',q:'A guest\'s credit card is declined at check-in. How do you handle it professionally?',opts:[{t:'Discreetly inform the guest, suggest an alternative payment method, offer to hold luggage while the matter is resolved, and remain non-judgmental.',c:true},{t:'Announce the decline loudly so a supervisor can hear.',c:false},{t:'Refuse check-in and ask the guest to leave.',c:false},{t:'Accept cash only and skip the system entry.',c:false}]},
+],
+b2:[
+  {pos:['clerk','night','leader'],cat:'English B2',q:'A guest threatens to post a negative review unless granted a free night. What is the correct approach?',opts:[{t:'Acknowledge their frustration, investigate the legitimate concern, offer a genuine resolution within policy, but do not capitulate to the threat itself.',c:true},{t:'Grant the free night immediately to avoid a bad review.',c:false},{t:'Tell them their review will not affect the hotel.',c:false},{t:'Escalate to security.',c:false}]},
+  {pos:['clerk','night','leader'],cat:'English B2',q:'What distinguishes a "guaranteed reservation" from a "prepaid reservation"?',opts:[{t:'A guaranteed reservation uses a credit card to secure the booking, with charges applied at departure; a prepaid reservation collects full payment at the time of booking.',c:true},{t:'A guaranteed reservation requires no payment at all.',c:false},{t:'Prepaid reservations can be cancelled for a full refund at any time.',c:false},{t:'They are operationally identical.',c:false}]},
+  {pos:['clerk','night','leader'],cat:'English B2',q:'What is the purpose of a "no-show" policy?',opts:[{t:'To charge a penalty fee when a guest with a guaranteed reservation fails to arrive without prior cancellation, protecting hotel revenue.',c:true},{t:'To prevent walk-in guests from booking rooms.',c:false},{t:'To notify housekeeping of vacant rooms earlier.',c:false},{t:'To automatically cancel unconfirmed reservations.',c:false}]},
+  {pos:['night','leader'],cat:'English B2',q:'During the night audit you find a significant revenue discrepancy. What is the correct procedure?',opts:[{t:'Cross-reference all transaction records, document every discrepancy with timestamps, escalate to the night manager, and prepare a written exception report for the morning team.',c:true},{t:'Quietly correct the figures to balance the report.',c:false},{t:'Leave a note on the morning manager\'s desk and move on.',c:false},{t:'Report only if the difference exceeds a fixed threshold.',c:false}]},
+  {pos:['clerk','night','leader'],cat:'English B2',q:'How do GDPR regulations affect front office operations in a European hotel?',opts:[{t:'Guest data must be collected with explicit consent, stored securely, used only for the stated purpose, and deleted upon request — non-compliance carries significant legal penalties.',c:true},{t:'GDPR applies only to digital marketing, not reception.',c:false},{t:'Guest passport copies can be shared freely with third parties.',c:false},{t:'Data retention rules apply only to corporate clients.',c:false}]},
+],
+c1:[
+  {pos:['clerk','night','leader'],cat:'English C1',q:'Articulate the difference between "strategic overbooking" and "overselling" to a newly promoted supervisor.',opts:[{t:'Strategic overbooking is a calculated revenue practice based on validated historical no-show and cancellation data; overselling occurs when reservations accepted exceed actual capacity without data justification, exposing the property to serious guest-relations and legal risk.',c:true},{t:'Both terms describe the same practice in different contexts.',c:false},{t:'Overbooking is always illegal; overselling is sometimes permitted.',c:false},{t:'Overselling applies only to online channels.',c:false}]},
+  {pos:['night','leader'],cat:'English C1',q:'What are the non-negotiable components of an effective shift handover briefing?',opts:[{t:'Outstanding tasks and follow-ups, all VIP arrivals and departures, any maintenance or safety issues, open complaints, cash and float balance, and any unusual incidents that occurred.',c:true},{t:'Only the total guest count and tomorrow\'s arrivals list.',c:false},{t:'Room cleaning status and mini-bar consumption only.',c:false},{t:'A verbal note to the incoming shift leader, no documentation needed.',c:false}]},
+  {pos:['clerk','night','leader'],cat:'English C1',q:'A diplomat with immunity status behaves aggressively toward a staff member. How do you navigate this?',opts:[{t:'Intervene calmly to de-escalate, remove the staff member from the interaction, document the incident in full, notify management, and involve legal counsel if physical harm occurs or is threatened.',c:true},{t:'Call the police immediately and ask the diplomat to leave.',c:false},{t:'Do nothing — diplomatic immunity prevents any intervention.',c:false},{t:'Apologise to the diplomat on behalf of the staff member.',c:false}]},
+  {pos:['leader'],cat:'English C1',q:'Your front desk team consistently underperforms on upselling conversion metrics. What is your structured management response?',opts:[{t:'Diagnose root causes through observation and individual discussions, deliver targeted product and technique training, set clear measurable targets, run structured role-play scenarios, and link performance recognition to the agreed KPIs.',c:true},{t:'Issue written warnings to the lowest performers immediately.',c:false},{t:'Take over upselling responsibilities yourself at peak times.',c:false},{t:'Lower the monthly upselling targets to improve morale.',c:false}]},
+  {pos:['leader'],cat:'English C1',q:'An online travel agency threatens to lower your hotel\'s ranking unless you reduce rates. What is your strategic response?',opts:[{t:'Conduct a full rate parity audit, evaluate the OTA\'s actual contribution to the channel mix and net revenue, consult revenue management, and negotiate from a position of diversified distribution strength — not from fear.',c:true},{t:'Agree to the rate reduction to protect visibility.',c:false},{t:'Remove the hotel from the OTA platform immediately.',c:false},{t:'Refer the matter to the GM and await instructions.',c:false}]},
+],
+c2:[
+  {pos:['leader'],cat:'English C2',q:'Critically evaluate the ethical tension between incentivising front desk staff with upselling commissions and the obligation to serve genuine guest needs.',opts:[{t:'Commission schemes drive measurable revenue performance; however, they risk incentivising staff to prioritise personal earnings over guest suitability. A balanced design links commission eligibility to both revenue achievement and post-stay satisfaction scores, ensuring commercial and experiential objectives are aligned.',c:true},{t:'Commissions are inherently unethical and should be banned.',c:false},{t:'Guest satisfaction is irrelevant once the upsell is accepted.',c:false},{t:'Commission schemes are only suitable for luxury properties.',c:false}]},
+  {pos:['leader'],cat:'English C2',q:'Design a three-week pre-opening front office onboarding programme for 30 new staff at a 505-room resort.',opts:[{t:'Week 1: brand positioning, service philosophy, SOPs, and emergency procedures. Week 2: full PMS and systems training with live simulations. Week 3: role-play rehearsals, cross-departmental familiarisation, and a full dry-run check-in exercise with daily debrief sessions throughout.',c:true},{t:'Issue the SOP manual on day one and observe performance from week two.',c:false},{t:'Train shift leaders only and rely on peer mentoring for line staff.',c:false},{t:'Compress all content into week one to allow operational readiness by week two.',c:false}]},
+  {pos:['clerk','night','leader'],cat:'English C2',q:'Analyse how AI concierge and automated check-in systems will reshape the front office role over the next decade.',opts:[{t:'AI will absorb high-volume routine transactions, shifting the human front office function decisively toward complex complaint resolution, emotional intelligence, high-value guest relationship management, and situations requiring judgment that algorithms cannot replicate.',c:true},{t:'AI will fully replace all front office positions within five years.',c:false},{t:'Automation will be confined to back-office functions.',c:false},{t:'AI concierge tools are relevant only for budget hotel segments.',c:false}]},
+  {pos:['leader'],cat:'English C2',q:'Construct a revenue management philosophy for a luxury all-inclusive resort and explain its direct implications for front office KPIs.',opts:[{t:'Optimise RevPAR through dynamic pricing, strategic channel management, length-of-stay controls, and demand forecasting. Front office KPIs must include upsell conversion rate, upgrade revenue per arrival, ADR contribution, and guest satisfaction index — each tracked and linked to operational decisions.',c:true},{t:'Sell all rooms at a flat rate to simplify front office operations.',c:false},{t:'Revenue management is the exclusive domain of the commercial director.',c:false},{t:'Front office KPIs should focus solely on check-in speed and queue length.',c:false}]},
+  {pos:['leader'],cat:'English C2',q:'A long-stay corporate guest reports repeated failures across three departments over five days. How do you approach this as Shift Leader?',opts:[{t:'Personally take ownership, conduct a structured service recovery interview, prepare a cross-departmental incident report, implement immediate corrective actions, present a written resolution plan to the guest, and brief the GM with a root-cause analysis and prevention measures.',c:true},{t:'Offer a room upgrade and apologise.',c:false},{t:'Refer the guest to each department head individually.',c:false},{t:'Ask the guest to submit a formal complaint form.',c:false}]},
+],
+},
+
+de:{
+a1:[
+  {pos:['clerk','night','leader'],cat:'Deutsch A1',q:'Wie begrüßen Sie einen Gast an der Rezeption?',opts:[{t:'Guten Tag, herzlich willkommen! Wie kann ich Ihnen helfen?',c:true},{t:'Hallo, was brauchen Sie?',c:false},{t:'Name und Buchung, bitte.',c:false},{t:'Einen Moment, ich bin gleich da.',c:false}]},
+  {pos:['clerk','night','leader'],cat:'Deutsch A1',q:'Was bedeutet "Check-out"?',opts:[{t:'Das Hotel verlassen und die Rechnung bezahlen.',c:true},{t:'Eine Reservierung stornieren.',c:false},{t:'Den Zimmerschlüssel holen.',c:false},{t:'Ein Tischreservierung vornehmen.',c:false}]},
+  {pos:['clerk','night','leader'],cat:'Deutsch A1',q:'Ein Gast fragt: "Wo ist das Restaurant?" Sie antworten:',opts:[{t:'Das Restaurant befindet sich im Erdgeschoss, bitte folgen Sie den Schildern nach links.',c:true},{t:'Das weiß ich leider nicht.',c:false},{t:'Das ist nicht mein Bereich.',c:false},{t:'Irgendwo draußen.',c:false}]},
+  {pos:['clerk','night','leader'],cat:'Deutsch A1',q:'Was ist die richtige Schreibweise?',opts:[{t:'Reservierung',c:true},{t:'Reservirung',c:false},{t:'Reserferung',c:false},{t:'Reserverung',c:false}]},
+  {pos:['clerk','night','leader'],cat:'Deutsch A1',q:'Ein Gast sagt: "Ich habe eine Buchung." Was fragen Sie als Erstes?',opts:[{t:'Natürlich! Darf ich Ihren Namen bitte?',c:true},{t:'Haben Sie eine Bestätigungsnummer?',c:false},{t:'Passport bitte.',c:false},{t:'Warten Sie kurz.',c:false}]},
+],
+a2:[
+  {pos:['clerk','night','leader'],cat:'Deutsch A2',q:'Ein Gast ist unzufrieden mit seinem Zimmer. Was sagen Sie als Erstes?',opts:[{t:'Das tut mir wirklich leid. Ich werde mich sofort darum kümmern.',c:true},{t:'Das Zimmer wurde überprüft — es ist in Ordnung.',c:false},{t:'Ich kann leider nichts tun.',c:false},{t:'Ich gebe Ihr Feedback an das Housekeeping weiter.',c:false}]},
+  {pos:['clerk','night','leader'],cat:'Deutsch A2',q:'Welche Formulierung ist am professionellsten für einen Telefongruß?',opts:[{t:'Guten Abend, Rezeption, hier spricht [Name]. Wie kann ich Ihnen behilflich sein?',c:true},{t:'Hallo, Rezeption, was brauchen Sie?',c:false},{t:'Ja, bitte?',c:false},{t:'Rezeption, bitte sprechen.',c:false}]},
+  {pos:['clerk','night','leader'],cat:'Deutsch A2',q:'Was ist ein "Weckruf"?',opts:[{t:'Ein geplanter Telefonanruf, um einen Gast zur gewünschten Uhrzeit zu wecken.',c:true},{t:'Ein Feuerschutzalarm.',c:false},{t:'Eine Zimmerbereitschaftsbenachrichtigung.',c:false},{t:'Eine Reklamation eines Gastes.',c:false}]},
+  {pos:['clerk','night','leader'],cat:'Deutsch A2',q:'Ein Gast möchte seinen Aufenthalt verlängern. Wie gehen Sie vor?',opts:[{t:'Ich prüfe die Verfügbarkeit und präsentiere die Optionen klar und deutlich.',c:true},{t:'Ich bitte ihn, morgen noch einmal anzurufen.',c:false},{t:'Ich sage sofort Nein, ohne nachzusehen.',c:false},{t:'Ich leite ihn an die Reservierungsabteilung weiter.',c:false}]},
+  {pos:['clerk','night','leader'],cat:'Deutsch A2',q:'Was bedeutet "No Vacancy"?',opts:[{t:'Das Hotel hat derzeit keine freien Zimmer.',c:true},{t:'Der Parkplatz ist voll.',c:false},{t:'Das Restaurant ist ausgebucht.',c:false},{t:'Der Pool ist geschlossen.',c:false}]},
+],
+b1:[
+  {pos:['clerk','night','leader'],cat:'Deutsch B1',q:'Ein Nichtraucherzimmer-Gast beschwert sich über Rauchgeruch. Was ist Ihre erste Maßnahme?',opts:[{t:'Aufrichtig entschuldigen, sofort einen Zimmerwechsel veranlassen und Housekeeping zur Inspektion des Ursprungszimmers informieren.',c:true},{t:'Einen Rabatt anbieten und den Gast im Zimmer lassen.',c:false},{t:'Den Gast darauf hinweisen, dass das Zimmer geprüft wurde.',c:false},{t:'Die Beschwerde notieren und am Schichtende handeln.',c:false}]},
+  {pos:['clerk','night','leader'],cat:'Deutsch B1',q:'Was bedeutet "Upselling" im Hotelkontext?',opts:[{t:'Dem Gast proaktiv eine höhere Zimmerkategorie oder Zusatzleistung anbieten, um das Erlebnis zu verbessern und den Umsatz zu steigern.',c:true},{t:'Dem Gast versteckte Zusatzgebühren berechnen.',c:false},{t:'Hotelprodukte an der Rezeption verkaufen.',c:false},{t:'Guests nur nach einer Beschwerde upgraden.',c:false}]},
+  {pos:['clerk','night','leader'],cat:'Deutsch B1',q:'Wie informieren Sie einen Gast höflich, dass sein Wunschzimmertyp nicht verfügbar ist?',opts:[{t:'Leider ist dieser Zimmertyp für Ihre Daten nicht verfügbar. Ich würde Ihnen jedoch gerne kostenlos ein Upgrade auf unser [Alternative] anbieten.',c:true},{t:'Das Zimmer ist vergeben, was sonst?',c:false},{t:'Tut mir leid, leider ausgebucht.',c:false},{t:'Sie hätten früher buchen sollen.',c:false}]},
+  {pos:['clerk','night','leader'],cat:'Deutsch B1',q:'Die Kreditkarte eines Gastes beim Check-in wird abgelehnt. Wie handeln Sie professionell?',opts:[{t:'Den Gast diskret informieren, eine alternative Zahlungsmethode vorschlagen, das Gepäck aufbewahren und neutral bleiben.',c:true},{t:'Die Ablehnung laut ansagen, damit ein Vorgesetzter es hören kann.',c:false},{t:'Check-in ablehnen und Gast bitten zu gehen.',c:false},{t:'Bargeld annehmen und Systemeintrag überspringen.',c:false}]},
+  {pos:['clerk','night','leader'],cat:'Deutsch B1',q:'Ein VIP-Gast trifft ein. Wie unterscheidet sich Ihr Check-in-Ablauf von einem Standardgast?',opts:[{t:'Begrüßung mit Namen, persönliches Begleiten zum Zimmer, Zimmerpräferenzen vorausplanen, Annehmlichkeiten aktiv präsentieren, alle Profilnotizen umsetzen.',c:true},{t:'Check-in schneller abwickeln, um Zeit zu sparen.',c:false},{t:'Gast direkt zum Zimmer gehen lassen.',c:false},{t:'Dasselbe Verfahren, aber mit einem freundlicheren Lächeln.',c:false}]},
+],
+b2:[
+  {pos:['clerk','night','leader'],cat:'Deutsch B2',q:'Ein Gast droht mit einer negativen Bewertung, wenn er keine Gratisnacht bekommt. Was ist der richtige Ansatz?',opts:[{t:'Frustration anerkennen, den berechtigten Beschwerdegrund untersuchen, eine echte Lösung im Rahmen der Richtlinien anbieten, aber nicht auf die Drohung eingehen.',c:true},{t:'Sofort die Gratisnacht gewähren, um eine schlechte Bewertung zu vermeiden.',c:false},{t:'Den Gast darauf hinweisen, dass Bewertungen keinen Einfluss haben.',c:false},{t:'Sicherheit einschalten.',c:false}]},
+  {pos:['clerk','night','leader'],cat:'Deutsch B2',q:'Was unterscheidet eine "garantierte Buchung" von einer "vorausbezahlten Buchung"?',opts:[{t:'Bei einer garantierten Buchung sichert die Kreditkarte die Reservierung, Abrechnung erfolgt bei Abreise; bei einer vorausbezahlten Buchung wird der volle Betrag bei der Buchung eingezogen.',c:true},{t:'Eine garantierte Buchung erfordert keine Zahlung.',c:false},{t:'Vorausbezahlte Buchungen können jederzeit kostenlos storniert werden.',c:false},{t:'Beide Formen sind operativ identisch.',c:false}]},
+  {pos:['night','leader'],cat:'Deutsch B2',q:'Im Nachtaudit entdecken Sie eine erhebliche Umsatzdiskrepanz. Was ist das korrekte Vorgehen?',opts:[{t:'Alle Transaktionsdaten gegenkontrollieren, jede Abweichung mit Zeitstempel dokumentieren, den Nachtmanager informieren und einen schriftlichen Ausnahmebericht für das Morgenpersonal erstellen.',c:true},{t:'Die Zahlen still korrigieren, um den Bericht auszugleichen.',c:false},{t:'Einen Zettel auf dem Schreibtisch des Morgenmanagers hinterlassen.',c:false},{t:'Nur melden, wenn der Betrag eine Schwelle überschreitet.',c:false}]},
+  {pos:['clerk','night','leader'],cat:'Deutsch B2',q:'Wie wirken sich DSGVO-Vorschriften auf den Rezeptionsbetrieb aus?',opts:[{t:'Gästedaten müssen mit ausdrücklicher Zustimmung erhoben, sicher gespeichert, nur für den angegebenen Zweck genutzt und auf Anfrage gelöscht werden — Verstöße werden empfindlich bestraft.',c:true},{t:'Die DSGVO gilt nur für digitales Marketing, nicht für die Rezeption.',c:false},{t:'Passkopien dürfen frei an Dritte weitergegeben werden.',c:false},{t:'Datenschutzregeln gelten nur für Firmenkunden.',c:false}]},
+  {pos:['clerk','night','leader'],cat:'Deutsch B2',q:'Was ist der Zweck einer "No-Show"-Richtlinie?',opts:[{t:'Eine Strafgebühr zu erheben, wenn ein Gast mit garantierter Buchung ohne vorherige Stornierung nicht anreist, um den Hotelumsatz zu schützen.',c:true},{t:'Walk-in-Gäste am Buchen zu hindern.',c:false},{t:'Housekeeping früher über freie Zimmer zu informieren.',c:false},{t:'Unbestätigte Buchungen automatisch zu stornieren.',c:false}]},
+],
+c1:[
+  {pos:['leader'],cat:'Deutsch C1',q:'Erklären Sie einem neu beförderten Supervisor den Unterschied zwischen "strategischem Overbooking" und "Überverkauf".',opts:[{t:'Strategisches Overbooking ist eine kalkulierte Praxis auf Basis validierter No-Show- und Stornierungsdaten. Überverkauf liegt vor, wenn Buchungen über die tatsächliche Kapazität hinaus angenommen werden, ohne Datenbasis — mit ernsthaften Gäste- und Rechtsrisiken.',c:true},{t:'Beide Begriffe beschreiben dieselbe Praxis in unterschiedlichen Kontexten.',c:false},{t:'Overbooking ist immer illegal; Überverkauf ist manchmal erlaubt.',c:false},{t:'Überverkauf gilt nur für Online-Kanäle.',c:false}]},
+  {pos:['night','leader'],cat:'Deutsch C1',q:'Was sind die nicht verhandelbaren Komponenten einer effektiven Schichtübergabe?',opts:[{t:'Offene Aufgaben und Folgemaßnahmen, alle VIP-An- und Abreisen, Wartungs- und Sicherheitsprobleme, offene Beschwerden, Kassenstand und alle ungewöhnlichen Vorfälle.',c:true},{t:'Nur Gästezahl und Morgenankunftsliste.',c:false},{t:'Nur Reinigungsstatus und Minibarverbrauch.',c:false},{t:'Mündliche Übergabe an den Nachfolger, keine Dokumentation nötig.',c:false}]},
+  {pos:['leader'],cat:'Deutsch C1',q:'Ihr Front-Desk-Team zeigt dauerhaft schwache Upselling-Kennzahlen. Was ist Ihre strukturierte Managementreaktion?',opts:[{t:'Ursachen durch Beobachtung und Einzelgespräche diagnostizieren, gezielte Produkt- und Technikschulung durchführen, messbare Ziele setzen, strukturierte Rollenspiele durchführen und Leistungsanerkennung an die vereinbarten KPIs knüpfen.',c:true},{t:'Den schwächsten Mitarbeitern sofort schriftliche Verwarnungen ausstellen.',c:false},{t:'Zu Spitzenzeiten Upselling-Aufgaben selbst übernehmen.',c:false},{t:'Die monatlichen Upselling-Ziele senken, um die Moral zu verbessern.',c:false}]},
+  {pos:['clerk','night','leader'],cat:'Deutsch C1',q:'Ein Diplomat mit Immunität verhält sich aggressiv gegenüber einem Mitarbeiter. Wie gehen Sie vor?',opts:[{t:'Ruhig eingreifen und deeskalieren, den Mitarbeiter aus der Situation herausnehmen, den Vorfall vollständig dokumentieren, Management informieren und bei körperlichem Schaden oder Drohungen rechtlichen Beistand hinzuziehen.',c:true},{t:'Sofort die Polizei rufen und den Diplomaten auffordern, das Hotel zu verlassen.',c:false},{t:'Nichts tun — die Immunität verhindert jede Einmischung.',c:false},{t:'Sich beim Diplomaten im Namen des Mitarbeiters entschuldigen.',c:false}]},
+  {pos:['leader'],cat:'Deutsch C1',q:'Ein grosses OTA droht, das Hotel-Ranking zu senken, wenn Sie die Preise nicht reduzieren. Was ist Ihre strategische Reaktion?',opts:[{t:'Vollständiges Rate-Parity-Audit durchführen, tatsächlichen Nettoumsatzbeitrag des OTA bewerten, Revenue Management konsultieren und aus einer Position der diversifizierten Vertriebsstärke verhandeln — nicht aus Angst.',c:true},{t:'Der Preissenkung zustimmen, um die Sichtbarkeit zu schützen.',c:false},{t:'Das Hotel sofort von der OTA-Plattform entfernen.',c:false},{t:'Die Angelegenheit an den GM weiterleiten und auf Anweisungen warten.',c:false}]},
+],
+c2:[
+  {pos:['leader'],cat:'Deutsch C2',q:'Bewerten Sie kritisch die ethische Spannung zwischen der Incentivierung von Rezeptionsmitarbeitern durch Upselling-Provisionen und der Verpflichtung, echte Gästebedürfnisse zu bedienen.',opts:[{t:'Provisionssysteme steigern nachweislich die Umsatzleistung; sie riskieren jedoch, Mitarbeiter zu motivieren, persönliche Vergütung über Gästeeignung zu stellen. Ein ausgewogenes Design knüpft Provisionsberechtigung an Umsatzerreichung UND Post-Aufenthalt-Zufriedenheitswerte.',c:true},{t:'Provisionen sind grundsätzlich unethisch und sollten verboten werden.',c:false},{t:'Gästezufriedenheit ist irrelevant, sobald ein Upsell akzeptiert wurde.',c:false},{t:'Provisionssysteme eignen sich nur für Luxusimmobilien.',c:false}]},
+  {pos:['leader'],cat:'Deutsch C2',q:'Entwerfen Sie ein dreiwöchiges Pre-Opening-Onboarding-Programm für 30 neue Mitarbeiter in einem 505-Zimmer-Resort.',opts:[{t:'Woche 1: Markenpositronierung, Servicephilosophie, SOPs und Notfallverfahren. Woche 2: vollständige PMS- und Systemschulung mit Live-Simulationen. Woche 3: Rollenspiele, abteilungsübergreifende Einarbeitung und ein vollständiger Check-in-Probelauf mit täglichen Debriefs.',c:true},{t:'Das SOP-Handbuch am ersten Tag aushändigen und ab Woche zwei die Leistung beobachten.',c:false},{t:'Nur Schichtführer schulen und auf Peer-Mentoring setzen.',c:false},{t:'Alle Inhalte in Woche eins verdichten, um bis Woche zwei einsatzbereit zu sein.',c:false}]},
+  {pos:['clerk','night','leader'],cat:'Deutsch C2',q:'Analysieren Sie, wie KI-Concierge- und automatisierte Check-in-Systeme die Front-Office-Rolle im nächsten Jahrzehnt umgestalten werden.',opts:[{t:'KI übernimmt hochvolumige Routinetransaktionen und verlagert die menschliche Funktion entscheidend in Richtung komplexer Beschwerdelösung, emotionaler Intelligenz, hochwertiger Gästebeziehungspflege und Situationen, die algorithmisch nicht replizierbare Urteilskraft erfordern.',c:true},{t:'KI wird alle Front-Office-Stellen innerhalb von fünf Jahren vollständig ersetzen.',c:false},{t:'Automatisierung bleibt auf Back-Office-Funktionen beschränkt.',c:false},{t:'KI-Concierge-Tools sind nur für Budget-Hotelsegmente relevant.',c:false}]},
+  {pos:['leader'],cat:'Deutsch C2',q:'Konstruieren Sie eine Revenue-Management-Philosophie für ein Luxus-All-Inclusive-Resort und erklären Sie die direkten Auswirkungen auf Front-Office-KPIs.',opts:[{t:'RevPAR durch dynamische Preisgestaltung, strategisches Kanalmanagement, Aufenthaltsdauerkontrolle und Nachfrageprognosen optimieren. Front-Office-KPIs müssen Upsell-Konversionsrate, Upgrade-Umsatz pro Ankunft, ADR-Beitrag und Gästezufriedenheitsindex umfassen — jeder verfolgt und mit operativen Entscheidungen verknüpft.',c:true},{t:'Alle Zimmer zu einem Festpreis verkaufen, um den Rezeptionsbetrieb zu vereinfachen.',c:false},{t:'Revenue Management ist ausschließlich Aufgabe des kaufmännischen Direktors.',c:false},{t:'Front-Office-KPIs sollten sich ausschließlich auf Check-in-Geschwindigkeit und Warteschlangenlänge konzentrieren.',c:false}]},
+  {pos:['leader'],cat:'Deutsch C2',q:'Ein Langzeitgast meldet über fünf Tage wiederholte Fehler in drei Abteilungen. Wie gehen Sie als Schichtleiter vor?',opts:[{t:'Persönlich Verantwortung übernehmen, strukturiertes Service-Recovery-Gespräch führen, abteilungsübergreifenden Vorfallbericht erstellen, sofortige Korrekturmaßnahmen einleiten, schriftlichen Lösungsplan präsentieren und GM mit Ursachenanalyse und Präventivmaßnahmen briefen.',c:true},{t:'Ein Zimmer-Upgrade anbieten und sich entschuldigen.',c:false},{t:'Den Gast der Reihe nach an jeden Abteilungsleiter verweisen.',c:false},{t:'Den Gast bitten, ein formelles Beschwerdeformular einzureichen.',c:false}]},
+],
+},
+
+ru:{
+a1:[
+  {pos:['clerk','night','leader'],cat:'Русский A1',q:'Как вы приветствуете гостя на стойке регистрации?',opts:[{t:'Добрый день, добро пожаловать! Чем могу помочь?',c:true},{t:'Привет, что вам нужно?',c:false},{t:'Имя и бронирование, пожалуйста.',c:false},{t:'Подождите минуту.',c:false}]},
+  {pos:['clerk','night','leader'],cat:'Русский A1',q:'Что означает «чек-аут» в отеле?',opts:[{t:'Выезд из отеля и окончательный расчёт.',c:true},{t:'Отмена бронирования.',c:false},{t:'Получение ключа от номера.',c:false},{t:'Бронирование столика в ресторане.',c:false}]},
+  {pos:['clerk','night','leader'],cat:'Русский A1',q:'Гость спрашивает: «Где бассейн?» Ваш ответ:',opts:[{t:'Бассейн находится на первом этаже, следуйте указателям направо.',c:true},{t:'Не знаю, спросите кого-нибудь другого.',c:false},{t:'Это не моя зона ответственности.',c:false},{t:'Где-то снаружи.',c:false}]},
+  {pos:['clerk','night','leader'],cat:'Русский A1',q:'Гость говорит: «У меня есть бронирование.» Что вы спрашиваете первым?',opts:[{t:'Конечно! Как ваша фамилия, пожалуйста?',c:true},{t:'Номер подтверждения?',c:false},{t:'Паспорт, пожалуйста.',c:false},{t:'Секунду.',c:false}]},
+  {pos:['clerk','night','leader'],cat:'Русский A1',q:'Что означает «свободных мест нет»?',opts:[{t:'В отеле нет свободных номеров в настоящее время.',c:true},{t:'Парковка заполнена.',c:false},{t:'Ресторан полностью занят.',c:false},{t:'Бассейн закрыт.',c:false}]},
+],
+a2:[
+  {pos:['clerk','night','leader'],cat:'Русский A2',q:'Гость недоволен своим номером. Что вы говорите в первую очередь?',opts:[{t:'Мне очень жаль. Я немедленно займусь решением этого вопроса.',c:true},{t:'Номер был проверен — всё в порядке.',c:false},{t:'К сожалению, ничем не могу помочь.',c:false},{t:'Передам ваши замечания горничным.',c:false}]},
+  {pos:['clerk','night','leader'],cat:'Русский A2',q:'Какая фраза наиболее профессиональна для телефонного приветствия?',opts:[{t:'Добрый вечер, стойка регистрации, говорит [имя]. Чем могу помочь?',c:true},{t:'Алло, стойка, что вам нужно?',c:false},{t:'Да, слушаю.',c:false},{t:'Регистрация, говорите.',c:false}]},
+  {pos:['clerk','night','leader'],cat:'Русский A2',q:'Что такое «побудка»?',opts:[{t:'Запланированный телефонный звонок для пробуждения гостя в нужное время.',c:true},{t:'Сигнал пожарной тревоги.',c:false},{t:'Уведомление о готовности номера.',c:false},{t:'Жалоба гостя.',c:false}]},
+  {pos:['clerk','night','leader'],cat:'Русский A2',q:'Гость хочет продлить проживание. Что вы делаете?',opts:[{t:'Проверяю наличие мест на нужные даты и чётко представляю варианты.',c:true},{t:'Прошу перезвонить завтра.',c:false},{t:'Сразу говорю «нет», не проверяя.',c:false},{t:'Направляю в отдел бронирования.',c:false}]},
+  {pos:['clerk','night','leader'],cat:'Русский A2',q:'Кредитная карта гостя при заезде отклонена. Как вы поступаете профессионально?',opts:[{t:'Деликатно сообщаю гостю, предлагаю альтернативный способ оплаты, предлагаю сохранить багаж и остаюсь нейтральным.',c:true},{t:'Громко объявляю об отклонении, чтобы услышал руководитель.',c:false},{t:'Отказываю в заезде и прошу уйти.',c:false},{t:'Принимаю наличные без записи в системе.',c:false}]},
+],
+b1:[
+  {pos:['clerk','night','leader'],cat:'Русский B1',q:'Гость в номере для некурящих жалуется на запах табака. Каков ваш немедленный шаг?',opts:[{t:'Искренне извиниться, незамедлительно организовать смену номера и уведомить хозяйственную службу для проверки.',c:true},{t:'Предложить скидку, оставив гостя в том же номере.',c:false},{t:'Сообщить, что номер прошёл проверку.',c:false},{t:'Записать жалобу и заняться ею в конце смены.',c:false}]},
+  {pos:['clerk','night','leader'],cat:'Русский B1',q:'Что означает «апселлинг» в контексте стойки регистрации?',opts:[{t:'Проактивно предлагать гостю более высокую категорию номера или дополнительную услугу для улучшения впечатлений и увеличения дохода.',c:true},{t:'Взимать скрытые дополнительные сборы.',c:false},{t:'Продавать сувениры на стойке регистрации.',c:false},{t:'Повышать категорию только после жалобы.',c:false}]},
+  {pos:['clerk','night','leader'],cat:'Русский B1',q:'Прибывает VIP-гость. Чем ваша процедура заезда отличается от стандартной?',opts:[{t:'Приветствую по имени, лично провожаю, заранее готовлю предпочтения по номеру, проактивно представляю услуги и выполняю все пометки профиля.',c:true},{t:'Оформляю заезд быстрее, чтобы сэкономить время.',c:false},{t:'Позволяю гостю пройти в номер без формальностей.',c:false},{t:'Та же процедура, но с более широкой улыбкой.',c:false}]},
+  {pos:['clerk','night','leader'],cat:'Русский B1',q:'Как вы вежливо сообщаете гостю, что запрошенный тип номера недоступен?',opts:[{t:'К сожалению, данный тип номера недоступен на ваши даты. Однако я с удовольствием предложу вам бесплатное повышение до [альтернатива].',c:true},{t:'Этот номер занят, что ещё хотите?',c:false},{t:'Извините, полная загрузка.',c:false},{t:'Нужно было бронировать раньше.',c:false}]},
+  {pos:['clerk','night','leader'],cat:'Русский B1',q:'Что такое политика «no-show»?',opts:[{t:'Взимание штрафа, когда гость с гарантированным бронированием не заезжает без предварительной отмены.',c:true},{t:'Запрет на заезд гостей-ходоков.',c:false},{t:'Более раннее уведомление хозяйственной службы о свободных номерах.',c:false},{t:'Автоматическая отмена неподтверждённых бронирований.',c:false}]},
+],
+b2:[
+  {pos:['clerk','night','leader'],cat:'Русский B2',q:'Гость угрожает опубликовать негативный отзыв, если не получит бесплатную ночь. Каков правильный подход?',opts:[{t:'Признать разочарование, изучить обоснованную жалобу, предложить реальное решение в рамках политики, но не уступать угрозе.',c:true},{t:'Немедленно предоставить бесплатную ночь.',c:false},{t:'Сообщить, что отзывы не влияют на отель.',c:false},{t:'Вызвать охрану.',c:false}]},
+  {pos:['clerk','night','leader'],cat:'Русский B2',q:'Чем «гарантированное бронирование» отличается от «предоплаченного»?',opts:[{t:'При гарантированном бронировании карта обеспечивает резервирование, оплата при выезде; при предоплаченном полная сумма списывается в момент бронирования.',c:true},{t:'Гарантированное не требует никакой оплаты.',c:false},{t:'Предоплаченные можно отменить с полным возвратом в любое время.',c:false},{t:'Операционно они идентичны.',c:false}]},
+  {pos:['night','leader'],cat:'Русский B2',q:'В ходе ночного аудита вы обнаружили существенное расхождение в выручке. Каков правильный порядок действий?',opts:[{t:'Сверить все записи о транзакциях, задокументировать каждое расхождение с отметкой времени, доложить ночному менеджеру и подготовить письменный отчёт об исключениях для утренней смены.',c:true},{t:'Тихо исправить цифры для балансировки отчёта.',c:false},{t:'Оставить записку на столе утреннего менеджера.',c:false},{t:'Сообщить только в случае превышения порогового значения.',c:false}]},
+  {pos:['clerk','night','leader'],cat:'Русский B2',q:'Как GDPR влияет на работу стойки регистрации?',opts:[{t:'Данные гостей должны собираться с явного согласия, надёжно храниться, использоваться только по указанной цели и удаляться по запросу — нарушения влекут серьёзные правовые санкции.',c:true},{t:'GDPR распространяется только на digital-маркетинг.',c:false},{t:'Копии паспортов можно свободно передавать третьим лицам.',c:false},{t:'Правила хранения данных касаются лишь корпоративных клиентов.',c:false}]},
+  {pos:['clerk','night','leader'],cat:'Русский B2',q:'Какова цель политики «no-show»?',opts:[{t:'Взыскание штрафа, когда гость с гарантированным бронированием не заезжает без предварительной отмены — для защиты доходов отеля.',c:true},{t:'Запрет гостям-ходокам на бронирование.',c:false},{t:'Раннее уведомление хозяйственной службы.',c:false},{t:'Автоматическая отмена неподтверждённых броней.',c:false}]},
+],
+c1:[
+  {pos:['leader'],cat:'Русский C1',q:'Объясните новому супервайзеру разницу между «стратегическим овербукингом» и «перепродажей».',opts:[{t:'Стратегический овербукинг — обоснованная практика, опирающаяся на проверенные данные о no-show и отменах. Перепродажа — принятие броней сверх фактической вместимости без обоснования данными, что создаёт серьёзные риски для гостей и юридические риски.',c:true},{t:'Оба термина описывают одно и то же в разных контекстах.',c:false},{t:'Овербукинг всегда незаконен, перепродажа иногда разрешена.',c:false},{t:'Перепродажа применима только к онлайн-каналам.',c:false}]},
+  {pos:['night','leader'],cat:'Русский C1',q:'Каковы обязательные элементы эффективной сдачи смены?',opts:[{t:'Незакрытые задачи и контрольные мероприятия, все VIP-заезды и выезды, технические и инфраструктурные проблемы, открытые жалобы, баланс кассы и все нестандартные инциденты.',c:true},{t:'Только количество гостей и список утренних приездов.',c:false},{t:'Только статус уборки и потребление мини-баров.',c:false},{t:'Устная передача, документирование не обязательно.',c:false}]},
+  {pos:['clerk','night','leader'],cat:'Русский C1',q:'Дипломат с иммунитетом ведёт себя агрессивно по отношению к сотруднику. Как вы действуете?',opts:[{t:'Спокойно вмешиваюсь и деэскалирую, убираю сотрудника из ситуации, полностью документирую инцидент, уведомляю руководство и при угрозе физического вреда подключаю юридическую службу.',c:true},{t:'Немедленно вызываю полицию и прошу дипломата покинуть отель.',c:false},{t:'Бездействую — иммунитет исключает любое вмешательство.',c:false},{t:'Приношу дипломату извинения от имени сотрудника.',c:false}]},
+  {pos:['leader'],cat:'Русский C1',q:'Ваша стойка регистрации стабильно показывает слабые результаты по конверсии апселлинга. Какова ваша структурированная управленческая реакция?',opts:[{t:'Диагностирую корневые причины, провожу целевое обучение по продуктам и техникам, устанавливаю чёткие цели, организую структурированные ролевые игры и привязываю признание к согласованным KPI.',c:true},{t:'Немедленно выдаю письменные предупреждения слабейшим сотрудникам.',c:false},{t:'В часы пик самостоятельно беру на себя апселлинговые задачи.',c:false},{t:'Снижаю месячные цели, чтобы поднять боевой дух.',c:false}]},
+  {pos:['leader'],cat:'Русский C1',q:'Крупный OTA угрожает снизить рейтинг отеля, если не снизить тарифы. Какова ваша стратегическая реакция?',opts:[{t:'Провести полный аудит паритета тарифов, оценить реальный вклад OTA в чистую выручку, проконсультироваться с отделом управления доходами и вести переговоры с позиции силы диверсифицированного дистрибуции — а не из страха.',c:true},{t:'Согласиться на снижение тарифов.',c:false},{t:'Немедленно убрать отель с платформы OTA.',c:false},{t:'Передать вопрос генеральному директору.',c:false}]},
+],
+c2:[
+  {pos:['leader'],cat:'Русский C2',q:'Критически оцените этическое противоречие между стимулированием персонала стойки регистрации комиссиями с апселлинга и обязанностью удовлетворять реальные потребности гостей.',opts:[{t:'Системы комиссий обеспечивают измеримый рост дохода, однако рискуют мотивировать персонал ставить личный заработок выше интересов гостей. Сбалансированная схема увязывает право на комиссию с выполнением доходных показателей И индексом удовлетворённости после проживания.',c:true},{t:'Комиссии изначально неэтичны и должны быть запрещены.',c:false},{t:'Удовлетворённость гостей неважна после принятия апселла.',c:false},{t:'Комиссионные схемы подходят только для люксовых объектов.',c:false}]},
+  {pos:['leader'],cat:'Русский C2',q:'Разработайте трёхнедельную программу преддкрытия для 30 новых сотрудников стойки регистрации в 505-номерном курортном отеле.',opts:[{t:'Неделя 1: позиционирование бренда, философия сервиса, СОПы, аварийные процедуры. Неделя 2: полное обучение PMS и системам с живыми симуляциями. Неделя 3: ролевые игры, межотдельное ознакомление и полная репетиция заезда с ежедневными разборами.',c:true},{t:'Выдать руководство по СОП в первый день и со второй недели наблюдать за работой.',c:false},{t:'Обучить только руководителей смен, остальное — наставничество.',c:false},{t:'Уплотнить весь материал в первую неделю.',c:false}]},
+  {pos:['clerk','night','leader'],cat:'Русский C2',q:'Проанализируйте, как ИИ-консьерж и автоматизированные системы заезда изменят роль стойки регистрации в ближайшее десятилетие.',opts:[{t:'ИИ возьмёт на себя рутинные транзакции, переориентировав человеческую функцию на сложное урегулирование жалоб, эмоциональный интеллект, высокоценную работу с гостями и ситуации, требующие суждения, которое алгоритмы не могут воспроизвести.',c:true},{t:'ИИ полностью заменит все должности стойки регистрации за пять лет.',c:false},{t:'Автоматизация ограничится бэк-офисными функциями.',c:false},{t:'ИИ-консьерж актуален только для бюджетного сегмента.',c:false}]},
+  {pos:['leader'],cat:'Русский C2',q:'Постройте философию управления доходами для люксового all-inclusive курорта и объясните её прямое влияние на KPI стойки регистрации.',opts:[{t:'Оптимизировать RevPAR через динамическое ценообразование, стратегическое управление каналами, контроль длительности проживания и прогнозирование спроса. KPI стойки: конверсия апселлинга, доход от повышения на прибытие, вклад в ADR, индекс удовлетворённости — каждый отслеживается и привязан к операционным решениям.',c:true},{t:'Продавать все номера по единой цене для упрощения работы стойки.',c:false},{t:'Управление доходами — исключительная прерогатива коммерческого директора.',c:false},{t:'KPI стойки должны фокусироваться только на скорости заезда.',c:false}]},
+  {pos:['leader'],cat:'Русский C2',q:'Долгосрочный корпоративный гость сообщает о систематических сбоях в трёх отделах за пять дней. Как вы действуете в роли руководителя смены?',opts:[{t:'Лично принимаю ответственность, провожу структурированное интервью по восстановлению сервиса, готовлю межотдельный отчёт об инцидентах, реализую немедленные корректирующие меры, представляю письменный план и докладываю генеральному директору с анализом причин.',c:true},{t:'Предлагаю повышение категории и извиняюсь.',c:false},{t:'Направляю гостя по очереди к каждому руководителю отдела.',c:false},{t:'Прошу гостя заполнить официальную форму жалобы.',c:false}]},
+],
+},
+
+tr:{
+a1:[
+  {pos:['clerk','night','leader'],cat:'Türkçe A1',q:'Resepsiyonda gelen bir misafiri nasıl karşılarsınız?',opts:[{t:'İyi günler, hoş geldiniz! Size nasıl yardımcı olabilirim?',c:true},{t:'Merhaba, ne istiyorsunuz?',c:false},{t:'İsim ve rezervasyon, lütfen.',c:false},{t:'Bir dakika bekleyin.',c:false}]},
+  {pos:['clerk','night','leader'],cat:'Türkçe A1',q:'Check-out ne demektir?',opts:[{t:'Otelden ayrılmak ve faturayı kapatmak.',c:true},{t:'Rezervasyon iptal etmek.',c:false},{t:'Oda anahtarı almak.',c:false},{t:'Restoran rezervasyonu yapmak.',c:false}]},
+  {pos:['clerk','night','leader'],cat:'Türkçe A1',q:'Misafir "Havuz nerede?" diye soruyor. Yanıtınız:',opts:[{t:'Havuz zemin katta, lütfen sağdaki tabelaları takip edin.',c:true},{t:'Bilmiyorum, başkasına sorun.',c:false},{t:'Benim departmanım değil.',c:false},{t:'Dışarıda bir yerde.',c:false}]},
+  {pos:['clerk','night','leader'],cat:'Türkçe A1',q:'Hangi yazım doğrudur?',opts:[{t:'Rezervasyon',c:true},{t:'Rezervetion',c:false},{t:'Resarvasyon',c:false},{t:'Rezerverasyon',c:false}]},
+  {pos:['clerk','night','leader'],cat:'Türkçe A1',q:'"Oda servisi" ne anlama gelir?',opts:[{t:'Yemek ve içeceklerin misafirin odasına teslim edilmesi.',c:true},{t:'Odanın temizlenmesi.',c:false},{t:'Misafirin uyandırılması.',c:false},{t:'Bagaj taşınması.',c:false}]},
+],
+a2:[
+  {pos:['clerk','night','leader'],cat:'Türkçe A2',q:'Misafir odasından memnun değil. İlk olarak ne dersiniz?',opts:[{t:'Çok üzgünüm, hemen ilgileniyorum.',c:true},{t:'Oda kontrol edildi, her şey yolunda.',c:false},{t:'Maalesef yapabileceğim bir şey yok.',c:false},{t:'Geri bildiriminizi kat hizmetlerine ileteceğim.',c:false}]},
+  {pos:['clerk','night','leader'],cat:'Türkçe A2',q:'Profesyonel telefon yanıtı için hangi cümle doğrudur?',opts:[{t:'İyi akşamlar, resepsiyon, ben [isim]. Size nasıl yardımcı olabilirim?',c:true},{t:'Alo, resepsiyon, ne istiyorsunuz?',c:false},{t:'Evet, buyurun.',c:false},{t:'Resepsiyon, konuşun.',c:false}]},
+  {pos:['clerk','night','leader'],cat:'Türkçe A2',q:'Misafir konaklamasını uzatmak istiyor. Ne yaparsınız?',opts:[{t:'İstenen tarihlerde müsaitliği kontrol eder, seçenekleri açık bir şekilde sunarım.',c:true},{t:'Yarın tekrar aramasını söylerim.',c:false},{t:'Kontrol etmeden hayır derim.',c:false},{t:'Rezervasyon departmanına yönlendiririm.',c:false}]},
+  {pos:['clerk','night','leader'],cat:'Türkçe A2',q:'"Sabah uyandırma servisi" ne demektir?',opts:[{t:'Misafirin istediği saatte telefonla uyandırılması.',c:true},{t:'Yangın alarmı.',c:false},{t:'Oda hazır bildirimi.',c:false},{t:'Misafirin şikayet araması.',c:false}]},
+  {pos:['clerk','night','leader'],cat:'Türkçe A2',q:'Check-in sırasında misafirin kredi kartı reddedildi. Nasıl profesyonelce yaklaşırsınız?',opts:[{t:'Misafiri gizlice bilgilendiririm, alternatif ödeme önerir, bagajı saklarım ve yargılamadan yaklaşırım.',c:true},{t:'Reddi yüksek sesle söylerim ki müdür duysun.',c:false},{t:'Check-in reddederim ve gitmesini isterim.',c:false},{t:'Sistem girişi yapmadan nakit alırım.',c:false}]},
+],
+b1:[
+  {pos:['clerk','night','leader'],cat:'Türkçe B1',q:'Sigara içilmeyen odada sigara kokusu olduğunu şikayet eden misafire ilk adımda ne yaparsınız?',opts:[{t:'Samimiyetle özür diler, anında oda değişikliği ayarlar ve kat hizmetlerini orijinal odayı kontrol etmesi için bilgilendiririm.',c:true},{t:'İndirim teklif eder ve misafiri aynı odada bırakırım.',c:false},{t:'Odanın kontrol edildiğini söylerim.',c:false},{t:'Şikayeti not alır, vardiya sonunda hallederim.',c:false}]},
+  {pos:['clerk','night','leader'],cat:'Türkçe B1',q:'Otel resepsiyonu bağlamında "üst satış" (upselling) ne anlama gelir?',opts:[{t:'Misafirin deneyimini iyileştirmek ve gelir artırmak amacıyla daha üst kategori oda veya ek hizmet proaktif olarak önermek.',c:true},{t:'Misafirden habersiz ek ücret almak.',c:false},{t:'Resepsiyonda otel ürünleri satmak.',c:false},{t:'Yalnızca şikayet sonrası oda yükseltmek.',c:false}]},
+  {pos:['clerk','night','leader'],cat:'Türkçe B1',q:'VIP misafir geliyor. Standart check-in\'den farkı nedir?',opts:[{t:'İsmini söyleyerek karşılar, odaya bizzat eşlik eder, oda tercihlerini önceden hazırlar, ikramları proaktif sunar ve profil notlarını uygularım.',c:true},{t:'Zaman kazanmak için check-in\'i daha hızlı yaparım.',c:false},{t:'Formalitesiz direkt odaya gitmesine izin veririm.',c:false},{t:'Aynı prosedür ama daha büyük gülümsemeyle.',c:false}]},
+  {pos:['clerk','night','leader'],cat:'Türkçe B1',q:'Talep edilen oda tipi müsait değil. Bunu nasıl kibarca bildirirsiniz?',opts:[{t:'Maalesef bu oda tipi bu tarihlerde müsait değil. Ancak size ücretsiz olarak [alternatif] kategorisine yükseltme teklif etmekten memnuniyet duyarım.',c:true},{t:'O oda dolu, başka ne istiyorsunuz?',c:false},{t:'Üzgünüm, tamamen dolu.',c:false},{t:'Daha erken rezervasyon yaptırmalıydınız.',c:false}]},
+  {pos:['clerk','night','leader'],cat:'Türkçe B1',q:'"No-show" politikasının amacı nedir?',opts:[{t:'Garantili rezervasyonu olan ama önceden iptal etmeden gelmeyen misafirden ceza ücreti alarak otel gelirini korumak.',c:true},{t:'Walk-in misafirlerin rezervasyon yapmasını önlemek.',c:false},{t:'Kat hizmetlerini boş odalar hakkında daha erken bilgilendirmek.',c:false},{t:'Onaysız rezervasyonları otomatik iptal etmek.',c:false}]},
+],
+b2:[
+  {pos:['clerk','night','leader'],cat:'Türkçe B2',q:'Misafir olumsuz yorum yazacağını söyleyerek bedava gece talep ediyor. Doğru yaklaşım nedir?',opts:[{t:'Hayal kırıklığını kabul eder, meşru şikayeti araştırır, politika dahilinde gerçek çözüm sunarım, ancak tehdide boyun eğmem.',c:true},{t:'Kötü yorum riskini almamak için hemen bedava gece veririm.',c:false},{t:'Yorumların oteli etkilemediğini söylerim.',c:false},{t:'Güvenliği devreye sokarım.',c:false}]},
+  {pos:['clerk','night','leader'],cat:'Türkçe B2',q:'"Garantili rezervasyon" ile "ön ödemeli rezervasyon" arasındaki fark nedir?',opts:[{t:'Garantili rezervasyonda kredi kartı güvence sağlar, ücret çıkışta tahsil edilir; ön ödemeli rezervasyonda tam tutar rezervasyon anında alınır.',c:true},{t:'Garantili rezervasyon hiç ödeme gerektirmez.',c:false},{t:'Ön ödemeli rezervasyonlar her zaman tam iade ile iptal edilebilir.',c:false},{t:'Operasyonel olarak ikisi aynıdır.',c:false}]},
+  {pos:['night','leader'],cat:'Türkçe B2',q:'Gece denetiminde önemli bir gelir tutarsızlığı buluyorsunuz. Doğru prosedür nedir?',opts:[{t:'Tüm işlem kayıtlarını çapraz kontrol eder, her tutarsızlığı zaman damgasıyla belgeler, gece müdürüne eskalasyon yapar ve sabah ekibi için yazılı istisna raporu hazırlarım.',c:true},{t:'Raporu dengelemek için rakamları sessizce düzeltirim.',c:false},{t:'Sabah müdürünün masasına not bırakırım.',c:false},{t:'Yalnızca belirli bir eşiği aşarsa bildiririm.',c:false}]},
+  {pos:['clerk','night','leader'],cat:'Türkçe B2',q:'KVKK/GDPR mevzuatı resepsiyon operasyonlarını nasıl etkiler?',opts:[{t:'Misafir verileri açık rıza ile toplanmalı, güvenle saklanmalı, yalnızca belirtilen amaçla kullanılmalı ve talep üzerine silinmeli; ihlaller ciddi hukuki yaptırımlara yol açar.',c:true},{t:'KVKK yalnızca dijital pazarlamayı kapsar.',c:false},{t:'Pasaport kopyaları üçüncü taraflarla serbestçe paylaşılabilir.',c:false},{t:'Veri saklama kuralları yalnızca kurumsal müşteriler için geçerlidir.',c:false}]},
+  {pos:['clerk','night','leader'],cat:'Türkçe B2',q:'GDPR uyumu kapsamında otel resepsiyonunun hangi günlük pratiği değiştirmesi gerekir?',opts:[{t:'Misafir rızası alınmadan e-posta adreslerini pazarlama listesine eklemek yerine kayıt sırasında açık onay formu imzalatmak ve misafirin talep etmesi halinde tüm kişisel verilerini sistemden silmek.',c:true},{t:'Pasaport fotokopilerini rezervasyon departmanıyla paylaşmayı durdurmak.',c:false},{t:'VIP misafirlere ait verileri ayrı bir klasörde tutmak yeterlidir.',c:false},{t:'Sadece online rezervasyonlardaki verileri şifrelemek.',c:false}]},
+],
+c1:[
+  {pos:['leader'],cat:'Türkçe C1',q:'Yeni terfi eden bir süpervizöre "stratejik overbooking" ile "fazla satış" arasındaki farkı nasıl açıklarsınız?',opts:[{t:'Stratejik overbooking, doğrulanmış geçmiş no-show ve iptal verilerine dayanan hesaplı bir uygulamadır. Fazla satış ise veri desteği olmaksızın kapasite üzerinde rezervasyon kabul etmektir; ciddi misafir ilişkileri ve hukuki risk taşır.',c:true},{t:'İkisi de aynı pratiği farklı bağlamlarda ifade eder.',c:false},{t:'Overbooking her zaman yasadışıdır, fazla satış bazen izinlidir.',c:false},{t:'Fazla satış yalnızca online kanallar için geçerlidir.',c:false}]},
+  {pos:['night','leader'],cat:'Türkçe C1',q:'Etkin bir vardiya devir tesliminin vazgeçilmez bileşenleri nelerdir?',opts:[{t:'Bekleyen görevler ve takip işlemleri, tüm VIP geliş/çıkışlar, teknik ve güvenlik sorunları, açık şikayetler, kasa bakiyesi ve yaşanan olağandışı olaylar.',c:true},{t:'Yalnızca misafir sayısı ve sabah geliş listesi.',c:false},{t:'Yalnızca temizlik durumu ve minibar tüketimi.',c:false},{t:'Gelen vardiyaya sözlü bilgi, belgeleme gerekmez.',c:false}]},
+  {pos:['leader'],cat:'Türkçe C1',q:'Resepsiyon ekibiniz üst satış dönüşüm metriklerinde sürekli zayıf performans gösteriyor. Yapılandırılmış yönetim tepkiniz nedir?',opts:[{t:'Gözlem ve bireysel görüşmelerle kök nedenleri tespit eder, ürün ve teknik eğitimi verir, ölçülebilir hedefler koyar, yapılandırılmış rol yapma senaryoları uygular ve performans tanımasını KPI\'lara bağlarım.',c:true},{t:'En zayıf çalışanlara hemen yazılı ihtarname düzenlerim.',c:false},{t:'Yoğun saatlerde üst satış görevini kendim üstlenirim.',c:false},{t:'Moral vermek için aylık hedefleri düşürürüm.',c:false}]},
+  {pos:['clerk','night','leader'],cat:'Türkçe C1',q:'Diplomatik dokunulmazlığı olan bir misafir bir çalışana saldırgan davranıyor. Nasıl hareket edersiniz?',opts:[{t:'Sakin bir şekilde müdahale eder ve durumu yatıştırır, çalışanı durumdan uzaklaştırır, olayı eksiksiz belgeler, yönetimi bilgilendirir ve fiziksel zarar tehdidi varsa hukuk birimini devreye alırım.',c:true},{t:'Hemen polisi arar ve diplomatı otelden çıkmasını isterim.',c:false},{t:'Dokunulmazlık her türlü müdahaleyi engeller, hiçbir şey yapmam.',c:false},{t:'Çalışan adına diplomatten özür dilerim.',c:false}]},
+  {pos:['leader'],cat:'Türkçe C1',q:'Büyük bir OTA tarifleri düşürmediğiniz takdirde otelinizin sıralamasını düşüreceğini söylüyor. Stratejik tepkiniz nedir?',opts:[{t:'Tam bir tarife parite denetimi yapar, OTA\'nın net gelir katkısını değerlendirir, gelir yönetimiyle koordine olur ve çeşitlendirilmiş dağıtım gücü konumundan müzakere ederim; korku değil, strateji.',c:true},{t:'Görünürlüğü korumak için tarife indirimine razı olurum.',c:false},{t:'Oteli OTA platformundan anında kaldırırım.',c:false},{t:'Konuyu GM\'e ileterek talimat beklerim.',c:false}]},
+],
+c2:[
+  {pos:['leader'],cat:'Türkçe C2',q:'Resepsiyon personelini üst satış komisyonuyla teşvik etmenin gerçek misafir ihtiyaçlarına hizmet etme yükümlülüğüyle yarattığı etik gerilimi eleştirel biçimde değerlendiriniz.',opts:[{t:'Komisyon sistemleri ölçülebilir gelir artışı sağlar; ancak personeli kişisel kazancı misafir uygunluğunun önüne geçirmeye yönlendirme riski taşır. Dengeli bir tasarım, komisyon hakkını gelir başarısına VE konaklama sonrası memnuniyet puanına bağlamalıdır.',c:true},{t:'Komisyonlar doğası gereği etik dışıdır ve yasaklanmalıdır.',c:false},{t:'Üst satış kabul edildikten sonra misafir memnuniyeti önemsizdir.',c:false},{t:'Komisyon sistemleri yalnızca lüks otellere uygundur.',c:false}]},
+  {pos:['leader'],cat:'Türkçe C2',q:'505 odalı bir resort\'un açılışı öncesinde 30 yeni resepsiyon çalışanı için üç haftalık ön açılış onboarding programı tasarlayınız.',opts:[{t:'1. hafta: marka konumlandırma, servis felsefesi, SOP\'lar ve acil durum prosedürleri. 2. hafta: canlı simülasyonlu tam PMS ve sistem eğitimi. 3. hafta: rol yapma provası, departmanlar arası tanışma ve günlük değerlendirme toplantılarıyla tam kuru run check-in egzersizi.',c:true},{t:'1. günde SOP kitabını dağıt, 2. haftadan itibaren performansı izle.',c:false},{t:'Yalnızca vardiya liderlerini eğit, hat personelini akran mentorlığına bırak.',c:false},{t:'Tüm içeriği 1. haftaya sıkıştır, 2. haftaya operasyonel hazırlık.',c:false}]},
+  {pos:['clerk','night','leader'],cat:'Türkçe C2',q:'Yapay zeka konsiyer ve otomatik check-in sistemlerinin önümüzdeki on yılda resepsiyon rolünü nasıl yeniden şekillendireceğini analiz ediniz.',opts:[{t:'YZ yüksek hacimli rutin işlemleri üstlenerek insan fonksiyonunu karmaşık şikayet çözümü, duygusal zeka, yüksek değerli misafir ilişkileri ve algoritmaların kopyalayamayacağı yargı gerektiren durumlara kararlı biçimde kaydıracak.',c:true},{t:'YZ tüm resepsiyon pozisyonlarını beş yıl içinde tamamen ikame edecek.',c:false},{t:'Otomasyon yalnızca arka ofis fonksiyonlarıyla sınırlı kalacak.',c:false},{t:'YZ konsiyer araçları yalnızca bütçe otel segmenti için geçerlidir.',c:false}]},
+  {pos:['leader'],cat:'Türkçe C2',q:'Lüks all-inclusive bir resort için gelir yönetimi felsefesi oluşturunuz ve bunun resepsiyon KPI\'larına doğrudan yansımalarını açıklayınız.',opts:[{t:'Dinamik fiyatlandırma, stratejik kanal yönetimi, kalış süresi kontrolü ve talep tahminleriyle RevPAR optimize edin. Resepsiyon KPI\'ları: üst satış dönüşüm oranı, geliş başına yükseltme geliri, ADR katkısı ve misafir memnuniyet endeksi — her biri takip edilmeli ve operasyonel kararlara bağlanmalı.',c:true},{t:'Resepsiyon operasyonunu basitleştirmek için tüm odaları sabit tarife satın.',c:false},{t:'Gelir yönetimi ticari direktörün münhasır alanıdır.',c:false},{t:'Resepsiyon KPI\'ları yalnızca check-in hızına ve kuyruk uzunluğuna odaklanmalıdır.',c:false}]},
+  {pos:['leader'],cat:'Türkçe C2',q:'Uzun süreli bir kurumsal misafir beş gün boyunca üç farklı departmanda tekrarlayan sorunlar bildiriyor. Vardiya lideri olarak nasıl yaklaşırsınız?',opts:[{t:'Kişisel sorumluluk alır, yapılandırılmış servis recovery görüşmesi yapar, departmanlar arası olay raporu hazırlar, anlık düzeltici önlemler alır, yazılı çözüm planını misafire sunar ve kök neden analiziyle GM\'i bilgilendiririm.',c:true},{t:'Oda yükseltmesi teklif edip özür dilerim.',c:false},{t:'Misafiri sırayla her departman müdürüne yönlendiririm.',c:false},{t:'Misafirden resmi şikayet formu doldurmасını isterim.',c:false}]},
+],
+},
+
+// ── Otelcilik & Pozisyon Soruları ──
+hosp:{
+clerk:[
+  {pos:['clerk'],cat:'Ön Büro – Temel',q:'PMS nedir ve resepsiyonistin temel görevi bağlamında önemi nedir?',opts:[{t:'Otelin rezervasyon, check-in/out, fatura ve oda yönetimi süreçlerini yöneten yazılım; resepsiyonistin tüm operasyonel işlemlerinin merkezi.',c:true},{t:'Personel maaş yönetim sistemi.',c:false},{t:'Misafir anket platformu.',c:false},{t:'Kat hizmetleri iş akışı uygulaması.',c:false}]},
+  {pos:['clerk'],cat:'Ön Büro – Temel',q:'All-inclusive otelde check-in sırasında misafire standart olarak ne verilmelidir?',opts:[{t:'Oda kartı, all-inclusive bilekliği veya kartı, tesis haritası ve hizmetlere dair kısa bilgilendirme.',c:true},{t:'Yalnızca oda kartı.',c:false},{t:'Yalnızca fatura özeti.',c:false},{t:'Pasaport fotokopisi ve kaydı.',c:false}]},
+  {pos:['clerk'],cat:'Ön Büro – Senaryo',q:'Misafir check-in yapmak istiyor ancak odası henüz hazır değil. En doğru yaklaşım hangisidir?',opts:[{t:'Özür dileyerek bagajını teslim almayı teklif edin, lobi ya da restaurant\'da bekleyebileceğini söyleyin ve oda hazır olunca bildirim yapacağınızı belirtin.',c:true},{t:'Sadece "oda hazır değil" deyin.',c:false},{t:'Misafiri otel dışında beklemeye yönlendirin.',c:false},{t:'Odaya kilitsiz girmesine izin verin.',c:false}]},
+  {pos:['clerk'],cat:'Ön Büro – Bilgi',q:'"ADR" ne demektir ve neden takip edilir?',opts:[{t:'Average Daily Rate — günlük ortalama oda geliri; finansal performansı ve fiyatlandırma stratejisini ölçmek için kritik bir KPI.',c:true},{t:'Ek gün rezervasyonu.',c:false},{t:'Otomatik istek defteri.',c:false},{t:'Aktivite güncelleme raporu.',c:false}]},
+  {pos:['clerk'],cat:'Ön Büro – Senaryo',q:'Lobby\'de misafir fatura itirazı yapıyor, kuyruktaki diğer misafirler duyuyor. Nasıl yönetirsiniz?',opts:[{t:'Misafiri gizliliği koruyarak özel bir alana davet eder, faturayı birlikte inceleyip gerekirse müdüre danışır ve sakin, çözüm odaklı tutum sergilerim.',c:true},{t:'Yüksek sesle açıklama yapar, kuyruktakilerin merakını gideririm.',c:false},{t:'Müdür gelene kadar misafiri bekletirim.',c:false},{t:'Faturanın doğru olduğunu kesinlikle reddederim.',c:false}]},
+],
+night:[
+  {pos:['night'],cat:'Gece Resepsiyon',q:'Night audit\'in temel amacı nedir?',opts:[{t:'Günlük gelir hesaplarını kapatmak, tüm işlemleri doğrulamak, tutarsızlıkları raporlamak ve yeni günü sistem üzerinde açmak.',c:true},{t:'Odaları temizlemek.',c:false},{t:'Gece misafir kayıtlarını manuel tutmak.',c:false},{t:'Sabah kahvaltısı hazırlığını koordine etmek.',c:false}]},
+  {pos:['night'],cat:'Gece Resepsiyon – Acil',q:'Gece vardiyasında yangın alarmı çalıyor. Resepsiyonist olarak ilk üç adımınız nedir?',opts:[{t:'Acil tahliye protokolünü başlatmak, güvenlik ve itfaiyeyi aramak, misafir listesiyle tahliyeyi koordine etmek.',c:true},{t:'Alarm sesini kapatıp durumun geçmesini beklemek.',c:false},{t:'Sadece kendi vardiya alanını kontrol etmek.',c:false},{t:'Sabah yönetici gelene kadar beklemek.',c:false}]},
+  {pos:['night'],cat:'Gece Resepsiyon – Senaryo',q:'Gece 02:00\'de tıbbi yardım isteyen bir misafir var. Nasıl hareket edersiniz?',opts:[{t:'Derhal ambulans çağırır, misafirin yanında kalır, nöbet müdürünü bilgilendirir ve tüm detayları olay defterine kaydederim.',c:true},{t:'Sabaha kadar beklemesini öneririm.',c:false},{t:'En yakın eczaneye yönlendiririm.',c:false},{t:'Kapıya güvenlik personeli gönderip uzaklaşırım.',c:false}]},
+  {pos:['night'],cat:'Gece Resepsiyon – Audit',q:'Night audit\'ta kasa farkı tespit ettiniz. Ne yaparsınız?',opts:[{t:'Tüm işlemleri sırayla kontrol eder, farkı zaman damgasıyla belgeler, üst amire yazılı olarak bildiririm; farkı kapatmak için kendi girişimde asla bulunmam.',c:true},{t:'Kasadan para koyarak dengelerim.',c:false},{t:'Sabah vardiyasına bırakırım.',c:false},{t:'Fark küçükse görmezden gelirim.',c:false}]},
+  {pos:['night'],cat:'Gece Resepsiyon – Senaryo',q:'Gece check-in\'e gelen misafirin sistemde rezervasyonu yok, ancak oda müsait. Ne yaparsınız?',opts:[{t:'Walk-in prosedürünü uygular, kimlik ve ödemeyi alır, PMS\'e düzgün kaydeder ve tüm bilgileri nöbet raporuna eklerim.',c:true},{t:'Sistem kayıtlı değil deyip misafiri geri çeviririm.',c:false},{t:'Sabah müdürü gelene kadar bekletiririm.',c:false},{t:'Odanın dolu olduğunu söylerim.',c:false}]},
+],
+leader:[
+  {pos:['leader'],cat:'Shift Leader – Operasyon',q:'Yüksek sezonda resepsiyonda ciddi bir kuyruk oluştu, iki personel yetersiz kalıyor. Shift leader olarak ne yaparsınız?',opts:[{t:'Öncelikleri belirler, gerekirse ek personel çağırır ya da bizzat müdahil olur, kuyruktaki misafirlere bekleme süresi hakkında proaktif bilgi veririm.',c:true},{t:'Misafirlerin beklemesine izin veririm, ekip halleder.',c:false},{t:'Müdürü arayıp talimat beklerim.',c:false},{t:'Problemi bir sonraki vardiyaya bırakırım.',c:false}]},
+  {pos:['leader'],cat:'Shift Leader – Kriz',q:'Overbooking nedeniyle garantili rezervasyonu olan bir misafire oda veremiyorsunuz. Nasıl yönetirsiniz?',opts:[{t:'Samimiyetle özür diler, denk kalitede yakın bir otele transfer organize eder, tüm masrafları otelin üstleneceğini belirtir ve geri dönüşte öncelik ile tazminat sunarım.',c:true},{t:'Lobide beklemesini söylerim, iptal çıkabilir.',c:false},{t:'Sadece ücreti iade edip uğurlarım.',c:false},{t:'Durumu yönetime bildirip kenara çekilirim.',c:false}]},
+  {pos:['leader'],cat:'Shift Leader – Liderlik',q:'Bir personelin misafirle tartışmaya girdiğini gördünüz. Nasıl müdahale edersiniz?',opts:[{t:'Personeli kibarca tartışmadan uzaklaştırır, misafirle bizzat ilgilenirim; ardından personelle bireysel olarak durumu değerlendiririm.',c:true},{t:'Müdahale etmem, personel kendi halleder.',c:false},{t:'Personeli açıkça azarlarım.',c:false},{t:'Misafiri otelden çıkarmayı öneririm.',c:false}]},
+  {pos:['leader'],cat:'Shift Leader – Raporlama',q:'Bir vardiyada beklenmedik bir olay yaşandı (misafir yaralanması, hırsızlık şüphesi, altyapı arızası). Shift leader olarak raporlama sorumluluğunuz nedir?',opts:[{t:'Olayı anında Duty Manager\'a sözlü bildiririm, detaylı yazılı olay raporu (incident report) doldururum, ilgili departmanları bilgilendiririm ve gerekli follow-up\'ları sabah brifingine dahil ederim.',c:true},{t:'Sadece müdürü arar, yazılı rapor tutmam.',c:false},{t:'Sabah vardiyası halleder, müdahale etmem.',c:false},{t:'Küçük olayları kayıt altına almam.',c:false}]},
+  {pos:['leader'],cat:'Shift Leader – Revenue',q:'Shift leader olarak "RevPAR" ve "occupancy" arasındaki farkı ve ikisinin neden eş zamanlı takip edilmesi gerektiğini açıklayınız.',opts:[{t:'Occupancy doluluk oranını gösterir; RevPAR ise hem doluluk hem tarife verilerini birleştirerek gerçek gelir verimliliğini ölçer. Yüksek doluluk düşük tarifle RevPAR\'ı düşürür; ikisi birlikte optimize edilmelidir.',c:true},{t:'RevPAR ve occupancy aynı şeyi ölçer, fark yoktur.',c:false},{t:'Occupancy yeterli; RevPAR sadece GM\'i ilgilendirir.',c:false},{t:'RevPAR yalnızca lüks otellerde anlam taşır.',c:false}]},
+],
+
+// ── TUI Blue Özel Soruları ──
+tui_clerk:[
+  {pos:['clerk'],cat:'TUI Blue – Konsept',q:'TUI Blue "Blue Feel Good" felsefesi, resepsiyonistin misafirle kurduğu ilk temasa nasıl yansımalıdır?',opts:[{t:'Göz teması kurarak, ismiyle hitap ederek ve ilk 30 saniyede proaktif bir bilgi vererek samimi, kişiselleştirilmiş bir karşılama yaratmak.',c:true},{t:'Hızlı check-in yaparak misafiri zaman kaybettirmemek.',c:false},{t:'Resmi ve mesafeli tutum sergileyerek kurumsal imaj korumak.',c:false},{t:'Şikayetleri süpervizöre yönlendirerek süreci temiz tutmak.',c:false}]},
+  {pos:['clerk'],cat:'TUI Blue – Konsept',q:'TUI Blue otellerde "Local Living" deneyiminin resepsiyonist üzerindeki operasyonel karşılığı nedir?',opts:[{t:'Misafirlere destinasyonun özgün kültürünü, yerel yemekleri ve off-the-beaten-path deneyimleri tanıtmak; standart tur listesi yerine kişiselleştirilmiş yerel öneriler sunmak.',c:true},{t:'Yalnızca lobide yerel kültür afişleri sergilemek.',c:false},{t:'Misafirleri tur otobüsü rezervasyonuna yönlendirmek.',c:false},{t:'Yerel yemekler yerine uluslararası mutfağı önermek.',c:false}]},
+  {pos:['clerk'],cat:'TUI Blue – Kalite',q:'TUI Quality Score neden kritiktir ve resepsiyonistin buna doğrudan katkısı nasıl olur?',opts:[{t:'Puanlar TUI dağıtım kanallarında otel sıralamasını belirler; misafirin karşılanma kalitesi, bilgi doğruluğu ve şikayet çözüm hızı skoru doğrudan etkiler.',c:true},{t:'Skor yalnızca yönetim kararlarını etkiler, resepsiyonla ilişkisi yoktur.',c:false},{t:'TUI Quality Score sadece restoran departmanını kapsar.',c:false},{t:'Skor yıllık değerlendirilir, günlük operasyonla bağlantısı yoktur.',c:false}]},
+  {pos:['clerk'],cat:'TUI Blue – Dijital',q:'TUI App üzerinden tamamlanmış online check-in\'de bazı bilgiler eksik geldi. Ne yaparsınız?',opts:[{t:'Eksik bilgileri kibarca tamamlar, PMS\'e doğru şekilde işler, misafiri süreci anlatarak güvence altına alır ve deneyimi yavaşlatmadan akıcı tutarım.',c:true},{t:'Online check-in hatalı diye sistemi baştan açarım.',c:false},{t:'Misafiri IT destek hattına yönlendiririm.',c:false},{t:'Eksik alanları boş bırakıp check-in\'i tamamlarım.',c:false}]},
+  {pos:['clerk'],cat:'TUI Blue – Servis',q:'TUI Blue Maviss\'te check-in sırasında "Welcome Drink" ve tesis tanıtımı standart prosedürün parçasıdır. Misafir "Bunu atlamak istiyorum" derse ne dersiniz?',opts:[{t:'Tabii ki, saygı duyarım. Sadece oda kartınızı alıp dilediğinizde keşfedebilirsiniz; ihtiyacınız olursa ben buradayım.',c:true},{t:'Prosedür zorunlu, atlanamaz.',c:false},{t:'O zaman hızlıca anlatayım, çok kısa sürer.',c:false},{t:'Anlaşıldı, direkt check-in yapıyorum.',c:false}]},
+],
+tui_night:[
+  {pos:['night'],cat:'TUI Blue – Gece',q:'Gece vardiyasında TUI tur operatör temsilcisi grubu aşırı gürültülü bir aktivite yapıyor, diğer misafirler şikayet ediyor. Nasıl yönetirsiniz?',opts:[{t:'Önce komşu odaların şikayetlerini belgelerim; ardından temsilciyle saygılı ama net bir şekilde konuşur, sessiz saatlere uyulmasını ister ve tekrar ihlal olursa nöbet müdürünü devreye alırım.',c:true},{t:'TUI temsilcisi olduğu için müdahale etmem.',c:false},{t:'Tüm gruba hemen oda çıkışı uygularım.',c:false},{t:'Sabah yönetici halleder, geceleri müdahale etmem.',c:false}]},
+  {pos:['night'],cat:'TUI Blue – Gece',q:'TUI charter uçuşu 4 saat gecikecek; 50 misafir sabah 06:00\'da gelecek. Gece resepsiyonisti olarak hazırlık planınız nedir?',opts:[{t:'Kat hizmetlerini gecikmeli geliş için uyarırım, karşılama ikramlarını ayarlarım, odaların hazır olduğunu teyit ederim, transfer koordinasyonunu sağlarım ve check-in listesini güncelledirim.',c:true},{t:'Yalnızca geliş saatini nöbet raporuna yazarım.',c:false},{t:'Sabah vardiyası halleder diyerek hiç hazırlık yapmam.',c:false},{t:'Misafirlere başka gün gelmeleri için mesaj gönderirim.',c:false}]},
+  {pos:['night'],cat:'TUI Blue – Sistem',q:'Gece TUI rezervasyon sistemine erişim kesildi. Ne yaparsınız?',opts:[{t:'Yedek offline kayıtlara başvurur, TUI acil IT hattını arar, walk-in ve geliş misafirlerini manuel prosedürle karşılar ve tüm işlemleri gece raporuna not alırım.',c:true},{t:'Sistem düzelene kadar hiç check-in yapmam.',c:false},{t:'Misafirleri lobide bekletirim.',c:false},{t:'Sistemi yeniden başlatmak için sunucu odasına giderim.',c:false}]},
+  {pos:['night'],cat:'TUI Blue – Audit',q:'Gece denetiminde TUI misafir anket sistemine girilecek memnuniyet verilerinde eksiklik fark ettiniz. Ne yaparsınız?',opts:[{t:'Eksiklikleri belgeler, tamamlanabilecek olanları tamamlar, veri kaynağını not eder ve sabah sorumlusuna devir notu bırakırım; tahmin veya uydurmayla asla doldurmam.',c:true},{t:'Boş alanları mantıklı tahminlerle doldururum.',c:false},{t:'Sabah ekibi halleder, gece işim değil.',c:false},{t:'Anket sistemini tamamen kapatırım.',c:false}]},
+  {pos:['night'],cat:'TUI Blue – Senaryo',q:'Gece yarısı TUI misafiri erken check-out yapıyor ve geriye kalan gecelere kısmi iade talep ediyor. Nasıl yanıt verirsiniz?',opts:[{t:'Politikayı kibarca açıklarım, talebi ayrıntılı kayıt altına alırım ve misafiri sabah yöneticisiyle görüşmeye yönlendiririm; kendi inisiyatifimle iade onaylamam.',c:true},{t:'İşlemi hemen onaylayıp iadeyi gerçekleştiririm.',c:false},{t:'İade yapılamaz deyip konuyu kapatırım.',c:false},{t:'Misafiri güvenlikle odaya çıkarmaya zorlarım.',c:false}]},
+],
+tui_leader:[
+  {pos:['leader'],cat:'TUI Blue – Liderlik',q:'TUI Blue Maviss\'in TUI Quality Review\'unda önceki sezondan düşük puan aldığı tespit edildi. Shift leader olarak 30 günlük aksiyon planınız nedir?',opts:[{t:'Düşük puanlı alanları ekiple şeffaf paylaşır, bireysel güçlü yanları destekler, misafir geri bildirimlerini görünür kılar, haftalık mikro-eğitimler düzenler ve gelişimi haftalk metriklerle takip ederim.',c:true},{t:'Herkesin performans dosyasını açar, yazılı ihtarname düzenlerim.',c:false},{t:'TUI puanlamasının öznel olduğunu ekiple paylaşırım.',c:false},{t:'Sadece şikayet sayısını düşürmeye odaklanırım.',c:false}]},
+  {pos:['leader'],cat:'TUI Blue – Deneyim',q:'"Blue Moments" deneyim programını bilen bir misafir beklentisinin karşılanmadığını belirtiyor. Shift leader olarak nasıl devreye girersiniz?',opts:[{t:'Misafirin spesifik beklentisini dinler, Blue Moments kapsamında kişiselleştirilmiş bir jest organizasyonu yapar (özel ikram, süpriz aktivite vb.) ve sonucu misafir profiline not ederim.',c:true},{t:'Programın içeriğini bilmiyorum derim.',c:false},{t:'TUI temsilcisine yönlendiririm, benim konuma girmez.',c:false},{t:'Standart şikayet prosedürünü uygularım.',c:false}]},
+  {pos:['leader'],cat:'TUI Blue – FAM Trip',q:'TUI Blue Maviss\'e ani bir FAM trip (familiarization trip) ile TUI Preferred Partner acenta temsilcileri geliyor. Shift leader olarak nasıl karşılarsınız?',opts:[{t:'İsimle karşılar, özel bir karşılama paketi hazırlar, tesis tanıtım turunun logistiğini organize eder, yönetimi bilgilendirir ve tüm deneyimi kişiselleştiririm.',c:true},{t:'Normal check-in prosedürü uygularım, fark yoktur.',c:false},{t:'Sabah müdürü gelene kadar lobide bekletirim.',c:false},{t:'Rezervasyon kaydı olmadan giremez derim.',c:false}]},
+  {pos:['leader'],cat:'TUI Blue – Standart',q:'TUI Blue "No Stress Check-in" standardının operasyonel gereklilikleri nelerdir ve shift leader olarak nasıl denetlersiniz?',opts:[{t:'Misafirin tüm ön kayıt işlemleri check-in öncesinde tamamlanmış olur; karşılama maksimum 3 dakika sürer; sistemde tüm profil verileri eksiksiz hazır olmalıdır; standarda uyumu günlük mystery check ile denetlerim.',c:true},{t:'Misafiri uzun tanıtım konuşmasıyla karşılamak demektir.',c:false},{t:'Check-in kuyruğunu tamamen kaldırmak.',c:false},{t:'Yalnızca VIP misafirlere uygulanan özel bir prosedürdür.',c:false}]},
+  {pos:['leader'],cat:'TUI Blue – Brand Audit',q:'TUI Blue Maviss\'in ilk operasyon sezonunda bir TUI Brand Audit öncesinde ön büroda hangi hazırlıkları yaparsınız?',opts:[{t:'Tüm SOP\'ları gözden geçirir, fiziksel alanı TUI brand standartlarına göre düzenler, ekiple denetim kriterlerini paylaşır, rol yapma simülasyonları yapar ve eksiklikleri denetim öncesinde kapatırım.',c:true},{t:'Denetim günü biraz daha dikkatli olmak yeterlidir.',c:false},{t:'Genel temizlik yaptırıp eksiklikleri bakım ekibine iletirım.',c:false},{t:'Denetçilere özel muamele göstererek iyi izlenim bırakmak.',c:false}]},
+],
+},
+
 };
 
-// ══════════════════════════════════════════
-// STEP NAVIGATION
-// ══════════════════════════════════════════
-function selectHotel(el) {
-  document.querySelectorAll('.hotel-opt').forEach(e => e.classList.remove('selected'));
-  el.classList.add('selected');
-  state.hotel = el.dataset.hotel;
-  document.getElementById('btn-hotel').disabled = false;
-}
-function selectPos(el) {
-  document.querySelectorAll('.pos-card').forEach(e => e.classList.remove('selected'));
-  el.classList.add('selected');
-  state.pos = el.dataset.pos;
-  document.getElementById('btn-pos').disabled = false;
-}
-function selectLang(el) {
-  document.querySelectorAll('.lang-btn').forEach(e => e.classList.remove('selected'));
-  el.classList.add('selected');
-  state.lang = el.dataset.lang;
-  document.getElementById('btn-lang').disabled = false;
-  document.getElementById('level-lang-badge').textContent = el.querySelector('.lang-name').textContent + ' Seviyesi';
-}
-function selectLevel(el) {
-  document.querySelectorAll('.level-btn').forEach(e => e.classList.remove('selected'));
-  el.classList.add('selected');
-  state.level = el.dataset.lvl;
-  document.getElementById('btn-level').disabled = false;
-}
-function checkInfo() {
-  const n = document.getElementById('inp-name').value.trim();
-  const e = document.getElementById('inp-email').value.trim();
-  document.getElementById('btn-start').disabled = !(n.length > 2 && e.includes('@'));
-}
-function goToStep(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  if (id === 's-info') updateSummary();
-  window.scrollTo(0,0);
-}
-function updateSummary() {
-  const hotelNames = {siam:'Siam Elegance Hotels & SPA',tui:'TUI Blue Maviss'};
-  const posNames = {clerk:'Reception Clerk',night:'Gece Resepsiyonisti',leader:'Shift Leader'};
-  const langNames = {en:'İngilizce',de:'Almanca',ru:'Rusça',tr:'Türkçe'};
-  const posQ = {clerk:20, night:20, leader:25};
-  const posT = {clerk:'20 dakika', night:'25 dakika', leader:'35 dakika'};
-  document.getElementById('sum-hotel').textContent = hotelNames[state.hotel] || '—';
-  document.getElementById('sum-pos').textContent = posNames[state.pos] || '—';
-  document.getElementById('sum-lang').textContent = (langNames[state.lang]||'—') + ' / ' + (state.level||'—').toUpperCase();
-  document.getElementById('sum-q').textContent = posQ[state.pos] || 20;
-  document.getElementById('sum-time').textContent = posT[state.pos] || '20 dakika';
-  state.name = document.getElementById('inp-name').value.trim();
-  state.email = document.getElementById('inp-email').value.trim();
-  // Sync hotel badge
-  const badge = document.getElementById('hotel-badge-pos');
-  if(badge) badge.textContent = (hotelNames[state.hotel]||'') + ' — Başvuru';
+// ═══════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════
+let ST = {hotel:null,pos:null,lang:null,level:null,name:'',email:'',questions:[],current:0,answers:[],correct:0,startTime:null,timer:null,timeLeft:0,violations:0,invalidated:false};
+
+// ═══════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════
+function selectHotel(el){document.querySelectorAll('.hotel-opt').forEach(e=>e.classList.remove('selected'));el.classList.add('selected');ST.hotel=el.dataset.hotel;document.getElementById('btn-hotel').disabled=false;}
+function selectPos(el){document.querySelectorAll('.pos-card').forEach(e=>e.classList.remove('selected'));el.classList.add('selected');ST.pos=el.dataset.pos;document.getElementById('btn-pos').disabled=false;}
+function selectLang(el){document.querySelectorAll('.lang-btn').forEach(e=>e.classList.remove('selected'));el.classList.add('selected');ST.lang=el.dataset.lang;document.getElementById('btn-lang').disabled=false;document.getElementById('badge-level').textContent=el.querySelector('.lang-name').textContent+' Seviyesi';}
+function selectLevel(el){document.querySelectorAll('.level-btn').forEach(e=>e.classList.remove('selected'));el.classList.add('selected');ST.level=el.dataset.lvl;document.getElementById('btn-level').disabled=false;}
+function checkInfo(){const n=document.getElementById('inp-name').value.trim();const e=document.getElementById('inp-email').value.trim();document.getElementById('btn-start').disabled=!(n.length>2&&e.includes('@'));}
+function goTo(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');if(id==='s-info')updateSummary();window.scrollTo(0,0);}
+function updateSummary(){
+  const hn={siam:'Siam Elegance Hotels & SPA',tui:'TUI Blue Maviss'};
+  const pn={clerk:'Reception Clerk',night:'Gece Resepsiyonisti',leader:'Shift Leader'};
+  const ln={en:'İngilizce',de:'Almanca',ru:'Rusça',tr:'Türkçe'};
+  const pq={clerk:20,night:20,leader:25};
+  const pt={clerk:'20 dk',night:'25 dk',leader:'35 dk'};
+  document.getElementById('sum-hotel').textContent=hn[ST.hotel]||'—';
+  document.getElementById('sum-pos').textContent=pn[ST.pos]||'—';
+  document.getElementById('sum-lang').textContent=(ln[ST.lang]||'—')+' / '+(ST.level||'—').toUpperCase();
+  document.getElementById('sum-q').textContent=pq[ST.pos]||20;
+  document.getElementById('sum-time').textContent=pt[ST.pos]||'20 dk';
+  const badge=document.getElementById('badge-pos');
+  if(badge)badge.textContent=(hn[ST.hotel]||'')+' — Başvuru';
 }
 
-// ══════════════════════════════════════════
+// ═══════════════════════════════════════════
 // BUILD QUESTIONS
-// ══════════════════════════════════════════
-function buildQuestions() {
-  const lvl = state.level;
-  const pos = state.pos;
-  const lang = state.lang;
-  const totalQ = {clerk:20, night:20, leader:25}[pos] || 20;
+// ═══════════════════════════════════════════
+function buildQuestions(){
+  const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+  const total={clerk:20,night:20,leader:25}[ST.pos]||20;
+  const langCount=Math.round(total*0.55);
+  const hospCount=total-langCount;
 
-  // Language questions for chosen level (pos-filtered)
-  const langPool = (QB[lang]?.[lvl] || []).filter(q => q.pos.includes(pos));
-  // Hospitality questions (pos-specific)
-  // hospPool used below via hotel-specific logic
-
-  // Mix: ~60% language, ~40% hospitality
-  const langCount = Math.round(totalQ * 0.6);
-  const hospCount = totalQ - langCount;
-
-  // Shuffle helper
-  const shuffle = arr => {
-    for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}
-    return arr;
-  };
-
-  // Hotel-specific hospitality pool
-  const hotelKey = state.hotel === 'tui' ? 'tui' : 'siam';
-  const baseHospPool = (QB.hospitality[pos] || []).slice();
-  const hotelHospPool = (QB.hospitality_hotel?.[hotelKey]?.[pos] || []).slice();
-  // Blend: ~50% hotel-specific if available, rest generic
-  const hotelHospCount = Math.min(hotelHospPool.length, Math.round(hospCount * 0.5));
-  const genericHospCount = hospCount - hotelHospCount;
-  const hospQ_hotel = shuffle([...hotelHospPool]).slice(0, hotelHospCount);
-  const hospQ_generic = shuffle([...baseHospPool]).slice(0, genericHospCount);
-  const hospQ = [...hospQ_hotel, ...hospQ_generic];
-
-  let langQ = shuffle([...langPool]).slice(0, langCount);
-
-  // If not enough questions, fill with other levels
-  if(langQ.length < langCount) {
-    const levels = ['a1','a2','b1','b2','c1','c2'];
-    for(const l of levels) {
-      if(l === lvl) continue;
-      const extra = (QB[lang]?.[l]||[]).filter(q=>q.pos.includes(pos));
-      langQ = langQ.concat(shuffle([...extra])).slice(0, langCount);
-      if(langQ.length >= langCount) break;
-    }
+  // Dil sorularını topla
+  let langPool=(QB[ST.lang]?.[ST.level]||[]).filter(q=>q.pos.includes(ST.pos));
+  if(langPool.length<langCount){
+    const order=['b2','b1','c1','a2','a1','c2'];
+    for(const l of order){if(l===ST.level)continue;const ex=(QB[ST.lang]?.[l]||[]).filter(q=>q.pos.includes(ST.pos));langPool=[...langPool,...ex];if(langPool.length>=langCount)break;}
   }
+  const langQ=shuffle([...new Set(langPool)]).slice(0,langCount);
 
-  // Shuffle answer options per question
-  const finalQ = shuffle([...langQ, ...hospQ]).map(q => ({
-    ...q,
-    opts: shuffle([...q.opts])
-  }));
+  // Otelcilik sorularını topla
+  const hospKey=ST.hotel==='tui'?'tui_'+ST.pos:ST.pos;
+  const hotelSpecific=(QB.hosp[hospKey]||[]).filter(q=>q.pos.includes(ST.pos));
+  const generic=(QB.hosp[ST.pos]||[]).filter(q=>q.pos.includes(ST.pos));
+  const hotelCount=Math.min(hotelSpecific.length,Math.round(hospCount*0.6));
+  const genericCount=hospCount-hotelCount;
+  const hospQ=[...shuffle([...hotelSpecific]).slice(0,hotelCount),...shuffle([...generic]).slice(0,genericCount)];
 
-  return finalQ;
+  return shuffle([...langQ,...hospQ]).map(q=>({...q,opts:shuffle([...q.opts])}));
 }
 
-// ══════════════════════════════════════════
-// START EXAM
-// ══════════════════════════════════════════
-function startExam() {
-  state.name = document.getElementById('inp-name').value.trim();
-  state.email = document.getElementById('inp-email').value.trim();
-  state.questions = buildQuestions();
-  state.current = 0;
-  state.answers = [];
-  state.correct = 0;
-  state.startTime = Date.now();
-  state.violations = 0;
-  state.invalidated = false;
-
-  const posT = {clerk:20, night:25, leader:35}[state.pos] || 20;
-  state.timeLeft = posT * 60;
-
-  // Show quiz
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+// ═══════════════════════════════════════════
+// EXAM
+// ═══════════════════════════════════════════
+function startExam(){
+  ST.name=document.getElementById('inp-name').value.trim();
+  ST.email=document.getElementById('inp-email').value.trim();
+  ST.questions=buildQuestions();ST.current=0;ST.answers=[];ST.correct=0;ST.startTime=Date.now();ST.violations=0;ST.invalidated=false;
+  const pt={clerk:20,night:25,leader:35}[ST.pos]||20;ST.timeLeft=pt*60;
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById('quiz-screen').classList.add('active');
-
-  // Fullscreen
-  const el = document.documentElement;
-  if(el.requestFullscreen) el.requestFullscreen().catch(()=>{});
-
-  // Anti-cheat
-  document.addEventListener('visibilitychange', onViolation);
-  document.addEventListener('fullscreenchange', onFSChange);
-
-  // Timer
-  state.timer = setInterval(tick, 1000);
-
-  loadQuestion();
+  const el=document.documentElement;if(el.requestFullscreen)el.requestFullscreen().catch(()=>{});
+  document.addEventListener('visibilitychange',onViolation);document.addEventListener('fullscreenchange',onFSChange);
+  ST.timer=setInterval(tick,1000);loadQuestion();
 }
+function tick(){ST.timeLeft--;const m=Math.floor(ST.timeLeft/60);const s=ST.timeLeft%60;const el=document.getElementById('quiz-timer');el.textContent=m+':'+String(s).padStart(2,'0');if(ST.timeLeft<=60)el.classList.add('urgent');if(ST.timeLeft<=0){clearInterval(ST.timer);finishExam();}}
+let fsExited=false;
+function onViolation(){if(document.hidden&&!ST.invalidated){ST.violations++;if(ST.violations>=2){invalidateExam();return;}document.getElementById('ov-warn').classList.add('show');}}
+function onFSChange(){if(!document.fullscreenElement&&!ST.invalidated){if(fsExited)ST.violations++;fsExited=true;if(ST.violations>=2){invalidateExam();return;}document.getElementById('ov-warn').classList.add('show');}}
+function dismissWarn(){document.getElementById('ov-warn').classList.remove('show');const el=document.documentElement;if(el.requestFullscreen)el.requestFullscreen().catch(()=>{});}
+function invalidateExam(){ST.invalidated=true;clearInterval(ST.timer);document.getElementById('ov-warn').classList.remove('show');document.getElementById('ov-invalid').classList.add('show');sendResults(true);}
 
-function tick() {
-  state.timeLeft--;
-  const m = Math.floor(state.timeLeft/60);
-  const s = state.timeLeft % 60;
-  const el = document.getElementById('quiz-timer');
-  el.textContent = m + ':' + String(s).padStart(2,'0');
-  if(state.timeLeft <= 60) el.classList.add('urgent');
-  if(state.timeLeft <= 0) { clearInterval(state.timer); finishExam(); }
-}
-
-function onViolation() {
-  if(document.hidden && !state.invalidated) {
-    state.violations++;
-    if(state.violations >= 2) { invalidateExam(); return; }
-    document.getElementById('ov-warn').classList.add('show');
-  }
-}
-let fsExited = false;
-function onFSChange() {
-  if(!document.fullscreenElement && !state.invalidated) {
-    if(fsExited) { state.violations++; }
-    fsExited = true;
-    if(state.violations >= 2) { invalidateExam(); return; }
-    document.getElementById('ov-warn').classList.add('show');
-  }
-}
-function dismissWarn() {
-  document.getElementById('ov-warn').classList.remove('show');
-  const el = document.documentElement;
-  if(el.requestFullscreen) el.requestFullscreen().catch(()=>{});
-}
-function invalidateExam() {
-  state.invalidated = true;
-  clearInterval(state.timer);
-  document.getElementById('ov-warn').classList.remove('show');
-  document.getElementById('ov-invalid').classList.add('show');
-  sendResults(true);
-}
-
-// ══════════════════════════════════════════
-// LOAD QUESTION
-// ══════════════════════════════════════════
-function loadQuestion() {
-  const q = state.questions[state.current];
-  const total = state.questions.length;
-  const pct = (state.current / total) * 100;
-
-  document.getElementById('q-progress').style.width = pct + '%';
-  document.getElementById('q-num').textContent = `Soru ${state.current+1} / ${total}`;
-  document.getElementById('q-cat').textContent = q.cat;
-  document.getElementById('q-text').textContent = q.q;
+function loadQuestion(){
+  const q=ST.questions[ST.current];const total=ST.questions.length;
+  document.getElementById('q-progress').style.width=(ST.current/total*100)+'%';
+  document.getElementById('q-num').textContent='Soru '+(ST.current+1)+' / '+total;
+  document.getElementById('q-cat').textContent=q.cat;
+  document.getElementById('q-text').textContent=q.q;
   document.getElementById('btn-next').classList.remove('visible');
-
-  const list = document.getElementById('options-list');
-  list.innerHTML = '';
-  const letters = ['A','B','C','D'];
-  q.opts.forEach((opt, i) => {
-    const div = document.createElement('div');
-    div.className = 'opt-item';
-    div.innerHTML = `<span class="opt-letter">${letters[i]}</span><span>${opt.t}</span>`;
-    div.addEventListener('click', () => selectAnswer(div, opt, i));
-    list.appendChild(div);
+  const list=document.getElementById('options-list');list.innerHTML='';
+  const letters=['A','B','C','D'];
+  q.opts.forEach((opt,i)=>{
+    const div=document.createElement('div');div.className='opt-item';
+    div.innerHTML='<span class="opt-letter">'+letters[i]+'</span><span>'+opt.t+'</span>';
+    div.addEventListener('click',()=>selectAnswer(div,opt,q));list.appendChild(div);
   });
-
-  const posNames = {clerk:'Reception Clerk',night:'Gece Resepsiyonisti',leader:'Shift Leader'};
-  const hotelNames = {siam:'Siam',tui:'TUI Blue Maviss'};
-  document.getElementById('quiz-title').textContent = (hotelNames[state.hotel]||'') + ' — ' + (posNames[state.pos]||'');
+  const pn={clerk:'Reception Clerk',night:'Gece Resepsiyonisti',leader:'Shift Leader'};
+  const hn={siam:'Siam',tui:'TUI Blue Maviss'};
+  document.getElementById('quiz-title').textContent=(hn[ST.hotel]||'')+' — '+(pn[ST.pos]||'');
 }
-
-function selectAnswer(el, opt, idx) {
-  if(el.classList.contains('disabled')) return;
-  const list = document.getElementById('options-list');
-  // Disable all
-  list.querySelectorAll('.opt-item').forEach(i => i.classList.add('disabled'));
-  // Mark selection
-  el.classList.add(opt.c ? 'correct' : 'wrong');
-  if(!opt.c) {
-    // Show correct
-    const items = list.querySelectorAll('.opt-item');
-    state.questions[state.current].opts.forEach((o,i) => {
-      if(o.c) items[i].classList.add('correct');
-    });
-  }
-  if(opt.c) state.correct++;
-  state.answers.push({q: state.questions[state.current].q, chosen: opt.t, correct: opt.c});
+function selectAnswer(el,opt,q){
+  if(el.classList.contains('disabled'))return;
+  const list=document.getElementById('options-list');
+  list.querySelectorAll('.opt-item').forEach(i=>i.classList.add('disabled'));
+  el.classList.add(opt.c?'correct':'wrong');
+  if(!opt.c){const items=list.querySelectorAll('.opt-item');q.opts.forEach((o,i)=>{if(o.c)items[i].classList.add('correct');});}
+  if(opt.c)ST.correct++;
+  ST.answers.push({q:q.q,chosen:opt.t,correct:opt.c});
   document.getElementById('btn-next').classList.add('visible');
 }
+function nextQuestion(){ST.current++;if(ST.current>=ST.questions.length){clearInterval(ST.timer);finishExam();}else loadQuestion();}
 
-function nextQuestion() {
-  state.current++;
-  if(state.current >= state.questions.length) { clearInterval(state.timer); finishExam(); }
-  else loadQuestion();
-}
-
-// ══════════════════════════════════════════
-// FINISH
-// ══════════════════════════════════════════
-function finishExam() {
-  if(document.exitFullscreen) document.exitFullscreen().catch(()=>{});
-  document.removeEventListener('visibilitychange', onViolation);
-  document.removeEventListener('fullscreenchange', onFSChange);
-
-  const total = state.questions.length;
-  const wrong = total - state.correct - (total - state.answers.length);
-  const score = Math.round((state.correct / total) * 100);
-  const elapsed = Math.round((Date.now() - state.startTime) / 1000);
-  const em = Math.floor(elapsed/60);
-  const es = elapsed % 60;
-
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+function finishExam(){
+  if(document.exitFullscreen)document.exitFullscreen().catch(()=>{});
+  document.removeEventListener('visibilitychange',onViolation);document.removeEventListener('fullscreenchange',onFSChange);
+  const total=ST.questions.length;const score=Math.round(ST.correct/total*100);
+  const elapsed=Math.round((Date.now()-ST.startTime)/1000);const em=Math.floor(elapsed/60);const es=elapsed%60;
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById('s-result').classList.add('active');
-
-  document.getElementById('r-correct').textContent = state.correct;
-  document.getElementById('r-wrong').textContent = total - state.correct;
-  document.getElementById('r-score').textContent = score;
-  document.getElementById('r-time').textContent = em + ':' + String(es).padStart(2,'0');
-  document.getElementById('score-pct').textContent = score + '%';
-
-  // Ring animation
-  const circumference = 251;
-  const offset = circumference - (score / 100) * circumference;
-  setTimeout(() => {
-    document.getElementById('score-fill').style.strokeDashoffset = offset;
-  }, 300);
-
-  const posNames = {clerk:'Reception Clerk',night:'Gece Resepsiyonisti',leader:'Shift Leader'};
-  const hotelFull = {siam:'Siam Elegance Hotels & SPA', tui:'TUI Blue Maviss'}[state.hotel] || '';
-  document.getElementById('result-title').textContent = state.name ? `Teşekkürler, ${state.name}!` : 'Teşekkürler!';
-  document.getElementById('result-sub').textContent = hotelFull + ' – ' + (posNames[state.pos]||'') + ' pozisyonuna ilişkin değerlendirmeniz başarıyla tamamlanmıştır. Başvurunuz İnsan Kaynakları departmanımıza iletilmiş olup inceleme sürecinin ardından tarafınıza olumlu ya da olumsuz dönüş yapılacaktır.';
-
+  document.getElementById('r-correct').textContent=ST.correct;
+  document.getElementById('r-wrong').textContent=total-ST.correct;
+  document.getElementById('r-score').textContent=score;
+  document.getElementById('r-time').textContent=em+':'+String(es).padStart(2,'0');
+  document.getElementById('score-pct').textContent=score+'%';
+  const circ=251;setTimeout(()=>{document.getElementById('score-fill').style.strokeDashoffset=circ-(score/100)*circ;},300);
+  const hn={siam:'Siam Elegance Hotels & SPA',tui:'TUI Blue Maviss'};
+  const pn={clerk:'Reception Clerk',night:'Gece Resepsiyonisti',leader:'Shift Leader'};
+  document.getElementById('result-title').textContent=ST.name?'Teşekkürler, '+ST.name+'!':'Teşekkürler!';
+  document.getElementById('result-sub').textContent=(hn[ST.hotel]||'')+' – '+(pn[ST.pos]||'')+' pozisyonuna ilişkin değerlendirmeniz başarıyla tamamlanmıştır. Başvurunuz İnsan Kaynakları departmanımıza iletilmiş olup inceleme sürecinin ardından tarafınıza olumlu ya da olumsuz dönüş yapılacaktır.';
   sendResults(false);
 }
 
-// ══════════════════════════════════════════
-// EMAILJS
-// ══════════════════════════════════════════
-function sendResults(invalidated) {
-  const hotelNames = {siam:'Siam Elegance Hotels & SPA',tui:'TUI Blue Maviss'};
-  const posNames = {clerk:'Reception Clerk',night:'Gece Resepsiyonisti',leader:'Shift Leader'};
-  const langNames = {en:'İngilizce',de:'Almanca',ru:'Rusça',tr:'Türkçe'};
-  const total = state.questions.length;
-  const score = Math.round((state.correct / total) * 100);
+// ═══════════════════════════════════════════
+// WEB3FORMS
+// ═══════════════════════════════════════════
+async function sendResults(invalidated){
+  const hn={siam:'Siam Elegance Hotels & SPA',tui:'TUI Blue Maviss'};
+  const pn={clerk:'Reception Clerk',night:'Gece Resepsiyonisti',leader:'Shift Leader'};
+  const ln={en:'İngilizce',de:'Almanca',ru:'Rusça',tr:'Türkçe'};
+  const total=ST.questions.length;
+  const score=Math.round(ST.correct/total*100);
+  const answersText=ST.answers.map((a,i)=>(i+1)+'. '+a.q+'\n   Cevap: '+a.chosen+' — '+(a.correct?'✓ Doğru':'✗ Yanlış')).join('\n\n');
 
-  const answersText = state.answers.map((a,i) =>
-    `${i+1}. ${a.q}\n   Cevap: ${a.chosen} — ${a.correct ? '✓ Doğru' : '✗ Yanlış'}`
-  ).join('\n\n');
-
-  const params = {
-    to_email: 'ilkerdege@gmail.com',
+  const body={
+    access_key: W3F_KEY,
+    subject: 'FO Sınav Sonucu — '+(hn[ST.hotel]||'')+' / '+(pn[ST.pos]||'')+' / '+(ST.name||'Aday'),
     from_name: 'FO Assessment System',
-    candidate_name: state.name || '—',
-    candidate_email: state.email || '—',
-    reply_to: 'noreply@ilk-er.com',
-    hotel: hotelNames[state.hotel] || '—',
-    position: posNames[state.pos] || '—',
-    language: langNames[state.lang] || '—',
-    level: (state.level||'').toUpperCase(),
-    score: score + '%',
-    correct: state.correct + ' / ' + total,
-    status: invalidated ? '❌ GEÇERSİZ — Kural ihlali tespit edildi' : '✅ Tamamlandı',
-    answers: answersText,
-    timestamp: new Date().toLocaleString('tr-TR')
+    to: 'ilkerdege@gmail.com',
+    aday_adi: ST.name||'—',
+    aday_email: ST.email||'—',
+    tesis: hn[ST.hotel]||'—',
+    pozisyon: pn[ST.pos]||'—',
+    dil_seviye: (ln[ST.lang]||'—')+' / '+(ST.level||'—').toUpperCase(),
+    puan: score+'%',
+    dogru_yanlis: ST.correct+' / '+total,
+    durum: invalidated?'GEÇERSIZ — Kural ihlali':'TAMAMLANDI',
+    tarih: new Date().toLocaleString('tr-TR'),
+    cevaplar: answersText
   };
 
-  if(typeof emailjs !== 'undefined') {
-    emailjs.init('d2OmX9p9Z8yo_2MxP');
-    emailjs.send('service_ia9uakf', 'template_wx9akfl', params).catch(()=>{});
-  }
+  try{
+    const res=await fetch('https://api.web3forms.com/submit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    const d=await res.json();
+    if(!d.success)console.warn('Web3Forms hata:',d);
+  }catch(e){console.warn('Mail gönderilemedi:',e);}
 }
-
-// Init summary on page load
-window.addEventListener('load', () => {
-  // nothing needed
-});
 </script>
 </body>
 </html>
