@@ -65,18 +65,11 @@ export default function Contact() {
         </a>
 
         <div className={`contact-reveal ${styles.footer}`}>
-          <a
-            href="/ilker_dege_EN.pdf"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.cvLink}
-          >
-            Download CV (PDF)
-          </a>
-          <span className={styles.sep}>·</span>
           <span className="mono-sm">Antalya, Turkey</span>
           <span className={styles.sep}>·</span>
           <span className="mono-sm">GMT+3</span>
+          <span className={styles.sep}>·</span>
+          <span className="mono-sm" style={{ color: 'var(--text-dim)' }}>CV available via assistant ↘</span>
         </div>
 
       </div>

@@ -6,6 +6,7 @@ import PMS from '@/components/sections/PMS';
 import AIToolchain from '@/components/sections/AIToolchain';
 import Languages from '@/components/sections/Languages';
 import Contact from '@/components/sections/Contact';
+import ChatBot from '@/components/ChatBot';
 
 export default function Page() {
   return (
@@ -19,6 +20,7 @@ export default function Page() {
         <Languages />
         <Contact />
       </main>
+      <ChatBot />
     </LenisProvider>
   );
 }
