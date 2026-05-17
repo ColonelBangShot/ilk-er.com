@@ -91,7 +91,7 @@ export default function Hero() {
         </h1>
 
         <p className={`hero-reveal ${styles.tagline}`}>
-          16+ years shaping guest experience<br />
+          25+ years shaping guest experience<br />
           across luxury &amp; resort hospitality.
         </p>
 

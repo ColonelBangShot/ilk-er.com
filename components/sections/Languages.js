@@ -3,10 +3,10 @@ import { useEffect, useRef } from 'react';
 import styles from './Languages.module.css';
 
 const LANGS = [
-  { code: 'TR', name: 'Turkish',  level: 'Native',       pct: 100 },
-  { code: 'EN', name: 'English',  level: 'Professional', pct: 95  },
-  { code: 'DE', name: 'German',   level: 'Conversational', pct: 70 },
-  { code: 'RU', name: 'Russian',  level: 'Conversational', pct: 65 },
+  { code: 'TR', name: 'Turkish', level: 'Native',       pct: 100 },
+  { code: 'EN', name: 'English', level: 'Advanced',     pct: 88  },
+  { code: 'DE', name: 'German',  level: 'Professional', pct: 75  },
+  { code: 'RU', name: 'Russian', level: 'Elementary',   pct: 35  },
 ];
 
 export default function Languages() {
