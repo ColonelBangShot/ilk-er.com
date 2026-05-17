@@ -1,0 +1,138 @@
+.section {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  border-top: 1px solid var(--border-dim);
+  padding: 80px 0;
+}
+
+.inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+}
+
+/* ── Quote column ───────────────────────────────────────── */
+.eyebrow {
+  margin-bottom: 36px;
+}
+
+.quote {
+  font-family: var(--font-display);
+  font-size: clamp(22px, 2.8vw, 34px);
+  font-weight: 300;
+  font-style: italic;
+  line-height: 1.5;
+  color: var(--text-bright);
+  border: none;
+  padding: 0;
+  margin-bottom: 36px;
+  position: relative;
+}
+
+.quote::before {
+  content: '\201C';
+  position: absolute;
+  top: -20px;
+  left: -8px;
+  font-size: 80px;
+  line-height: 1;
+  color: var(--gold);
+  opacity: 0.18;
+  font-style: normal;
+}
+
+.attribution {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.attrLine {
+  flex: 1;
+  max-width: 48px;
+  height: 1px;
+  background: var(--gold);
+  opacity: 0.3;
+}
+
+/* ── Stats grid ─────────────────────────────────────────── */
+.statsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--border-dim);
+  border: 1px solid var(--border-dim);
+}
+
+.statCell {
+  background: var(--bg);
+  padding: 36px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: background 0.3s;
+  cursor: default;
+  opacity: 0; /* will be revealed by anime */
+}
+
+.statCell:hover {
+  background: var(--gold-faint);
+}
+
+.statValue {
+  font-family: var(--font-display);
+  font-size: clamp(40px, 5vw, 64px);
+  font-weight: 300;
+  line-height: 1;
+  color: var(--gold);
+  letter-spacing: -0.01em;
+}
+
+.statLabel {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.statSub {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 300;
+  color: var(--text-dim);
+  line-height: 1.5;
+  margin-top: 4px;
+}
+
+/* ── Corner accent ──────────────────────────────────────── */
+.cornerBR {
+  position: absolute;
+  bottom: 32px;
+  right: 40px;
+  width: 40px;
+  height: 40px;
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  opacity: 0.5;
+}
+
+/* ── Responsive ─────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .inner {
+    grid-template-columns: 1fr;
+    gap: 48px;
+  }
+}
+
+@media (max-width: 560px) {
+  .statsGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .statCell {
+    padding: 24px 20px;
+  }
+}
