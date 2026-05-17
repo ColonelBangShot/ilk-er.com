@@ -68,7 +68,18 @@ export default function ChatBot() {
       });
 
       const data = await res.json();
-      const reply = data?.content?.[0]?.text ?? 'Sorry, I could not process that.';
+
+      // Surface API-level errors clearly
+      if (!res.ok || data?.type === 'error') {
+        const errMsg = data?.error?.message ?? `API error ${res.status}`;
+        setMessages((prev) => [
+          ...prev,
+          { role: 'assistant', content: `⚠ ${errMsg}` },
+        ]);
+        return;
+      }
+
+      const reply = data?.content?.[0]?.text ?? 'Sorry, I could not get a response.';
 
       // Check if assistant is requesting CV send
       const cvMatch = reply.match(/CV_REQUEST:([^\s]+)/);
@@ -82,10 +93,10 @@ export default function ChatBot() {
       } else {
         setMessages((prev) => [...prev, { role: 'assistant', content: reply }]);
       }
-    } catch {
+    } catch (err) {
       setMessages((prev) => [
         ...prev,
-        { role: 'assistant', content: 'Something went wrong. Please try again.' },
+        { role: 'assistant', content: `⚠ Network error: ${err.message}` },
       ]);
     } finally {
       setLoading(false);
