@@ -1,0 +1,135 @@
+.section {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  border-top: 1px solid var(--border-dim);
+  padding: 80px 0;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Subtle diagonal grid in background */
+.bgDecor {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(45deg, var(--border-dim) 1px, transparent 1px),
+    linear-gradient(-45deg, var(--border-dim) 1px, transparent 1px);
+  background-size: 60px 60px;
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  max-width: 800px;
+}
+
+.eyebrow {
+  margin-bottom: 8px;
+}
+
+.cta {
+  font-family: var(--font-display);
+  font-size: clamp(52px, 8vw, 120px);
+  font-weight: 300;
+  line-height: 0.95;
+  color: var(--text-bright);
+}
+
+.cta em {
+  color: var(--gold);
+}
+
+.sub {
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 300;
+  line-height: 1.75;
+  color: var(--text-muted);
+  max-width: 480px;
+}
+
+.mailBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  color: var(--gold);
+  text-decoration: none;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 6px;
+  transition: border-color 0.3s, color 0.3s;
+  width: fit-content;
+}
+
+.mailBtn:hover {
+  color: var(--gold-bright);
+  border-color: var(--gold);
+}
+
+.mailBtn svg {
+  transition: transform 0.3s var(--ease-out-expo);
+}
+
+.mailBtn:hover svg {
+  transform: translateX(6px);
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.sep {
+  color: var(--text-dim);
+  opacity: 0.5;
+}
+
+.cvLink {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: var(--text-muted);
+  text-decoration: none;
+  border-bottom: 1px solid var(--border-dim);
+  padding-bottom: 2px;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.cvLink:hover {
+  color: var(--gold);
+  border-color: var(--gold);
+}
+
+/* Large decorative monogram — bottom-right watermark */
+.bgMono {
+  position: absolute;
+  bottom: -40px;
+  right: -20px;
+  font-family: var(--font-display);
+  font-size: clamp(180px, 22vw, 320px);
+  font-weight: 300;
+  font-style: italic;
+  color: var(--gold);
+  opacity: 0.04;
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+}
+
+@media (max-width: 768px) {
+  .footer {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+}
