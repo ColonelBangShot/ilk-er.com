@@ -2,9 +2,36 @@ export const runtime = 'nodejs';
 
 const FREE_DOMAINS = /^(gmail|hotmail|yahoo|outlook|icloud|live|msn|ymail|mail|protonmail|aol)\./i;
 
+const SALARY_FLOORS = { '$': 5000, '€': 4000, '₺': 95000 };
+
 function isCorporateEmail(email) {
   const domain = (email.split('@')[1] ?? '').toLowerCase();
   return domain && !FREE_DOMAINS.test(domain);
+}
+
+// Extract all "number + currency" or "currency + number" pairs from text.
+// Returns { currency, amount } for each match found.
+function extractSalaries(text) {
+  const results = [];
+  // e.g. "5000 $", "5.000 $", "5,000 $", "$ 5000", "€4000", "4.000 €"
+  const re = /([€$₺])\s*([\d][,.\d]*)|(\b[\d][,.\d]*)\s*([€$₺])/gi;
+  let m;
+  while ((m = re.exec(text)) !== null) {
+    const currency = m[1] ?? m[4];
+    const raw = (m[2] ?? m[3]).replace(/[.,]/g, '');
+    results.push({ currency, amount: parseInt(raw, 10) });
+  }
+  return results;
+}
+
+function salaryPassesFloor(conversation) {
+  const salaries = extractSalaries(conversation);
+  if (!salaries.length) return true; // no figure found — let AI be the gate
+  // At least one mentioned salary must meet its floor
+  return salaries.some(({ currency, amount }) => {
+    const floor = SALARY_FLOORS[currency];
+    return !floor || amount >= floor;
+  });
 }
 
 export async function POST(request) {
@@ -27,6 +54,11 @@ export async function POST(request) {
     const salaryMentioned = /ücret|maaş|salary|budget|bütçe|gehalt|зарплат|\$|€|₺/.test(conversation ?? '');
     if (!salaryMentioned) {
       return Response.json({ error: 'Qualification incomplete' }, { status: 400 });
+    }
+
+    // Reject if a salary figure was mentioned but falls below the floor
+    if (!salaryPassesFloor(conversation ?? '')) {
+      return Response.json({ error: 'Salary below minimum threshold' }, { status: 400 });
     }
 
     const notifyRes = await fetch('https://api.resend.com/emails', {

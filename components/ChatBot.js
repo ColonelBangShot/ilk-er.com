@@ -20,7 +20,7 @@ Temel Filtreler:
 
 Maaş beklentileri (karşı taraf söylemeden ASLA sen açma):
 Türkiye: FOM → min 95.000 ₺ net | Operations Manager → min 120.000 ₺ net | AGM → min 150.000 ₺ net
-Yurt dışı USA/Canada → min 4.000 $ net + konaklama + uçak + sosyal paket zorunlu
+Yurt dışı USA/Canada → min 5.000 $ net + konaklama + uçak + sosyal paket zorunlu
 Yurt dışı Avrupa → min 4.000 € net + konaklama + uçak + sosyal paket zorunlu
 
 İş akışı:
