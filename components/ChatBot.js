@@ -122,8 +122,9 @@ export default function ChatBot() {
       setHistory((h) => [...h, { role: 'assistant', content: reply }]);
       setMessages((prev) => [...(prev ?? []), { role: 'assistant', content: reply }]);
 
-      // Show CV request form after 2nd assistant message
-      if (newCount >= 2 && !cvFormShown && !cvDone) {
+      // Show CV form only when assistant is asking for corporate email (step 5 of workflow)
+      const asksForEmail = /kurumsal e.?posta|corporate e.?mail|firmen.?e.?mail|корпоративн/i.test(reply);
+      if (asksForEmail && !cvFormShown && !cvDone) {
         setCvFormShown(true);
       }
     } catch (err) {
@@ -136,8 +137,15 @@ export default function ChatBot() {
     }
   };
 
+  const FREE_DOMAINS = /^(gmail|hotmail|yahoo|outlook|icloud|live|msn|ymail|mail|protonmail|aol)\./i;
+  const isCorporateEmail = (email) => {
+    const domain = email.split('@')[1] ?? '';
+    return domain && !FREE_DOMAINS.test(domain);
+  };
+
   const submitCvRequest = async () => {
     if (!cvEmail || !cvEmail.includes('@') || !cvEmail.includes('.')) return;
+    if (!isCorporateEmail(cvEmail)) return;
     setCvSending(true);
     try {
       await fetch('/api/cv-request', {
@@ -215,7 +223,7 @@ export default function ChatBot() {
                 <input
                   type="email"
                   className={styles.cvInput}
-                  placeholder="your@company.com"
+                  placeholder="your@hotel.com (corporate only)"
                   value={cvEmail}
                   onChange={(e) => setCvEmail(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && submitCvRequest()}
