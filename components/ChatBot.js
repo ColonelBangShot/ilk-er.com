@@ -2,47 +2,86 @@
 import { useState, useRef, useEffect } from 'react';
 import styles from './ChatBot.module.css';
 
-const SYSTEM_PROMPT = `You are İlker DEGE's personal AI assistant on his portfolio website (ilk-er.com).
+// Exact system prompt from original site
+const SYSTEM_PROMPT = `Sen İlker DEGE'nin kişisel kariyer asistanısın. İlker DEGE şu anda yeni bir kariyer fırsatı arıyor ve sen onun profesyonel ilk filtresi, 7/24 çalışan asistanısın.
 
-About İlker:
-- Front Office Manager with 25+ years in luxury & resort hospitality, all in Antalya, Turkey
-- Currently at TUI Blue Maviss (05/2026–present)
-- Previous roles: Siam Elegance (2025–2026), Radisson Blu Kaş (08/2023–10/2023), Venezia Palace Deluxe Resort Hotel (07/2021–06/2022), Crowne Plaza Antalya (09/2020–03/2021), Avantgarde Hotel & Resort (06/2015–06/2018), and many more since 1998
-- PMS expertise: Opera PMS (Oracle), Elektraweb, Fidelio (Micros), Séjour
-- AI tools used professionally: Claude (Anthropic), ChatGPT (OpenAI), Gemini (Google), Grok (X)
-- Languages: Turkish (native), English (advanced), German (professional), Russian (elementary)
-- Key achievements: 95% occupancy rates, +20% guest satisfaction, −30% check-in wait times, −30% staff turnover
-- Contact: ilker@ilk-er.com | Antalya, Turkey
+Kişilik ve üslup:
+- Son derece profesyonel, kibar ama mesafeli ve seçici
+- Asla samimi ifadeler kullanma ("abi, kardeşim, dostum" vb. tamamen yasak)
+- Karşı tarafın diline otomatik geç (Türkçe, İngilizce, Almanca, Rusça)
 
-Your role:
-- Answer questions about İlker's experience, skills, and background
-- Be warm, professional, and concise
-- If someone asks for the CV/resume, ask for their email address so you can send it to them
-- When you have their email for CV, respond with exactly: CV_REQUEST:their@email.com
-- Do not share private contact details (phone number) unprompted
-- Keep responses under 3 sentences unless more detail is specifically asked for
-- Speak in first person as İlker's assistant, not as İlker himself`;
+Temel Filtreler:
+- Sadece 5 yıldızlı tesisler veya dünyaca tanınmış zincir oteller kabul edilir (Accor, IHG, Radisson, MGM, Marriott, Hilton, Hyatt vb.)
+- Yalnızca yönetici pozisyonları: Front Office Manager, Operations Manager, Assistant General Manager
+- @gmail, @hotmail, @yahoo, @outlook gibi genel e-posta uzantıları kesinlikle kabul edilmez
+- Kurumsal e-posta + LinkedIn profil linki ikisi birlikte zorunlu
+- CV asistan tarafından direkt gönderilmez, İlker Bey onayladıktan sonra iletilir
+- Türkiye'deki sezonluk teklifler kabul edilmez, sadece yurt dışı sezonluk olabilir
+
+Maaş beklentileri (karşı taraf söylemeden ASLA sen açma):
+Türkiye: FOM → min 95.000 ₺ net | Operations Manager → min 120.000 ₺ net | AGM → min 150.000 ₺ net
+Yurt dışı USA/Canada → min 4.000 $ net + konaklama + uçak + sosyal paket zorunlu
+Yurt dışı Avrupa → min 4.000 € net + konaklama + uçak + sosyal paket zorunlu
+
+İş akışı:
+1. Selam ver, pozisyon + otel adı + lokasyon sor
+2. Ücret aralığını sor (net mi brüt mü belirtmelerini iste)
+3. Filtreler geçilirse kısa tanıtım paylaş
+4. Ücret uygunsa: "Bu pozisyonda daha önce çalışan kişinin neden ayrıldığını öğrenmek ister misiniz?" diye sor
+5. Tatmin edici cevap gelirse kurumsal e-posta + LinkedIn iste
+6. "Bilgileriniz alınmıştır. İlker Bey'in değerlendirmesinin ardından CV iletilecektir." de
+
+Ücret beklentiyi karşılamıyorsa: "Teşekkür ederim ilginiz için. Maalesef belirttiğiniz bütçe İlker Bey'in mevcut kariyer seviyesiyle uyumlu görünmüyor." de.
+
+Takip (48 saat sessizlik): "Daha önce paylaşılan bilgilere ilişkin henüz dönüş alınamadı. 48 saat içinde geri bildirim alınamazsa bu pozisyon için süreç kapatılacaktır."
+
+ASLA yapma:
+- İlk mesajda maaş beklentisi paylaşma
+- İlk mesajda CV gönderme
+- Kurumsal kimlik doğrulanmadan CV gönderme
+- Genel e-posta uzantılarını kabul etme`;
+
+const WELCOME = {
+  en: "Good day. I am İlker DEGE's personal assistant. I am here to evaluate career opportunities on his behalf. Could you please share your property name, location, and the position you are looking to fill?",
+  tr: "İyi günler. Ben İlker DEGE'nin kişisel asistanıyım. Kariyer fırsatlarını onun adına değerlendirmek için buradayım. Lütfen tesisinizin adını, lokasyonunu ve doldurmak istediğiniz pozisyonu paylaşır mısınız?",
+  de: "Guten Tag. Ich bin der persönliche Assistent von Herrn İlker DEGE. Könnten Sie bitte Ihren Hotelnamen, Standort und die zu besetzende Position mitteilen?",
+  ru: "Добрый день. Я личный ассистент Илькера ДЕГЕ. Не могли бы вы поделиться названием вашего отеля, местоположением и вакантной должностью?",
+};
+
+function detectLang() {
+  const lang = (navigator.language || 'en').slice(0, 2).toLowerCase();
+  return WELCOME[lang] ? lang : 'en';
+}
 
 export default function ChatBot() {
   const [open, setOpen] = useState(false);
-  const [messages, setMessages] = useState([
-    {
-      role: 'assistant',
-      content: "Hello! I'm İlker's assistant. Ask me about his experience, skills, or request his CV.",
-    },
-  ]);
+  const [messages, setMessages] = useState(null); // null = not yet initialised
+  const [history, setHistory] = useState([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
-  const [cvSent, setCvSent] = useState(false);
+  const [cvFormShown, setCvFormShown] = useState(false);
+  const [cvEmail, setCvEmail] = useState('');
+  const [cvSending, setCvSending] = useState(false);
+  const [cvDone, setCvDone] = useState(false);
+  const [assistantCount, setAssistantCount] = useState(0);
   const bottomRef = useRef(null);
   const inputRef = useRef(null);
 
+  // Initialise welcome message once (after mount, to use navigator)
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+    const lang = detectLang();
+    const welcome = WELCOME[lang];
+    setMessages([{ role: 'assistant', content: welcome }]);
+    setHistory([{ role: 'assistant', content: welcome }]);
+    setAssistantCount(1);
+  }, []);
 
   useEffect(() => {
-    if (open) setTimeout(() => inputRef.current?.focus(), 100);
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages, cvFormShown]);
+
+  useEffect(() => {
+    if (open) setTimeout(() => inputRef.current?.focus(), 120);
   }, [open]);
 
   const send = async () => {
@@ -50,8 +89,10 @@ export default function ChatBot() {
     if (!text || loading) return;
 
     const userMsg = { role: 'user', content: text };
-    const nextMessages = [...messages, userMsg];
-    setMessages(nextMessages);
+    const nextHistory = [...history, userMsg];
+
+    setMessages((prev) => [...(prev ?? []), userMsg]);
+    setHistory(nextHistory);
     setInput('');
     setLoading(true);
 
@@ -60,42 +101,34 @@ export default function ChatBot() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: 'claude-haiku-4-5-20251001',
-          max_tokens: 512,
+          model: 'claude-sonnet-4-6',
+          max_tokens: 1024,
           system: SYSTEM_PROMPT,
-          messages: nextMessages.map(({ role, content }) => ({ role, content })),
+          messages: nextHistory.filter((m) => m.role === 'user' || m.role === 'assistant'),
         }),
       });
 
       const data = await res.json();
 
-      // Surface API-level errors clearly
       if (!res.ok || data?.type === 'error') {
-        const errMsg = data?.error?.message ?? `API error ${res.status}`;
-        setMessages((prev) => [
-          ...prev,
-          { role: 'assistant', content: `⚠ ${errMsg}` },
-        ]);
+        const errMsg = data?.error?.message ?? `Error ${res.status}`;
+        setMessages((prev) => [...(prev ?? []), { role: 'assistant', content: `⚠ ${errMsg}` }]);
         return;
       }
 
-      const reply = data?.content?.[0]?.text ?? 'Sorry, I could not get a response.';
+      const reply = data?.content?.[0]?.text ?? 'Sorry, no response received.';
+      const newCount = assistantCount + 1;
+      setAssistantCount(newCount);
+      setHistory((h) => [...h, { role: 'assistant', content: reply }]);
+      setMessages((prev) => [...(prev ?? []), { role: 'assistant', content: reply }]);
 
-      // Check if assistant is requesting CV send
-      const cvMatch = reply.match(/CV_REQUEST:([^\s]+)/);
-      if (cvMatch) {
-        const email = cvMatch[1];
-        await sendCV(email, nextMessages);
-        const cleanReply = reply.replace(/CV_REQUEST:[^\s]+/, '').trim() ||
-          `I've sent İlker's CV to ${email}. Is there anything else I can help with?`;
-        setMessages((prev) => [...prev, { role: 'assistant', content: cleanReply }]);
-        setCvSent(true);
-      } else {
-        setMessages((prev) => [...prev, { role: 'assistant', content: reply }]);
+      // Show CV request form after 2nd assistant message
+      if (newCount >= 2 && !cvFormShown && !cvDone) {
+        setCvFormShown(true);
       }
     } catch (err) {
       setMessages((prev) => [
-        ...prev,
+        ...(prev ?? []),
         { role: 'assistant', content: `⚠ Network error: ${err.message}` },
       ]);
     } finally {
@@ -103,27 +136,33 @@ export default function ChatBot() {
     }
   };
 
-  const sendCV = async (email, convo) => {
-    await fetch('/api/cv-request', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        email,
-        conversation: convo.map((m) => `${m.role}: ${m.content}`).join('\n'),
-      }),
-    });
-  };
-
-  const handleKey = (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      send();
+  const submitCvRequest = async () => {
+    if (!cvEmail || !cvEmail.includes('@') || !cvEmail.includes('.')) return;
+    setCvSending(true);
+    try {
+      await fetch('/api/cv-request', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: cvEmail,
+          conversation: history.slice(-8).map((m) => `${m.role}: ${m.content}`).join('\n'),
+        }),
+      });
+      setCvDone(true);
+    } finally {
+      setCvSending(false);
     }
   };
 
+  const handleKey = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); }
+  };
+
+  if (!messages) return null; // wait for hydration
+
   return (
     <>
-      {/* ── Floating trigger button ─────────────────────── */}
+      {/* ── Trigger ────────────────────────────────────────── */}
       <button
         className={`${styles.trigger} ${open ? styles.triggerOpen : ''}`}
         onClick={() => setOpen((v) => !v)}
@@ -131,8 +170,7 @@ export default function ChatBot() {
       >
         {open ? (
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-            <path d="M2 2l14 14M16 2L2 16" stroke="currentColor" strokeWidth="1.5"
-              strokeLinecap="round"/>
+            <path d="M2 2l14 14M16 2L2 16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
           </svg>
         ) : (
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
@@ -142,16 +180,16 @@ export default function ChatBot() {
         )}
       </button>
 
-      {/* ── Chat panel ──────────────────────────────────── */}
-      <div className={`${styles.panel} ${open ? styles.panelOpen : ''}`} role="dialog"
-        aria-label="İlker's assistant">
+      {/* ── Panel ──────────────────────────────────────────── */}
+      <div className={`${styles.panel} ${open ? styles.panelOpen : ''}`}
+        role="dialog" aria-label="İlker's assistant">
 
         {/* Header */}
         <div className={styles.header}>
           <div className={styles.headerDot} />
           <div>
-            <p className={styles.headerName}>İlker's Assistant</p>
-            <p className={styles.headerSub}>Powered by Claude</p>
+            <p className={styles.headerName}>İlker DEGE · Personal Assistant</p>
+            <p className={styles.headerSub}>Powered by Claude · Online</p>
           </div>
         </div>
 
@@ -162,11 +200,43 @@ export default function ChatBot() {
               {msg.content}
             </div>
           ))}
+
           {loading && (
             <div className={`${styles.msg} ${styles.msgAssistant} ${styles.typing}`}>
               <span /><span /><span />
             </div>
           )}
+
+          {/* CV request form — appears after 2nd assistant reply */}
+          {cvFormShown && !cvDone && (
+            <div className={styles.cvBlock}>
+              <p className={styles.cvLabel}>📄 Request CV</p>
+              <div className={styles.cvRow}>
+                <input
+                  type="email"
+                  className={styles.cvInput}
+                  placeholder="your@company.com"
+                  value={cvEmail}
+                  onChange={(e) => setCvEmail(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && submitCvRequest()}
+                />
+                <button
+                  className={styles.cvBtn}
+                  onClick={submitCvRequest}
+                  disabled={cvSending}
+                >
+                  {cvSending ? '…' : 'Send'}
+                </button>
+              </div>
+            </div>
+          )}
+
+          {cvDone && (
+            <div className={styles.cvDone}>
+              ✓ Request received. İlker will review and respond shortly.
+            </div>
+          )}
+
           <div ref={bottomRef} />
         </div>
 
@@ -178,7 +248,7 @@ export default function ChatBot() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKey}
-            placeholder="Ask about experience, CV…"
+            placeholder="Introduce yourself and your property…"
             rows={1}
             disabled={loading}
           />
