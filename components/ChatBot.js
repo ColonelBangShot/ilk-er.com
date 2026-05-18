@@ -100,6 +100,10 @@ export default function ChatBot() {
     setLoading(true);
 
     try {
+      // Anthropic requires conversation to start with a user message
+      const apiMessages = nextHistory.filter((m) => m.role === 'user' || m.role === 'assistant');
+      while (apiMessages.length && apiMessages[0].role !== 'user') apiMessages.shift();
+
       const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -107,7 +111,7 @@ export default function ChatBot() {
           model: 'claude-sonnet-4-6',
           max_tokens: 1024,
           system: SYSTEM_PROMPT,
-          messages: nextHistory.filter((m) => m.role === 'user' || m.role === 'assistant'),
+          messages: apiMessages,
         }),
       });
 
