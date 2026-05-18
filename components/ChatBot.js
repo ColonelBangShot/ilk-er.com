@@ -19,9 +19,9 @@ Temel Filtreler:
 - Türkiye'deki sezonluk teklifler kabul edilmez, sadece yurt dışı sezonluk olabilir
 
 Maaş beklentileri (karşı taraf söylemeden ASLA sen açma):
-Türkiye: FOM → min 140.000 ₺ net | Operations Manager → min 140.000 ₺ net | AGM → min 140.000 ₺ net
+Türkiye: tüm pozisyonlar → min 140.000 ₺ net
 Yurt dışı USA/Canada → min 5.000 $ net + konaklama + uçak + sosyal paket zorunlu
-Yurt dışı Avrupa → min 4.000 € net + konaklama + uçak + sosyal paket zorunlu
+Yurt dışı Avrupa → min 4.500 € net + konaklama + uçak + sosyal paket zorunlu
 
 İş akışı:
 1. Selam ver, pozisyon + otel adı + lokasyon sor

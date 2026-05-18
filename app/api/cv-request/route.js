@@ -2,7 +2,7 @@ export const runtime = 'nodejs';
 
 const FREE_DOMAINS = /^(gmail|hotmail|yahoo|outlook|icloud|live|msn|ymail|mail|protonmail|aol)\./i;
 
-const SALARY_FLOORS = { '$': 5000, '€': 4000, '₺': 140000 };
+const SALARY_FLOORS = { '$': 5000, '€': 4500, '₺': 140000 };
 
 function isCorporateEmail(email) {
   const domain = (email.split('@')[1] ?? '').toLowerCase();
