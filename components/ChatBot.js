@@ -64,6 +64,7 @@ export default function ChatBot() {
   const [cvSending, setCvSending] = useState(false);
   const [cvDone, setCvDone] = useState(false);
   const [assistantCount, setAssistantCount] = useState(0);
+  const [userMsgCount, setUserMsgCount] = useState(0);
   const bottomRef = useRef(null);
   const inputRef = useRef(null);
 
@@ -90,9 +91,11 @@ export default function ChatBot() {
 
     const userMsg = { role: 'user', content: text };
     const nextHistory = [...history, userMsg];
+    const nextUserCount = userMsgCount + 1;
 
     setMessages((prev) => [...(prev ?? []), userMsg]);
     setHistory(nextHistory);
+    setUserMsgCount(nextUserCount);
     setInput('');
     setLoading(true);
 
@@ -122,9 +125,17 @@ export default function ChatBot() {
       setHistory((h) => [...h, { role: 'assistant', content: reply }]);
       setMessages((prev) => [...(prev ?? []), { role: 'assistant', content: reply }]);
 
-      // Show CV form only when assistant is asking for corporate email (step 5 of workflow)
+      // Show CV form only when ALL three conditions are met:
+      // 1. AI is explicitly asking for corporate email (step 5 of workflow)
+      // 2. At least 4 user messages exchanged (position → salary → why left + buffer)
+      // 3. Salary was actually discussed in the conversation
       const asksForEmail = /kurumsal e.?posta|corporate e.?mail|firmen.?e.?mail|корпоративн/i.test(reply);
-      if (asksForEmail && !cvFormShown && !cvDone) {
+      const enoughDepth = nextUserCount >= 4;
+      const fullConvo = [...nextHistory, { role: 'assistant', content: reply }];
+      const salaryDiscussed = fullConvo.some((m) =>
+        /ücret|maaş|salary|budget|bütçe|gehalt|зарплат|\$|€|₺/i.test(m.content)
+      );
+      if (asksForEmail && enoughDepth && salaryDiscussed && !cvFormShown && !cvDone) {
         setCvFormShown(true);
       }
     } catch (err) {

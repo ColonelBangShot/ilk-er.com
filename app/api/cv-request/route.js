@@ -1,9 +1,33 @@
 export const runtime = 'nodejs';
 
+const FREE_DOMAINS = /^(gmail|hotmail|yahoo|outlook|icloud|live|msn|ymail|mail|protonmail|aol)\./i;
+
+function isCorporateEmail(email) {
+  const domain = (email.split('@')[1] ?? '').toLowerCase();
+  return domain && !FREE_DOMAINS.test(domain);
+}
+
 export async function POST(request) {
   try {
     const { email, conversation } = await request.json();
     if (!email) return Response.json({ error: 'Email required' }, { status: 400 });
+
+    // Block free email providers
+    if (!isCorporateEmail(email)) {
+      return Response.json({ error: 'Corporate email required' }, { status: 400 });
+    }
+
+    // Require minimum conversation depth (at least 8 lines = 4 exchanges)
+    const lines = (conversation ?? '').split('\n').filter(Boolean);
+    if (lines.length < 8) {
+      return Response.json({ error: 'Insufficient conversation' }, { status: 400 });
+    }
+
+    // Require salary to have been discussed
+    const salaryMentioned = /ücret|maaş|salary|budget|bütçe|gehalt|зарплат|\$|€|₺/.test(conversation ?? '');
+    if (!salaryMentioned) {
+      return Response.json({ error: 'Qualification incomplete' }, { status: 400 });
+    }
 
     const notifyRes = await fetch('https://api.resend.com/emails', {
       method: 'POST',
