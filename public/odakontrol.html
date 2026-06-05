@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Oda Kontrol — TUI BLUE Maviss</title>
+<style>
+:root{
+  --bg:#0e1116; --panel:#171c24; --panel2:#1f2630; --line:#2a323e;
+  --ink:#eef2f7; --mut:#8a97a8; --acc:#e7b549; --acc2:#c9962a;
+  --evet:#2fae6b; --hayir:#e0533d; --yok:#6b7682;
+  --evet-bg:#16291f; --hayir-bg:#2c1714; --yok-bg:#1c2129;
+  --shadow:0 8px 30px rgba(0,0,0,.45);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--ink);font-family:'Segoe UI',system-ui,-apple-system,sans-serif}
+body{padding-bottom:90px;overscroll-behavior-y:contain}
+.serif{font-family:Georgia,'Times New Roman',serif}
+
+/* HEADER */
+header{position:sticky;top:0;z-index:50;background:linear-gradient(180deg,#10151c,#0e1116);
+  border-bottom:1px solid var(--line);padding:14px 16px 12px;box-shadow:var(--shadow)}
+.brand{display:flex;align-items:center;gap:10px}
+.brand .dot{width:9px;height:9px;border-radius:50%;background:var(--acc);box-shadow:0 0 10px var(--acc)}
+.whobtn{background:var(--panel2);border:1px solid var(--line);color:var(--ink);border-radius:20px;padding:6px 11px;font-size:12px;font-weight:600;display:flex;align-items:center;gap:5px;max-width:130px;white-space:nowrap;overflow:hidden}
+.whobtn #whoname{text-overflow:ellipsis;overflow:hidden}
+.brand h1{font-size:15px;letter-spacing:2px;font-weight:600;text-transform:uppercase}
+.brand small{display:block;color:var(--mut);font-size:11px;letter-spacing:1px;margin-top:1px}
+.statbar{display:flex;gap:8px;margin-top:12px}
+.stat{flex:1;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:9px 6px;text-align:center}
+.stat b{display:block;font-size:19px;font-weight:700}
+.stat span{font-size:10px;color:var(--mut);letter-spacing:.5px;text-transform:uppercase}
+.stat.e b{color:var(--evet)} .stat.h b{color:var(--hayir)} .stat.p b{color:var(--acc)}
+
+/* BREADCRUMB */
+.crumb{display:flex;align-items:center;gap:8px;padding:11px 16px;color:var(--mut);font-size:13px;
+  border-bottom:1px solid var(--line);background:var(--panel)}
+.crumb .back{background:var(--panel2);border:1px solid var(--line);color:var(--ink);
+  border-radius:9px;padding:6px 11px;font-size:13px;font-weight:600}
+.crumb .path{font-weight:600;color:var(--ink)}
+
+/* SEARCH */
+.searchwrap{padding:12px 16px 4px}
+.search{width:100%;background:var(--panel);border:1px solid var(--line);border-radius:12px;
+  padding:12px 14px;color:var(--ink);font-size:15px}
+.search::placeholder{color:var(--mut)}
+
+/* LIST */
+.list{padding:8px 12px 0}
+.row{display:flex;align-items:center;gap:12px;background:var(--panel);border:1px solid var(--line);
+  border-radius:14px;padding:14px;margin:8px 0;box-shadow:0 2px 8px rgba(0,0,0,.25)}
+.row:active{transform:scale(.99)}
+.row .lead{flex:1;min-width:0}
+.row .name{font-size:16px;font-weight:600}
+.row .sub{font-size:12px;color:var(--mut);margin-top:3px}
+.row .chev{color:var(--mut);font-size:20px}
+.pill{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;
+  padding:3px 9px;border-radius:20px;margin-left:6px}
+.pill.done{background:var(--evet-bg);color:var(--evet)}
+.pill.warn{background:var(--hayir-bg);color:var(--hayir)}
+.pill.idle{background:var(--yok-bg);color:var(--mut)}
+.progress{height:5px;background:var(--panel2);border-radius:6px;margin-top:9px;overflow:hidden}
+.progress i{display:block;height:100%;background:linear-gradient(90deg,var(--acc2),var(--acc));border-radius:6px;transition:width .3s}
+
+/* CHECK ITEMS */
+.item{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;margin:9px 0}
+.item.answered-hayir{border-color:#5a2a22;background:linear-gradient(180deg,var(--hayir-bg),var(--panel))}
+.item.answered-evet{border-color:#234734}
+.item .q{font-size:15px;font-weight:600;line-height:1.35;margin-bottom:11px}
+.photowarn{display:block;margin-top:6px;font-size:11px;font-weight:600;color:#e0a020;background:rgba(224,160,32,.12);border:1px solid rgba(224,160,32,.3);border-radius:8px;padding:5px 9px}
+.item .q .tag{font-size:10px;color:var(--mut);font-weight:600;display:block;margin-bottom:3px;letter-spacing:.5px;text-transform:uppercase}
+.choices{display:flex;gap:8px}
+.choice{flex:1;border:1px solid var(--line);background:var(--panel2);color:var(--mut);
+  border-radius:11px;padding:11px 4px;font-size:14px;font-weight:700;letter-spacing:.5px}
+.choice:active{transform:scale(.96)}
+.choice.sel.evet{background:var(--evet);color:#06140c;border-color:var(--evet)}
+.choice.sel.hayir{background:var(--hayir);color:#fff;border-color:var(--hayir)}
+.choice.sel.yok{background:var(--yok);color:#fff;border-color:var(--yok)}
+.extra{margin-top:11px;display:flex;gap:8px;align-items:flex-start}
+.note{flex:1;background:var(--bg);border:1px solid var(--line);border-radius:10px;
+  padding:10px 12px;color:var(--ink);font-size:14px;resize:none;font-family:inherit;min-height:42px}
+.note::placeholder{color:var(--mut)}
+.photobtn{flex-shrink:0;width:46px;height:46px;border-radius:10px;border:1px solid var(--line);
+  background:var(--panel2);color:var(--acc);font-size:20px;position:relative;overflow:hidden}
+.photobtn input{position:absolute;inset:0;opacity:0}
+.photobtn img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.photocount{position:absolute;bottom:2px;right:3px;background:var(--acc);color:#000;font-size:9px;
+  font-weight:700;border-radius:8px;padding:0 4px;line-height:13px}
+.thumbs{display:flex;gap:6px;margin-top:9px;flex-wrap:wrap}
+.thumb{width:54px;height:54px;border-radius:9px;border:1px solid var(--line);object-fit:cover;position:relative}
+.thumbwrap{position:relative}
+.thumbwrap .del{position:absolute;top:-6px;right:-6px;width:20px;height:20px;border-radius:50%;
+  background:var(--hayir);color:#fff;border:2px solid var(--bg);font-size:11px;line-height:16px}
+
+/* BUTTONS */
+.btn{display:block;width:100%;border:none;border-radius:13px;padding:14px;font-size:15px;
+  font-weight:700;letter-spacing:.5px}
+.btn.gold{background:linear-gradient(90deg,var(--acc2),var(--acc));color:#1a1206}
+.btn.ghost{background:var(--panel);border:1px solid var(--line);color:var(--ink)}
+.btn:active{transform:scale(.98)}
+.addwrap{padding:6px 12px 16px}
+.addwrap .btn{margin-top:8px}
+
+/* FAB / BOTTOM BAR */
+.bottombar{position:fixed;bottom:0;left:0;right:0;z-index:60;display:flex;gap:10px;
+  padding:12px 16px calc(12px + env(safe-area-inset-bottom));
+  background:linear-gradient(180deg,rgba(14,17,22,0),var(--bg) 30%);}
+.bottombar .btn{flex:1}
+
+/* MODAL */
+.modal{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.7);display:none;
+  align-items:flex-end;justify-content:center}
+.modal.open{display:flex}
+.sheet{background:var(--panel);border:1px solid var(--line);border-radius:20px 20px 0 0;
+  width:100%;max-width:520px;padding:20px 18px calc(20px + env(safe-area-inset-bottom));
+  box-shadow:var(--shadow);animation:up .25s ease}
+@keyframes up{from{transform:translateY(40px);opacity:0}to{transform:translateY(0);opacity:1}}
+.sheet h3{font-size:17px;margin-bottom:14px}
+.field{margin-bottom:12px}
+.field label{display:block;font-size:12px;color:var(--mut);margin-bottom:6px;letter-spacing:.5px;text-transform:uppercase}
+.field input,.field textarea,.field select{width:100%;background:var(--bg);border:1px solid var(--line);
+  border-radius:11px;padding:12px 14px;color:var(--ink);font-size:15px;font-family:inherit}
+.sheet .acts{display:flex;gap:10px;margin-top:6px}
+.sheet .acts .btn{flex:1}
+
+/* IMG VIEWER */
+.viewer{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.95);display:none;
+  align-items:center;justify-content:center;padding:20px}
+.viewer.open{display:flex}
+.viewer img{max-width:100%;max-height:88%;border-radius:10px}
+.viewer .close{position:absolute;top:calc(16px + env(safe-area-inset-top));right:16px;
+  width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,.15);color:#fff;font-size:22px}
+
+.empty{text-align:center;color:var(--mut);padding:50px 20px;font-size:14px;line-height:1.6}
+.empty .big{font-size:40px;margin-bottom:10px}
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--panel2);
+  border:1px solid var(--line);color:var(--ink);padding:11px 18px;border-radius:30px;font-size:13px;
+  z-index:300;box-shadow:var(--shadow);opacity:0;transition:opacity .2s,transform .2s;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(-6px)}
+.tinybtn{background:none;border:none;color:var(--hayir);font-size:12px;font-weight:600;padding:4px 0}
+.muted-line{font-size:11px;color:var(--mut);text-align:center;padding:14px 16px 0}
+.voicewrap{padding:12px 16px 4px}
+.voicebtn{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;
+  background:linear-gradient(135deg,#7a1f1f,#b5342a);color:#fff;border:none;border-radius:14px;
+  padding:15px;font-size:15px;font-weight:700;letter-spacing:.3px;box-shadow:0 4px 16px rgba(181,52,42,.35)}
+.voicebtn:active{transform:scale(.98)}
+.voicebtn.listening{background:linear-gradient(135deg,#b5342a,#e0533d);animation:pulse 1.1s infinite}
+.voicebtn .vmic{font-size:20px}
+@keyframes pulse{0%,100%{box-shadow:0 4px 16px rgba(224,83,61,.4)}50%{box-shadow:0 4px 30px rgba(224,83,61,.85)}}
+.voicehint{font-size:11px;color:var(--mut);text-align:center;margin-top:8px;line-height:1.45;padding:0 8px}
+.voiceheard{margin-top:10px;background:var(--panel2);border:1px solid var(--line);border-radius:11px;
+  padding:11px 13px;font-size:13px;line-height:1.5}
+.voiceheard .vh-title{font-size:10px;color:var(--acc);letter-spacing:.5px;text-transform:uppercase;font-weight:700;margin-bottom:5px}
+.voiceheard .vh-text{color:var(--ink);font-style:italic}
+.voiceheard .vh-result{margin-top:8px;font-size:12px;color:var(--mut)}
+.voiceheard .vh-hayir{color:var(--hayir);font-weight:600}
+.grouphdr{display:flex;align-items:center;gap:9px;padding:13px 16px 9px;margin-top:6px;
+  font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--acc)}
+.grouphdr .gcaret{color:var(--mut);font-size:12px;width:12px}
+.grouphdr .gname{flex:0 0 auto}
+.grouphdr .gpct{margin-left:auto;color:var(--mut);font-size:12px;font-weight:600;letter-spacing:0}
+.groupbody{padding:0 0 2px}
+.sub-row{margin-left:8px;margin-right:0}
+.loadwrap{display:flex;align-items:center;justify-content:center;height:60vh;color:var(--mut)}
+.spin{width:34px;height:34px;border:3px solid var(--line);border-top-color:var(--acc);border-radius:50%;animation:sp 1s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <span class="dot"></span>
+    <div style="flex:1">
+      <h1>Oda Kontrol</h1>
+      <small id="hsub">TUI BLUE Maviss · Pre-Opening Denetim</small>
+    </div>
+    <button class="whobtn" id="whobtn" onclick="askIdentity(true)">👤 <span id="whoname">—</span></button>
+  </div>
+  <div class="statbar" id="statbar"></div>
+</header>
+
+<div id="app"><div class="loadwrap"><div class="spin"></div></div></div>
+
+<div class="bottombar" id="bottombar"></div>
+
+<!-- ADD MODAL -->
+<div class="modal" id="modal">
+  <div class="sheet" id="sheet"></div>
+</div>
+
+<!-- IMG VIEWER -->
+<div class="viewer" id="viewer">
+  <button class="close" onclick="closeViewer()">✕</button>
+  <img id="viewerImg" src="" alt="">
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   ODA KONTROL — Veri kalıcı (window.storage). Çevrimdışı çalışır.
+   Yapı: Bloklar > Odalar > Maddeler (Evet/Hayır/Yok + not + foto)
+   ============================================================ */
+
+const SEED_ROOMS = [{"block": "A BLOK", "floor": 0, "fname": "Zemin Kat", "rooms": [{"no": "1002", "rtype": "SWIM UP FAMILY DUBLEX GROUND FLOOR", "view": "POOL VIEW"}, {"no": "1004", "rtype": "SWIM UP FAMILY DUBLEX GROUND FLOOR", "view": "POOL VIEW"}, {"no": "1006", "rtype": "SWIM UP FAMILY DUBLEX GROUND FLOOR", "view": "POOL VIEW"}, {"no": "1008", "rtype": "SWIM UP FAMILY DUBLEX GROUND FLOOR", "view": "POOL VIEW"}, {"no": "1010", "rtype": "SWIM UP FAMILY DUBLEX GROUND FLOOR", "view": "POOL VIEW"}, {"no": "1012", "rtype": "SWIM UP FAMILY DUBLEX GROUND FLOOR", "view": "POOL VIEW"}, {"no": "1014", "rtype": "SWIM UP FAMILY DUBLEX GROUND FLOOR", "view": "POOL VIEW"}, {"no": "1016", "rtype": "SWIM UP FAMILY GRAND DUBLEX", "view": "POOL VIEW"}, {"no": "1018", "rtype": "SWIM UP FAMILY DUBLEX GROUND FLOOR", "view": "POOL VIEW"}, {"no": "1020", "rtype": "SWIM UP FAMILY DUBLEX GROUND FLOOR", "view": "POOL VIEW"}, {"no": "1022", "rtype": "SWIM UP FAMILY DUBLEX GROUND FLOOR", "view": "POOL VIEW"}, {"no": "1024", "rtype": "SWIM UP FAMILY DUBLEX GROUND FLOOR", "view": "POOL VIEW"}, {"no": "1026", "rtype": "SWIM UP FAMILY GRAND DUBLEX", "view": "POOL VIEW"}]}, {"block": "A BLOK", "floor": 1, "fname": "1. Kat", "rooms": [{"no": "1101", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "1102", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "1103", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "1104", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "1105", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "1106", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "1107", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "1108", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "1109", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "1110", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "1111", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "1112", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "1113", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "1114", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "1115", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "1116", "rtype": "FAMILY ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "1117", "rtype": "FAMILY ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "1119", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "1121", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "1123", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "1125", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}]}, {"block": "A BLOK", "floor": 2, "fname": "2. Kat", "rooms": [{"no": "1201", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "1202", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "1203", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "1204", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "1205", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "1206", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "1207", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "1208", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "1209", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "1210", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "1211", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "1212", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "1213", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "1214", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "1215", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "1216", "rtype": "FAMILY ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "1217", "rtype": "FAMILY ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "1219", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "1221", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "1223", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "1225", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}]}, {"block": "A BLOK", "floor": 3, "fname": "3. Kat", "rooms": [{"no": "1301", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "1302", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "1303", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "1304", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "1305", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "1306", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "1307", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "1308", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "1309", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "1310", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "1311", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "1312", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "1313", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "1314", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "1315", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "1316", "rtype": "FAMILY ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "1317", "rtype": "FAMILY ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "1319", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "1321", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "1323", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "1325", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}]}, {"block": "A BLOK", "floor": 4, "fname": "4. Kat", "rooms": [{"no": "1401", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "1402", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "1403", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "1404", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "1405", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "1406", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "1407", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "1408", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "1409", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "1410", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "1411", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "1412", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "1413", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "1414", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "1415", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "1416", "rtype": "FAMILY ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "1417", "rtype": "FAMILY ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "1419", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "1421", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "1423", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "1425", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}]}, {"block": "A BLOK", "floor": 5, "fname": "5. Kat", "rooms": [{"no": "1501", "rtype": "STANDARD QUAD ROOM", "view": "SIDE SEA VIEW"}, {"no": "1502", "rtype": "STANDARD QUAD ROOM", "view": "LAND VIEW"}, {"no": "1503", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "1504", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "1505", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "1506", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "1507", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "1508", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "1509", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "1510", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "1511", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "1512", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "1513", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "1514", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "1515", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "1516", "rtype": "FAMILY ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "1517", "rtype": "FAMILY ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "1519", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "1521", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "1523", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "1525", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}]}, {"block": "B BLOK", "floor": 1, "fname": "1. Kat", "rooms": [{"no": "2101", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "2102", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "2103", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "2104", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "2105", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "2106", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "2107", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "2108", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "2109", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "2110", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "2111", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "2112", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "2113", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "2114", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "2115", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "2116", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "2117", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "2118", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "2119", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "2120", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "2122", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}]}, {"block": "B BLOK", "floor": 2, "fname": "2. Kat", "rooms": [{"no": "2201", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "2202", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "2203", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "2204", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "2205", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "2206", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "2207", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "2208", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "2209", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "2210", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "2211", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "2212", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "2213", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "2214", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "2215", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "2216", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "2217", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "2218", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "2219", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "2220", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "2222", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}]}, {"block": "B BLOK", "floor": 3, "fname": "3. Kat", "rooms": [{"no": "2301", "rtype": "STANDARD ECONOMY ROOM", "view": "POOL VIEW"}, {"no": "2302", "rtype": "STANDARD ECONOMY ROOM", "view": "LAND VIEW"}, {"no": "2303", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "2304", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "2305", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "2306", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "2307", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "2308", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "2309", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "2310", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "2311", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "2312", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "2313", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "2314", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "2315", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "2316", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "2317", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "2318", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "2319", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "2320", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "2322", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}]}, {"block": "B BLOK", "floor": 4, "fname": "4. Kat", "rooms": [{"no": "2401", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "2402", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "2403", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "2404", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "2405", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "2406", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "2407", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "2408", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "2409", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "2410", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "2411", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "2412", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "2413", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "2414", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "2415", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "2416", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "2417", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "2418", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "2419", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "2420", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "2422", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}]}, {"block": "B BLOK", "floor": 5, "fname": "5. Kat", "rooms": [{"no": "2501", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "2502", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "2503", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "2504", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "2505", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "2506", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "2507", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "2508", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "2509", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "2510", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "2511", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "2512", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "2513", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "2514", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "2515", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "2516", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "2517", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "2518", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "2519", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "2520", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "2522", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}]}, {"block": "C BLOK", "floor": 2, "fname": "2. Kat", "rooms": [{"no": "3201", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "3203", "rtype": "FAMILY ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "3205", "rtype": "STANDARD QUAD ROOM", "view": "POOL VIEW"}, {"no": "3207", "rtype": "STANDARD QUAD ROOM", "view": "POOL VIEW"}, {"no": "3209", "rtype": "FAMILY ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "3211", "rtype": "STANDARD QUAD ROOM", "view": "POOL VIEW"}]}, {"block": "C BLOK", "floor": 3, "fname": "3. Kat", "rooms": [{"no": "3301", "rtype": "STANDARD QUAD ROOM", "view": "LAND VIEW"}, {"no": "3302", "rtype": "FAMILY ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "3303", "rtype": "FAMILY ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "3304", "rtype": "FAMILY ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "3305", "rtype": "STANDARD QUAD ROOM", "view": "POOL VIEW"}, {"no": "3306", "rtype": "FAMILY ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "3307", "rtype": "STANDARD QUAD ROOM", "view": "POOL VIEW"}, {"no": "3308", "rtype": "FAMILY ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "3309", "rtype": "FAMILY ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "3311", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}]}, {"block": "C BLOK", "floor": 4, "fname": "4. Kat", "rooms": [{"no": "3401", "rtype": "STANDARD QUAD ROOM", "view": "SIDE SEA VIEW"}, {"no": "3402", "rtype": "FAMILY ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "3403", "rtype": "FAMILY ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "3404", "rtype": "FAMILY ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "3405", "rtype": "STANDARD QUAD ROOM", "view": "SIDE SEA VIEW"}, {"no": "3406", "rtype": "FAMILY ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "3407", "rtype": "STANDARD QUAD ROOM", "view": "SIDE SEA VIEW"}, {"no": "3408", "rtype": "FAMILY ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "3409", "rtype": "FAMILY ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "3411", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}]}, {"block": "C BLOK", "floor": 5, "fname": "5. Kat", "rooms": [{"no": "3501", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "3502", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "3503", "rtype": "STANDARD QUAD ROOM", "view": "SIDE SEA VIEW"}, {"no": "3504", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "3505", "rtype": "STANDARD QUAD ROOM", "view": "SIDE SEA VIEW"}, {"no": "3506", "rtype": "STANDARD QUAD ROOM", "view": "LAND VIEW"}, {"no": "3507", "rtype": "STANDARD QUAD ROOM", "view": "SIDE SEA VIEW"}, {"no": "3508", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "3509", "rtype": "STANDARD QUAD ROOM", "view": "SIDE SEA VIEW"}, {"no": "3510", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "3511", "rtype": "STANDARD QUAD ROOM", "view": "SIDE SEA VIEW"}, {"no": "3512", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "3514", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "3516", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}]}, {"block": "D BLOK", "floor": 1, "fname": "1. Kat", "rooms": [{"no": "4101", "rtype": "SWIM UP STANDARD ROOM", "view": "POOL VIEW"}, {"no": "4102", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "4103", "rtype": "SWIM UP STANDARD ROOM", "view": "POOL VIEW"}, {"no": "4104", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "4105", "rtype": "SWIM UP STANDARD ROOM", "view": "POOL VIEW"}, {"no": "4106", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "4107", "rtype": "SWIM UP STANDARD ROOM", "view": "POOL VIEW"}, {"no": "4108", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "4109", "rtype": "SWIM UP STANDARD ROOM", "view": "POOL VIEW"}, {"no": "4110", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "4111", "rtype": "SWIM UP STANDARD ROOM", "view": "POOL VIEW"}, {"no": "4112", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "4113", "rtype": "SWIM UP STANDARD ROOM", "view": "POOL VIEW"}, {"no": "4114", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "4115", "rtype": "SWIM UP STANDARD ROOM", "view": "POOL VIEW"}, {"no": "4116", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "4117", "rtype": "SWIM UP STANDARD ROOM", "view": "POOL VIEW"}, {"no": "4118", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "4119", "rtype": "SWIM UP STANDARD ROOM", "view": "POOL VIEW"}, {"no": "4120", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "4122", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}]}, {"block": "D BLOK", "floor": 2, "fname": "2. Kat", "rooms": [{"no": "4201", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "4202", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "4203", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "4204", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "4205", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "4206", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "4207", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "4208", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "4209", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "4210", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "4211", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "4212", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "4213", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "4214", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "4215", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "4216", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "4217", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "4218", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "4219", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "4220", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "4222", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}]}, {"block": "D BLOK", "floor": 3, "fname": "3. Kat", "rooms": [{"no": "4301", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "4302", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "4303", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "4304", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "4305", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "4306", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "4307", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "4308", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "4309", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "4310", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "4311", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "4312", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "4313", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "4314", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "4315", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "4316", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "4317", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "4318", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "4319", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "4320", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "4322", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}]}, {"block": "D BLOK", "floor": 4, "fname": "4. Kat", "rooms": [{"no": "4401", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "4402", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "4403", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "4404", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "4405", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "4406", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "4407", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "4408", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "4409", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "4410", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "4411", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "4412", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "4413", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "4414", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "4415", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "4416", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "4417", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "4418", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "4419", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "4420", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "4422", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}]}, {"block": "D BLOK", "floor": 5, "fname": "5. Kat", "rooms": [{"no": "4501", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "4502", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "4503", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "4504", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "4505", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "4506", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "4507", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "4508", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "4509", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "4510", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "4511", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "4512", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "4513", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "4514", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "4515", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "4516", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "4517", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "4518", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "4519", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "4520", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "4522", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}]}, {"block": "E BLOK", "floor": 1, "fname": "1. Kat", "rooms": [{"no": "5101", "rtype": "SWIM UP STANDARD ROOM", "view": "POOL VIEW"}, {"no": "5102", "rtype": "STANDARD QUAD ROOM", "view": "LAND VIEW"}, {"no": "5103", "rtype": "SWIM UP STANDARD ROOM", "view": "POOL VIEW"}, {"no": "5104", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "5105", "rtype": "SWIM UP STANDARD ROOM", "view": "POOL VIEW"}, {"no": "5106", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "5107", "rtype": "SWIM UP STANDARD ROOM", "view": "POOL VIEW"}, {"no": "5108", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "5109", "rtype": "SWIM UP STANDARD ROOM", "view": "POOL VIEW"}, {"no": "5110", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "5111", "rtype": "SWIM UP STANDARD ROOM", "view": "POOL VIEW"}, {"no": "5112", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "5113", "rtype": "SWIM UP STANDARD ROOM", "view": "POOL VIEW"}, {"no": "5114", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "5115", "rtype": "SWIM UP STANDARD ROOM", "view": "POOL VIEW"}, {"no": "5116", "rtype": "FAMILY ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "5118", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "5120", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "5122", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "5126", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "5224", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}]}, {"block": "E BLOK", "floor": 2, "fname": "2. Kat", "rooms": [{"no": "5124", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "5201", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "5202", "rtype": "STANDARD QUAD ROOM", "view": "LAND VIEW"}, {"no": "5203", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "5204", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "5205", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "5206", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "5207", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "5208", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "5209", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "5210", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "5211", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "5212", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "5213", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "5214", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "5215", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "5216", "rtype": "FAMILY ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "5217", "rtype": "FAMILY ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "5218", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "5220", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "5222", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}]}, {"block": "E BLOK", "floor": 3, "fname": "3. Kat", "rooms": [{"no": "5301", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "5302", "rtype": "STANDARD QUAD ROOM", "view": "LAND VIEW"}, {"no": "5303", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "5304", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "5305", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "5306", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "5307", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "5308", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "5309", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "5310", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "5311", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "5312", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "5313", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "5314", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "5315", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "5316", "rtype": "FAMILY ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "5317", "rtype": "FAMILY ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "5318", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "5320", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "5322", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "5324", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}]}, {"block": "E BLOK", "floor": 4, "fname": "4. Kat", "rooms": [{"no": "5401", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "5402", "rtype": "STANDARD QUAD ROOM", "view": "LAND VIEW"}, {"no": "5403", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "5404", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "5405", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "5406", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "5407", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "5408", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "5409", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "5410", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "5411", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "5412", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "5413", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "5414", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "5415", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "5416", "rtype": "FAMILY ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "5417", "rtype": "FAMILY ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "5418", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "5420", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "5422", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "5424", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}]}, {"block": "E BLOK", "floor": 5, "fname": "5. Kat", "rooms": [{"no": "5501", "rtype": "STANDARD QUAD ROOM", "view": "SIDE SEA VIEW"}, {"no": "5502", "rtype": "STANDARD QUAD ROOM", "view": "LAND VIEW"}, {"no": "5503", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "5504", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "5505", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "5506", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "5507", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "5508", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "5509", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "5510", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "5511", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "5512", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "5513", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "5514", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "5515", "rtype": "STANDARD ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "5516", "rtype": "FAMILY ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "5517", "rtype": "FAMILY ROOM SIDE SEA VIEW", "view": "SIDE SEA VIEW"}, {"no": "5518", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "5520", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "5522", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}, {"no": "5524", "rtype": "STANDARD ROOM LAND VIEW", "view": "LAND VIEW"}]}, {"block": "F BLOK", "floor": 0, "fname": "Zemin Kat", "rooms": [{"no": "6001", "rtype": "SWIM UP FAMILY DUBLEX GROUND FLOOR", "view": "POOL VIEW"}, {"no": "6003", "rtype": "SWIM UP FAMILY DUBLEX GROUND FLOOR", "view": "POOL VIEW"}, {"no": "6005", "rtype": "SWIM UP FAMILY DUBLEX GROUND FLOOR", "view": "POOL VIEW"}, {"no": "6007", "rtype": "SWIM UP FAMILY DUBLEX GROUND FLOOR", "view": "POOL VIEW"}, {"no": "6009", "rtype": "SWIM UP FAMILY DUBLEX GROUND FLOOR", "view": "POOL VIEW"}, {"no": "6011", "rtype": "SWIM UP FAMILY DUBLEX GROUND FLOOR", "view": "POOL VIEW"}, {"no": "6013", "rtype": "SWIM UP FAMILY DUBLEX GROUND FLOOR", "view": "POOL VIEW"}, {"no": "6015", "rtype": "SWIM UP FAMILY DUBLEX GROUND FLOOR", "view": "POOL VIEW"}]}, {"block": "F BLOK", "floor": 1, "fname": "1. Kat", "rooms": [{"no": "6101", "rtype": "SWIM UP STANDARD ROOM", "view": "POOL VIEW"}, {"no": "6103", "rtype": "SWIM UP STANDARD ROOM", "view": "POOL VIEW"}, {"no": "6105", "rtype": "SWIM UP STANDARD ROOM", "view": "POOL VIEW"}, {"no": "6107", "rtype": "SWIM UP STANDARD ROOM", "view": "POOL VIEW"}, {"no": "6109", "rtype": "SWIM UP STANDARD ROOM", "view": "POOL VIEW"}, {"no": "6111", "rtype": "SWIM UP STANDARD ROOM", "view": "POOL VIEW"}, {"no": "6113", "rtype": "SWIM UP STANDARD ROOM", "view": "POOL VIEW"}, {"no": "6115", "rtype": "SWIM UP STANDARD ROOM", "view": "POOL VIEW"}]}, {"block": "G BLOK", "floor": 0, "fname": "Zemin Kat", "rooms": [{"no": "7001", "rtype": "SWIM UP FAMILY DUBLEX GROUND FLOOR", "view": "POOL VIEW"}, {"no": "7003", "rtype": "SWIM UP FAMILY DUBLEX GROUND FLOOR", "view": "POOL VIEW"}, {"no": "7005", "rtype": "SWIM UP FAMILY DUBLEX GROUND FLOOR", "view": "POOL VIEW"}, {"no": "7007", "rtype": "SWIM UP FAMILY DUBLEX GROUND FLOOR", "view": "POOL VIEW"}, {"no": "7009", "rtype": "SWIM UP FAMILY DUBLEX GROUND FLOOR", "view": "POOL VIEW"}, {"no": "7011", "rtype": "SWIM UP FAMILY DUBLEX GROUND FLOOR", "view": "POOL VIEW"}, {"no": "7013", "rtype": "SWIM UP FAMILY DUBLEX GROUND FLOOR", "view": "POOL VIEW"}, {"no": "7015", "rtype": "SWIM UP FAMILY DUBLEX GROUND FLOOR", "view": "POOL VIEW"}]}, {"block": "G BLOK", "floor": 1, "fname": "1. Kat", "rooms": [{"no": "7101", "rtype": "SWIM UP STANDARD ROOM", "view": "POOL VIEW"}, {"no": "7103", "rtype": "SWIM UP STANDARD ROOM", "view": "POOL VIEW"}, {"no": "7105", "rtype": "SWIM UP STANDARD ROOM", "view": "POOL VIEW"}, {"no": "7107", "rtype": "SWIM UP STANDARD ROOM", "view": "POOL VIEW"}, {"no": "7109", "rtype": "SWIM UP STANDARD ROOM", "view": "POOL VIEW"}, {"no": "7111", "rtype": "SWIM UP STANDARD ROOM", "view": "POOL VIEW"}, {"no": "7113", "rtype": "SWIM UP STANDARD ROOM", "view": "POOL VIEW"}, {"no": "7115", "rtype": "SWIM UP STANDARD ROOM", "view": "POOL VIEW"}]}];
+
+const SABIT_MADDELER = [
+  {tag:"TV / Ekipman", q:"TV çalışıyor mu?"},
+  {tag:"Kapı / Kilit", q:"Oda ve banyo kapı stoperi var mı?"},
+  {tag:"Balkon", q:"Balkon giderleri çalışıyor mu?"},
+  {tag:"Balkon", q:"Balkon tavan aydınlatması çalışıyor mu?"},
+  {tag:"Banyo", q:"Banyo giderleri çalışıyor mu?"},
+  {tag:"Banyo", q:"Duşakabin camı / contası tam mı?"},
+  {tag:"Banyo", q:"Banyo fayansları sağlam mı (kırık yok)?"},
+  {tag:"Elektrik", q:"Elektrik anahtarları / spotlar çalışıyor mu?"},
+  {tag:"Balkon", q:"Balkon kapısı kilitleniyor mu?"},
+  {tag:"Duvar / Yüzey", q:"Duvar kağıdı / boya rötuşsuz mu?"},
+  {tag:"TV / Ekipman", q:"BLUE logosu eklenmiş mi?"},
+  {tag:"Balkon", q:"Balkon korkulukları sağlam / güvenli mi?"},
+  {tag:"Banyo", q:"Duşakabin camı sağlam ve tam kapanıyor mu?"}
+];
+
+// Sesli giriş için madde -> anahtar kelime eşlemesi (soru metni ile birebir bağlanır)
+const MADDE_KW = {
+  "TV çalışıyor mu?":["tv","televizyon","kumanda","ekran","yayın","yayin"],
+  "Oda ve banyo kapı stoperi var mı?":["stoper","stopper","kapı stoper","kapi stoper","stoperi"],
+  "Balkon giderleri çalışıyor mu?":["balkon gider","balkon su","balkon tahliye","balkon giderleri"],
+  "Balkon tavan aydınlatması çalışıyor mu?":["balkon aydınlat","balkon aydinlat","balkon ışık","balkon isik","balkon tavan","balkon lamba","balkon spot"],
+  "Banyo giderleri çalışıyor mu?":["banyo gider","banyo su","banyo tahliye","su akmıyor","su akmiyor","gider tıkalı","gider tikali","lavabo gider","duş gider","dus gider"],
+  "Duşakabin camı / contası tam mı?":["conta","lastik","duşakabin conta","dusakabin conta","cam conta"],
+  "Banyo fayansları sağlam mı (kırık yok)?":["fayans","seramik","kırık fayans","kirik fayans","çatlak fayans","catlak fayans"],
+  "Elektrik anahtarları / spotlar çalışıyor mu?":["elektrik","anahtar","priz","oda spot","düğme","dugme","oda ışık","oda isik","elektrik anahtar"],
+  "Balkon kapısı kilitleniyor mu?":["balkon kapı","balkon kapi","kilit","kilitlen","menteşe","mentese","balkon kapısı"],
+  "Duvar kağıdı / boya rötuşsuz mu?":["duvar kağıd","duvar kagid","boya","rötuş","rotus","duvar","tabela boya","kabarık","kabarik","leke"],
+  "BLUE logosu eklenmiş mi?":["logo","blue logo","amblem","marka"],
+  "Balkon korkulukları sağlam / güvenli mi?":["korkuluk","balkon korkuluk","parmaklık","parmaklik","balustrad","güvenlik korkuluk","gevsek korkuluk","gevşek"],
+  "Duşakabin camı sağlam ve tam kapanıyor mu?":["duşakabin","dusakabin","duşakabin cam","duş cam","dus cam","cam kapanm","cam çatlak","cam catlak","cam kırık","cam kirik"]
+};
+
+const A5_ODALAR = ["1501","1502","1503","1504","1505","1506","1507","1508","1509","1510",
+  "1511","1512","1513","1514","1515","1516","1517","1519","1521","1523","1525"];
+
+let DB = null;          // {blocks:[{id,name,rooms:[{id,no,items:[{id,tag,q,ans,note,photos:[]}]}]}]}
+let view = {screen:"blocks", blockId:null, roomId:null};
+const $ = s=>document.querySelector(s);
+const uid = ()=>Math.random().toString(36).slice(2,9);
+
+/* ---------- STORAGE ---------- */
+async function load(){
+  try{
+    const r = await window.storage.get('okdb_v1');
+    if(r && r.value){ DB = JSON.parse(r.value); syncFixedItems(); return; }
+  }catch(e){}
+  // ilk açılış: Elektraweb dökümünden tüm bloklar/katlar kurulur (505 oda)
+  DB = { blocks: SEED_ROOMS.map(s => {
+    const b = makeBlock(s.block + " · " + s.fname, []);
+    b.rooms = s.rooms.map(r => { const rm = makeRoom(r.no); rm.rtype=r.rtype; rm.view=r.view; return rm; });
+    return b;
+  })};
+  await save();
+}
+function makeBlock(name, roomNos){
+  return { id:uid(), name, rooms:(roomNos||[]).map(no=>makeRoom(no)) };
+}
+function makeRoom(no){
+  return { id:uid(), no:String(no), rtype:"", view:"", items:SABIT_MADDELER.map(m=>({
+    id:uid(), tag:m.tag, q:m.q, ans:null, note:"", photos:[], fixed:true
+  }))};
+}
+// Mevcut odalarda eksik olan sabit maddeleri tamamla (uygulama güncellenince)
+function syncFixedItems(){
+  let added=0;
+  (DB.blocks||[]).forEach(b=>b.rooms.forEach(r=>{
+    const have = new Set(r.items.filter(i=>i.fixed).map(i=>i.q));
+    SABIT_MADDELER.forEach(m=>{
+      if(!have.has(m.q)){
+        r.items.push({id:uid(),tag:m.tag,q:m.q,ans:null,note:"",photos:[],fixed:true});
+        added++;
+      }
+    });
+  }));
+  if(added) save();
+}
+let saveTimer=null;
+async function save(){
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(async()=>{
+    try{ await window.storage.set('okdb_v1', JSON.stringify(DB)); }
+    catch(e){ toast("Kayıt hatası — foto çok büyük olabilir"); }
+  },250);
+}
+
+/* ---------- HELPERS ---------- */
+function curBlock(){ return DB.blocks.find(b=>b.id===view.blockId); }
+function curRoom(){ const b=curBlock(); return b && b.rooms.find(r=>r.id===view.roomId); }
+function roomStats(r){
+  const ans=r.items.filter(i=>i.ans!==null).length;
+  const hayir=r.items.filter(i=>i.ans==='hayir').length;
+  return {ans, total:r.items.length, hayir, pct:r.items.length?Math.round(ans/r.items.length*100):0};
+}
+function blockStats(b){
+  let evet=0,hayir=0,ans=0,total=0;
+  b.rooms.forEach(r=>r.items.forEach(i=>{total++;if(i.ans){ans++};if(i.ans==='evet')evet++;if(i.ans==='hayir')hayir++;}));
+  return {evet,hayir,ans,total,rooms:b.rooms.length};
+}
+function allStats(){
+  let evet=0,hayir=0,ans=0,total=0,rooms=0;
+  DB.blocks.forEach(b=>{rooms+=b.rooms.length;b.rooms.forEach(r=>r.items.forEach(i=>{
+    total++;if(i.ans){ans++};if(i.ans==='evet')evet++;if(i.ans==='hayir')hayir++;}))});
+  return {evet,hayir,ans,total,rooms};
+}
+
+/* ---------- RENDER ---------- */
+function render(){
+  const wn=document.getElementById('whoname'); if(wn) wn.textContent = HAZIRLAYAN || 'İsim?';
+  if(view.screen==='blocks') renderBlocks();
+  else if(view.screen==='rooms') renderRooms();
+  else if(view.screen==='room') renderRoom();
+  renderStatbar();
+  renderBottom();
+}
+function renderStatbar(){
+  const s = view.screen==='blocks' ? allStats()
+          : view.screen==='rooms' ? blockStats(curBlock())
+          : (()=>{const r=curRoom();return r?{evet:r.items.filter(i=>i.ans==='evet').length,
+              hayir:r.items.filter(i=>i.ans==='hayir').length,ans:roomStats(r).ans,total:r.items.length}:{}})();
+  $('#statbar').innerHTML = `
+    <div class="stat e"><b>${s.evet||0}</b><span>Evet</span></div>
+    <div class="stat h"><b>${s.hayir||0}</b><span>Hayır</span></div>
+    <div class="stat p"><b>${s.ans||0}/${s.total||0}</b><span>Cevaplanan</span></div>`;
+}
+
+let openGroups = {};
+function blockGroupKey(b){ const m=b.name.match(/^([A-Za-z])\s*Blok/i); return m?('grp_'+m[1].toUpperCase()):'grp_diger'; }
+function blockGroupLabel(k){ return k==='grp_diger' ? 'Diğer' : (k.replace('grp_','')+' Blok'); }
+function renderBlocks(){
+  $('#hsub').textContent = "TUI BLUE Maviss · Pre-Opening Denetim";
+  let html = `<div class="searchwrap"><input class="search" id="q" placeholder="🔎 Blok / kat / oda ara…" oninput="filterBlocks(this.value)"></div><div class="list" id="blist">`;
+  // grupla
+  const groups={};
+  DB.blocks.forEach(b=>{ const k=blockGroupKey(b); (groups[k]=groups[k]||[]).push(b); });
+  Object.keys(groups).sort().forEach(gk=>{
+    const blks=groups[gk];
+    let ge=0,gh=0,ga=0,gt=0,gr=0;
+    blks.forEach(b=>{const s=blockStats(b);ge+=s.evet;gh+=s.hayir;ga+=s.ans;gt+=s.total;gr+=s.rooms;});
+    const gpct=gt?Math.round(ga/gt*100):0;
+    const open = openGroups[gk]!==false; // default açık
+    const gpill = gh?`<span class="pill warn">${gh} Hayır</span>`:`<span class="pill idle">${gr} oda</span>`;
+    html += `<div class="grouphdr" onclick="toggleGroup('${gk}')" data-gname="${blockGroupLabel(gk).toLowerCase()}">
+        <span class="gcaret">${open?'▾':'▸'}</span>
+        <span class="gname">${esc(blockGroupLabel(gk))}</span> ${gpill}
+        <span class="gpct">${gpct}%</span></div>`;
+    html += `<div class="groupbody" data-gk="${gk}" style="display:${open?'block':'none'}">`;
+    html += blks.map(b=>{
+      const st=blockStats(b);
+      const pct = st.total?Math.round(st.ans/st.total*100):0;
+      const pill = st.total&&st.ans===st.total ? `<span class="pill done">✓</span>`
+                 : st.hayir ? `<span class="pill warn">${st.hayir}</span>`
+                 : `<span class="pill idle">${st.rooms}</span>`;
+      // kat adını göster (blok harfini at)
+      const short = b.name.replace(/^[A-Za-z]\s*Blok\s*·?\s*/i,'');
+      return `<div class="row sub-row" data-name="${b.name.toLowerCase()}" onclick="openBlock('${b.id}')">
+        <div class="lead">
+          <div class="name">${esc(short||b.name)} ${pill}</div>
+          <div class="sub">${st.rooms} oda · ${st.ans}/${st.total} madde</div>
+          <div class="progress"><i style="width:${pct}%"></i></div>
+        </div><div class="chev">›</div></div>`;
+    }).join('');
+    html += `</div>`;
+  });
+  html += `</div><div class="addwrap"><button class="btn ghost" onclick="addBlockModal()">+ Yeni Blok / Kat Ekle</button></div>`;
+  $('#app').innerHTML = html;
+}
+function toggleGroup(gk){ openGroups[gk]=openGroups[gk]===false?true:false; renderBlocks(); }
+function filterBlocks(v){
+  v=v.toLowerCase().trim();
+  document.querySelectorAll('.groupbody').forEach(g=>g.style.display='block');
+  document.querySelectorAll('.gcaret').forEach(c=>c.textContent='▾');
+  document.querySelectorAll('#blist .row').forEach(r=>{
+    r.style.display=(!v||r.dataset.name.includes(v))?'':'none';});
+  // boş grupları gizle
+  document.querySelectorAll('.groupbody').forEach(g=>{
+    const vis=[...g.querySelectorAll('.row')].some(r=>r.style.display!=='none');
+    g.style.display=vis?'block':'none';
+    g.previousElementSibling.style.display=(!v||vis)?'':'none';
+  });
+}
+
+function renderRooms(){
+  const b=curBlock();
+  $('#hsub').textContent = b.name;
+  let html = `<div class="crumb"><button class="back" onclick="goBlocks()">‹ Bloklar</button><span class="path">${esc(b.name)}</span></div>`;
+  html += `<div class="searchwrap"><input class="search" id="q" placeholder="🔎 Oda no ara…" oninput="filterRooms(this.value)"></div><div class="list" id="rlist">`;
+  html += b.rooms.map(r=>{
+    const st=roomStats(r);
+    const pill = st.ans===st.total&&st.total ? `<span class="pill done">✓</span>`
+               : st.hayir ? `<span class="pill warn">${st.hayir} Hayır</span>`
+               : `<span class="pill idle">${st.ans}/${st.total}</span>`;
+    const meta = [r.rtype, r.view].filter(Boolean).join(' · ');
+    return `<div class="row" data-no="${(r.no+' '+(r.rtype||'')).toLowerCase()}" onclick="openRoom('${r.id}')">
+      <div class="lead">
+        <div class="name">Oda ${esc(r.no)} ${pill}</div>
+        ${meta?`<div class="sub">${esc(meta)}</div>`:''}
+        <div class="progress"><i style="width:${st.pct}%"></i></div>
+      </div><div class="chev">›</div></div>`;
+  }).join('') || `<div class="empty"><div class="big">🚪</div>Bu blokta henüz oda yok.<br>Aşağıdan ekleyebilirsin.</div>`;
+  html += `</div><div class="addwrap">
+    <button class="btn ghost" onclick="addRoomModal()">+ Oda Ekle</button>
+    <button class="tinybtn" style="display:block;margin:10px auto 0" onclick="delBlock()">Bu bloğu sil</button>
+  </div>`;
+  $('#app').innerHTML = html;
+}
+function filterRooms(v){v=v.toLowerCase();document.querySelectorAll('#rlist .row').forEach(r=>{
+  r.style.display=r.dataset.no.includes(v)?'':'none';});}
+
+function renderRoom(){
+  const b=curBlock(), r=curRoom();
+  $('#hsub').textContent = `${b.name} · Oda ${r.no}`;
+  const rmeta = [r.rtype, r.view].filter(Boolean).join(' · ');
+  let html = `<div class="crumb"><button class="back" onclick="goRooms()">‹ ${esc(b.name)}</button><span class="path">Oda ${esc(r.no)}</span></div>`;
+  if(rmeta) html += `<div class="muted-line" style="text-align:left;padding:10px 16px 0">${esc(rmeta)}</div>`;
+  html += `<div class="voicewrap">
+    <button class="voicebtn" id="voicebtn" onclick="toggleVoice('${r.id}')">
+      <span class="vmic">🎤</span><span class="vlabel">Sesli Kontrol — eksikleri say</span></button>
+    <div class="voicehint">Bas ve konuş: "TV yok, balkon korkuluğu gevşek, banyo gideri akmıyor". Saymadıkların otomatik EVET olur.</div>
+    <div class="voiceheard" id="voiceheard" style="display:none"></div>
+  </div>`;
+  html += `<div class="list">`;
+  html += r.items.map(it=>{
+    const cls = it.ans==='hayir'?'answered-hayir':it.ans==='evet'?'answered-evet':'';
+    const thumbs = it.photos.map((p,pi)=>`<div class="thumbwrap">
+        <img class="thumb" src="${p}" onclick="openViewer('${p}')">
+        <button class="del" onclick="delPhoto('${it.id}',${pi})">✕</button></div>`).join('');
+    const needPhoto = it.ans==='hayir' && it.photos.length===0;
+    return `<div class="item ${cls}" id="it_${it.id}">
+      <div class="q"><span class="tag">${esc(it.tag||'Genel')}</span>${esc(it.q)}
+        ${!it.fixed?`<button class="tinybtn" style="float:right" onclick="delItem('${it.id}')">sil</button>`:''}
+        ${needPhoto?`<div class="photowarn">📷 Bu eksik için fotoğraf gerekli</div>`:''}</div>
+      <div class="choices">
+        <button class="choice evet ${it.ans==='evet'?'sel':''}" onclick="setAns('${it.id}','evet')">EVET</button>
+        <button class="choice hayir ${it.ans==='hayir'?'sel':''}" onclick="setAns('${it.id}','hayir')">HAYIR</button>
+        <button class="choice yok ${it.ans==='yok'?'sel':''}" onclick="setAns('${it.id}','yok')">YOK</button>
+      </div>
+      <div class="extra">
+        <textarea class="note" placeholder="Not (örn: kumanda yok, WC'de yok…)" oninput="setNote('${it.id}',this.value)">${esc(it.note)}</textarea>
+        <label class="photobtn">📷
+          ${it.photos.length?`<span class="photocount">${it.photos.length}</span>`:''}
+          <input type="file" accept="image/*" capture="environment" onchange="addPhoto('${it.id}',this)">
+        </label>
+      </div>
+      ${thumbs?`<div class="thumbs">${thumbs}</div>`:''}
+    </div>`;
+  }).join('');
+  html += `</div><div class="addwrap"><button class="btn ghost" onclick="addItemModal()">+ Kontrol Maddesi Ekle</button>
+    <button class="tinybtn" style="display:block;margin:10px auto 0" onclick="delRoom()">Bu odayı sil</button></div>`;
+  $('#app').innerHTML = html;
+}
+
+function renderBottom(){
+  const bb=$('#bottombar');
+  if(view.screen==='blocks'){
+    bb.innerHTML = `<button class="btn gold" onclick="exportReport()">📋 Özet Rapor</button>`;
+  } else if(view.screen==='rooms'){
+    bb.innerHTML = `<button class="btn ghost" onclick="goBlocks()">‹ Geri</button>
+      <button class="btn gold" onclick="exportReport()">📋 Rapor</button>`;
+  } else {
+    const r=curRoom(); const b=curBlock();
+    const idx=b.rooms.findIndex(x=>x.id===r.id);
+    const next=b.rooms[idx+1];
+    bb.innerHTML = `<button class="btn ghost" onclick="goRooms()">‹ Odalar</button>
+      ${next?`<button class="btn gold" onclick="openRoom('${next.id}')">Sonraki Oda ›</button>`
+            :`<button class="btn gold" onclick="goRooms()">✓ Bitti</button>`}`;
+  }
+}
+
+/* ---------- NAV ---------- */
+function openBlock(id){view={screen:'rooms',blockId:id,roomId:null};render();scrollTop();}
+function openRoom(id){view.screen='room';view.roomId=id;render();scrollTop();}
+function goBlocks(){view={screen:'blocks'};render();scrollTop();}
+function goRooms(){view.screen='rooms';view.roomId=null;render();scrollTop();}
+function scrollTop(){window.scrollTo(0,0);}
+
+/* ---------- ANSWERS ---------- */
+function setAns(itemId,val){
+  const it=curRoom().items.find(i=>i.id===itemId);
+  it.ans = it.ans===val?null:val;
+  save();
+  // sadece o maddeyi güncelle (scroll kaçmasın)
+  // fotoğraf rozeti değişebileceği için maddeyi tam yeniden çiz
+  renderRoom();
+  renderStatbar();
+}
+function setNote(itemId,val){const it=curRoom().items.find(i=>i.id===itemId);it.note=val;save();}
+
+function addPhoto(itemId,input){
+  const f=input.files[0]; if(!f)return;
+  const it=curRoom().items.find(i=>i.id===itemId);
+  const reader=new FileReader();
+  reader.onload=e=>{
+    compress(e.target.result, 1000, 0.6, dataUrl=>{
+      it.photos.push(dataUrl); save(); renderRoom();
+      toast("Fotoğraf eklendi");
+    });
+  };
+  reader.readAsDataURL(f);
+  input.value='';
+}
+function compress(src,maxW,q,cb){
+  const img=new Image();
+  img.onload=()=>{
+    let w=img.width,h=img.height;
+    if(w>maxW){h=h*maxW/w;w=maxW;}
+    const c=document.createElement('canvas');c.width=w;c.height=h;
+    c.getContext('2d').drawImage(img,0,0,w,h);
+    cb(c.toDataURL('image/jpeg',q));
+  };
+  img.src=src;
+}
+function delPhoto(itemId,pi){
+  const it=curRoom().items.find(i=>i.id===itemId);
+  it.photos.splice(pi,1);save();renderRoom();
+}
+
+/* ---------- ADD / DELETE ---------- */
+function addBlockModal(){
+  openSheet(`<h3>Yeni Blok / Kat</h3>
+    <div class="field"><label>Ad</label><input id="bn" placeholder="örn: B Blok · 3. Kat"></div>
+    <div class="field"><label>Oda numaraları (virgülle, opsiyonel)</label>
+      <textarea id="br" rows="2" placeholder="örn: 3301, 3302, 3303"></textarea></div>
+    <div class="acts"><button class="btn ghost" onclick="closeSheet()">İptal</button>
+      <button class="btn gold" onclick="doAddBlock()">Ekle</button></div>`);
+}
+function doAddBlock(){
+  const n=$('#bn').value.trim(); if(!n){toast("Ad gir");return;}
+  const nos=$('#br').value.split(',').map(s=>s.trim()).filter(Boolean);
+  DB.blocks.push(makeBlock(n,nos));save();closeSheet();render();toast("Blok eklendi");
+}
+function addRoomModal(){
+  openSheet(`<h3>Oda Ekle</h3>
+    <div class="field"><label>Oda numarası / numaraları (virgülle)</label>
+      <input id="rn" placeholder="örn: 1527  veya  1527, 1529"></div>
+    <div class="acts"><button class="btn ghost" onclick="closeSheet()">İptal</button>
+      <button class="btn gold" onclick="doAddRoom()">Ekle</button></div>`);
+}
+function doAddRoom(){
+  const nos=$('#rn').value.split(',').map(s=>s.trim()).filter(Boolean);
+  if(!nos.length){toast("Oda no gir");return;}
+  nos.forEach(no=>curBlock().rooms.push(makeRoom(no)));
+  save();closeSheet();render();toast(nos.length+" oda eklendi");
+}
+function addItemModal(){
+  openSheet(`<h3>Kontrol Maddesi Ekle</h3>
+    <div class="field"><label>Kategori</label>
+      <select id="ic">
+        <option>Banyo</option><option>Balkon</option><option>Elektrik</option>
+        <option>TV / Ekipman</option><option>Kapı / Kilit</option>
+        <option>Duvar / Yüzey</option><option>Mobilya</option><option>Genel</option>
+      </select></div>
+    <div class="field"><label>Soru / kontrol maddesi</label>
+      <input id="iq" placeholder="örn: Minibar çalışıyor mu?"></div>
+    <div class="field"><label><input type="checkbox" id="iall" style="width:auto;margin-right:6px">Bu maddeyi bu bloktaki TÜM odalara ekle</label></div>
+    <div class="acts"><button class="btn ghost" onclick="closeSheet()">İptal</button>
+      <button class="btn gold" onclick="doAddItem()">Ekle</button></div>`);
+}
+function doAddItem(){
+  const q=$('#iq').value.trim(); if(!q){toast("Soru gir");return;}
+  const tag=$('#ic').value; const all=$('#iall').checked;
+  const mk=()=>({id:uid(),tag,q,ans:null,note:"",photos:[],fixed:false});
+  if(all){ curBlock().rooms.forEach(r=>r.items.push(mk())); toast("Tüm odalara eklendi"); }
+  else { curRoom().items.push(mk()); toast("Madde eklendi"); }
+  save();closeSheet();renderRoom();renderStatbar();
+}
+function delItem(id){ if(!confirm("Madde silinsin mi?"))return;
+  const r=curRoom();r.items=r.items.filter(i=>i.id!==id);save();renderRoom();renderStatbar();}
+function delRoom(){ if(!confirm("Oda "+curRoom().no+" silinsin mi?"))return;
+  const b=curBlock();b.rooms=b.rooms.filter(r=>r.id!==view.roomId);save();goRooms();}
+function delBlock(){ if(!confirm("'"+curBlock().name+"' silinsin mi? Tüm odaları gider."))return;
+  DB.blocks=DB.blocks.filter(b=>b.id!==view.blockId);save();goBlocks();}
+
+/* ---------- SHEET / VIEWER ---------- */
+function openSheet(html){$('#sheet').innerHTML=html;$('#modal').classList.add('open');}
+function closeSheet(){$('#modal').classList.remove('open');}
+$('#modal').addEventListener('click',e=>{if(e.target.id==='modal')closeSheet();});
+function openViewer(src){$('#viewerImg').src=src;$('#viewer').classList.add('open');}
+function closeViewer(){$('#viewer').classList.remove('open');}
+
+/* ---------- REPORT ---------- */
+function exportReport(){
+  openSheet(`<h3>Rapor Oluştur</h3>
+    <div class="field"><label>Kapsam</label>
+      <select id="rep_scope">
+        <option value="all">Tüm Otel (505 oda)</option>
+        ${view.screen!=='blocks'?`<option value="block" selected>Sadece ${esc(curBlock().name)}</option>`:''}
+      </select></div>
+    <div class="field"><label>İçerik</label>
+      <select id="rep_mode">
+        <option value="issues">Sadece eksikler (HAYIR olanlar)</option>
+        <option value="full">Tüm maddeler (detaylı)</option>
+      </select></div>
+    <div class="field"><label><input type="checkbox" id="rep_photos" style="width:auto;margin-right:6px">Fotoğrafları da ekle (rapor büyür)</label></div>
+    <div class="acts">
+      <button class="btn ghost" onclick="genReport('txt')">📄 TXT</button>
+      <button class="btn gold" onclick="genReport('pdf')">📋 PDF İndir</button>
+    </div>`);
+}
+
+function reportScopeBlocks(){
+  const sc = ($('#rep_scope')||{}).value || (view.screen==='blocks'?'all':'block');
+  return sc==='block' && view.screen!=='blocks' ? [curBlock()] : DB.blocks;
+}
+
+function genReport(fmt){
+  const mode = ($('#rep_mode')||{}).value || 'issues';
+  const withPhotos = ($('#rep_photos')||{}).checked || false;
+  const blocks = reportScopeBlocks();
+  closeSheet();
+  if(fmt==='txt'){ genTxt(blocks, mode); return; }
+  genPdf(blocks, mode, withPhotos);
+}
+
+function genTxt(blocks, mode){
+  let L=[];
+  L.push("TUI BLUE MAVISS — ODA KONTROL RAPORU");
+  L.push("Tarih: "+new Date().toLocaleString('tr-TR'));
+  L.push("Hazırlayan: İlker Dege — Front Office Manager");
+  L.push("=".repeat(44));
+  blocks.forEach(b=>{
+    const bs=blockStats(b);
+    L.push(""); L.push("▌ "+b.name+"  ("+bs.rooms+" oda · "+bs.hayir+" HAYIR · "+(bs.total?Math.round(bs.ans/bs.total*100):0)+"%)");
+    b.rooms.forEach(r=>{
+      const st=roomStats(r);
+      const items = mode==='full' ? r.items.filter(i=>i.ans) : r.items.filter(i=>i.ans==='hayir');
+      if(!items.length) return;
+      L.push("  • Oda "+r.no+(r.rtype?" ("+r.rtype+")":"")+" — "+st.hayir+" Hayır / "+st.ans+" cevaplı"+(st.ans===st.total?" ✓":""));
+      items.forEach(i=>{
+        const mark = i.ans==='hayir'?'✗':i.ans==='evet'?'✓':'—';
+        L.push("      "+mark+" "+i.q+(i.note?" → "+i.note:"")+(i.photos.length?" ["+i.photos.length+" foto]":""));
+      });
+    });
+  });
+  const txt=L.join("\n");
+  navigator.clipboard && navigator.clipboard.writeText(txt).catch(()=>{});
+  const blob=new Blob([txt],{type:'text/plain'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download='oda-kontrol-rapor.txt';a.click();
+  toast("TXT indirildi");
+}
+
+async function genPdf(blocks, mode, withPhotos){
+  toast("PDF hazırlanıyor…");
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({unit:'mm',format:'a4'});
+  const W=210, H=297, M=14;
+  let y=0;
+  const GOLD=[201,150,42], DARK=[30,38,48], RED=[200,60,45], GREEN=[40,150,90], GREY=[120,130,145];
+
+  // sadeleştirilmiş Türkçe (font gömmeden güvenli olsun diye TR karakterleri koruyup core font kullanıyoruz;
+  // jsPDF default WinAnsi'de ç/ş/ğ kısmen sorunlu olabilir -> latinize fallback)
+  function tr(s){ s=String(s==null?'':s);
+    const map={'\u00e7':'c','\u00c7':'C','\u011f':'g','\u011e':'G','\u0131':'i','\u0130':'I','\u00f6':'o','\u00d6':'O','\u015f':'s','\u015e':'S','\u00fc':'u','\u00dc':'U','\u00e2':'a','\u00ee':'i','\u00fb':'u'};
+    return s.replace(/[\u00e7\u00c7\u011f\u011e\u0131\u0130\u00f6\u00d6\u015f\u015e\u00fc\u00dc\u00e2\u00ee\u00fb]/g,c=>map[c]||c);
+  }
+
+  // ---- KAPAK ----
+  doc.setFillColor(...DARK); doc.rect(0,0,W,52,'F');
+  doc.setFillColor(...GOLD); doc.rect(0,52,W,2,'F');
+  doc.setTextColor(255,255,255); doc.setFont('helvetica','bold'); doc.setFontSize(22);
+  doc.text("TUI BLUE MAVISS", M, 26);
+  doc.setFontSize(13); doc.setFont('helvetica','normal'); doc.setTextColor(...GOLD);
+  doc.text("Oda Kontrol Raporu — Pre-Opening Denetim", M, 36);
+  const dev=detectDevice();
+  doc.setFontSize(9); doc.setTextColor(210,210,210);
+  doc.text("Tarih: "+new Date().toLocaleString('tr-TR'), M, 44);
+  doc.text("Hazirlayan: "+tr(HAZIRLAYAN||'(belirtilmedi)'), M, 49);
+  doc.setFontSize(7.5); doc.setTextColor(170,170,170);
+  doc.text("Cihaz: "+tr(dev.os)+" · "+tr(dev.br), M, 53.5);
+
+  // ---- GENEL ÖZET ----
+  let tot={evet:0,hayir:0,ans:0,total:0,rooms:0};
+  blocks.forEach(b=>{const s=blockStats(b);tot.evet+=s.evet;tot.hayir+=s.hayir;tot.ans+=s.ans;tot.total+=s.total;tot.rooms+=s.rooms;});
+  // fotoğrafsız HAYIR sayısı
+  let noPhoto=0;
+  blocks.forEach(b=>b.rooms.forEach(r=>r.items.forEach(i=>{ if(i.ans==='hayir'&&i.photos.length===0) noPhoto++; })));
+  y=66;
+  doc.setTextColor(...DARK); doc.setFont('helvetica','bold'); doc.setFontSize(12);
+  doc.text("Genel Ozet", M, y); y+=3;
+  doc.setDrawColor(...GOLD); doc.setLineWidth(0.5); doc.line(M,y,W-M,y); y+=8;
+  // KPI kutuları
+  const kpis=[["Oda",tot.rooms],["Cevaplanan",tot.ans+"/"+tot.total],["EVET",tot.evet],["HAYIR",tot.hayir]];
+  const bw=(W-2*M-9)/4;
+  kpis.forEach((k,i)=>{
+    const x=M+i*(bw+3);
+    doc.setFillColor(245,246,248); doc.roundedRect(x,y,bw,18,2,2,'F');
+    doc.setFontSize(15); doc.setFont('helvetica','bold');
+    doc.setTextColor(...(k[0]==='HAYIR'?RED:k[0]==='EVET'?GREEN:DARK));
+    doc.text(String(k[1]), x+bw/2, y+9, {align:'center'});
+    doc.setFontSize(7.5); doc.setFont('helvetica','normal'); doc.setTextColor(...GREY);
+    doc.text(k[0], x+bw/2, y+14, {align:'center'});
+  });
+  y+=26;
+  // fotoğraf eksik uyarı bandı
+  if(noPhoto>0){
+    doc.setFillColor(255,243,224); doc.roundedRect(M,y,W-2*M,9,1.5,1.5,'F');
+    doc.setTextColor(180,90,20); doc.setFont('helvetica','bold'); doc.setFontSize(8.5);
+    doc.text("! "+noPhoto+" adet eksik (HAYIR) henuz fotograflanmamis.", M+3, y+6);
+    y+=14;
+  }
+
+  // ---- BLOK BLOK ----
+  const ensure=(need)=>{ if(y+need>H-16){ doc.addPage(); y=18; } };
+  for(const b of blocks){
+    const bs=blockStats(b);
+    const roomsWithData = b.rooms.filter(r=>{
+      const it = mode==='full'?r.items.filter(i=>i.ans):r.items.filter(i=>i.ans==='hayir');
+      return it.length>0;
+    });
+    if(mode==='issues' && bs.hayir===0) continue; // eksiksiz bloğu atla
+    ensure(20);
+    // blok başlığı
+    doc.setFillColor(...DARK); doc.roundedRect(M,y,W-2*M,9,1.5,1.5,'F');
+    doc.setTextColor(255,255,255); doc.setFont('helvetica','bold'); doc.setFontSize(10.5);
+    doc.text(tr(b.name), M+3, y+6);
+    doc.setTextColor(...GOLD); doc.setFontSize(8.5); doc.setFont('helvetica','normal');
+    doc.text(bs.rooms+" oda · "+bs.hayir+" HAYIR · "+(bs.total?Math.round(bs.ans/bs.total*100):0)+"%", W-M-3, y+6, {align:'right'});
+    y+=13;
+
+    for(const r of b.rooms){
+      const items = mode==='full'?r.items.filter(i=>i.ans):r.items.filter(i=>i.ans==='hayir');
+      if(!items.length) continue;
+      const st=roomStats(r);
+      ensure(8+items.length*5.5 + (withPhotos? items.reduce((a,i)=>a+(i.photos.length?20:0),0):0));
+      // oda satırı
+      doc.setFont('helvetica','bold'); doc.setFontSize(9.5); doc.setTextColor(...DARK);
+      doc.text("Oda "+tr(r.no)+(r.rtype?"  ·  "+tr(r.rtype):""), M+2, y);
+      doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(...GREY);
+      doc.text(st.hayir+" Hayir / "+st.ans+" cevapli", W-M-2, y, {align:'right'});
+      y+=2; doc.setDrawColor(225,228,233); doc.setLineWidth(0.2); doc.line(M+2,y,W-M-2,y); y+=4;
+      // maddeler
+      for(const i of items){
+        const mark = i.ans==='hayir'?'[X]':i.ans==='evet'?'[OK]':'[--]';
+        doc.setTextColor(...(i.ans==='hayir'?RED:i.ans==='evet'?GREEN:GREY));
+        doc.setFont('helvetica','bold'); doc.setFontSize(8.5);
+        doc.text(mark, M+3, y);
+        doc.setTextColor(50,55,65); doc.setFont('helvetica','normal');
+        let line = tr(i.q);
+        const txt = doc.splitTextToSize(line, W-2*M-22);
+        doc.text(txt, M+13, y);
+        let used = txt.length*4.2;
+        if(i.note){
+          doc.setTextColor(...GREY); doc.setFont('helvetica','italic'); doc.setFontSize(7.8);
+          const nt = doc.splitTextToSize("Not: "+tr(i.note), W-2*M-22);
+          doc.text(nt, M+13, y+used);
+          used += nt.length*3.8;
+        }
+        // Fotoğraf eksik uyarısı (sadece HAYIR maddeler için)
+        if(i.ans==='hayir' && i.photos.length===0){
+          doc.setTextColor(...RED); doc.setFont('helvetica','bold'); doc.setFontSize(7.5);
+          doc.text("[ ! FOTOGRAF EKSIK ]", M+13, y+used);
+          used += 4;
+        }
+        y += Math.max(5.5, used+1);
+        // fotoğraflar
+        if(withPhotos && i.photos.length){
+          ensure(22);
+          let px=M+13;
+          for(const p of i.photos.slice(0,4)){
+            try{ doc.addImage(p,'JPEG',px,y,18,18); }catch(e){}
+            px+=20;
+          }
+          y+=21;
+        }
+      }
+      y+=3;
+    }
+    y+=3;
+  }
+
+  // ---- FOOTER (tüm sayfalar) ----
+  const pages=doc.internal.getNumberOfPages();
+  for(let p=1;p<=pages;p++){
+    doc.setPage(p);
+    doc.setDrawColor(...GOLD); doc.setLineWidth(0.4); doc.line(M,H-12,W-M,H-12);
+    doc.setFontSize(7.5); doc.setTextColor(...GREY); doc.setFont('helvetica','normal');
+    doc.text("TUI BLUE Maviss · Bogazkent, Serik/Antalya", M, H-7);
+    doc.text("Sayfa "+p+" / "+pages, W-M, H-7, {align:'right'});
+  }
+
+  const dt=new Date().toISOString().slice(0,10);
+  doc.save("TUI-Blue-Maviss-Oda-Kontrol-"+dt+".pdf");
+  toast("PDF indirildi ✓");
+}
+
+/* ---------- SESLİ GİRİŞ ---------- */
+let recog=null, listening=false, voiceRoomId=null;
+function toggleVoice(roomId){
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if(!SR){ toast("Bu tarayıcı sesli girişi desteklemiyor (Safari/Chrome dene)"); return; }
+  if(listening){ stopVoice(); return; }
+  voiceRoomId=roomId;
+  recog = new SR();
+  recog.lang='tr-TR'; recog.continuous=true; recog.interimResults=true;
+  let finalText="";
+  const btn=$('#voicebtn'), heard=$('#voiceheard');
+  recog.onstart=()=>{ listening=true; btn.classList.add('listening');
+    btn.querySelector('.vlabel').textContent="Dinleniyor… bitince tekrar bas"; };
+  recog.onerror=(e)=>{ toast("Ses hatası: "+(e.error||'')); stopVoice(); };
+  recog.onresult=(e)=>{
+    let interim="";
+    for(let i=e.resultIndex;i<e.results.length;i++){
+      const t=e.results[i][0].transcript;
+      if(e.results[i].isFinal) finalText+=" "+t; else interim+=t;
+    }
+    heard.style.display='block';
+    heard.innerHTML=`<div class="vh-title">Duyulan</div><div class="vh-text">"${esc((finalText+" "+interim).trim())}"</div>`;
+  };
+  recog.onend=()=>{ if(listening){ applyVoice(finalText); stopVoice(); } };
+  try{ recog.start(); }catch(e){ toast("Mikrofon başlatılamadı"); }
+}
+function stopVoice(){
+  listening=false;
+  if(recog){ try{recog.stop();}catch(e){} }
+  const btn=$('#voicebtn');
+  if(btn){ btn.classList.remove('listening');
+    btn.querySelector('.vlabel').textContent="Sesli Kontrol — eksikleri say"; }
+}
+function normTr(s){ return String(s||'').toLowerCase()
+  .replace(/İ/g,'i').replace(/I/g,'ı')
+  .replace(/[.,;:!?]/g,' ').replace(/\s+/g,' ').trim(); }
+function applyVoice(text){
+  const r = curRoom(); if(!r){ return; }
+  const t = normTr(text);
+  if(!t){ toast("Ses algılanmadı"); return; }
+  let hayirCount=0; const hitNames=[];
+  // her sabit maddeyi kontrol et
+  r.items.filter(i=>i.fixed).forEach(it=>{
+    const kws = MADDE_KW[it.q]||[];
+    const hit = kws.some(k=>t.includes(normTr(k)));
+    if(hit){
+      it.ans='hayir'; hayirCount++;
+      // ham metni not olarak ekle (zaten not varsa üzerine yazma, ekle)
+      const tag = "[sesli] "+text.trim();
+      it.note = it.note ? (it.note+" · "+tag) : tag;
+      hitNames.push(it.q);
+    } else {
+      // söylenmeyen sabit madde = EVET (sadece henüz cevaplanmamışsa dokun, elle HAYIR demişsen bozma? -> en hızlı mod: hepsini EVET yap)
+      it.ans='evet';
+    }
+  });
+  save();
+  renderRoom();
+  // sonuç özetini göster
+  const heard=$('#voiceheard');
+  if(heard){
+    heard.style.display='block';
+    let html=`<div class="vh-title">Sonuç</div><div class="vh-text">"${esc(text.trim())}"</div>`;
+    if(hayirCount){
+      html+=`<div class="vh-result"><span class="vh-hayir">${hayirCount} eksik (HAYIR)</span> işaretlendi, kalan maddeler EVET yapıldı:</div>`;
+      html+=`<div class="vh-result">✗ ${hitNames.map(esc).join('<br>✗ ')}</div>`;
+      html+=`<div class="vh-result" style="color:var(--acc);font-weight:600;margin-top:8px">📷 Bu eksikleri aşağıdan fotoğraflamayı unutma — fotoğrafsız eksikler raporda "FOTOĞRAF EKSİK" damgalanır.</div>`;
+    } else {
+      html+=`<div class="vh-result">Eksik algılanmadı — tüm maddeler EVET yapıldı. (Yanlışsa elle düzelt)</div>`;
+    }
+    heard.innerHTML=html;
+  }
+  toast(hayirCount?(hayirCount+" eksik işaretlendi, kalan EVET"):"Tümü EVET yapıldı");
+  renderStatbar();
+}
+
+/* ---------- UTIL ---------- */
+function esc(s){return String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+let toastT=null;
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');
+  clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),1800);}
+
+/* ---------- HAZIRLAYAN & CİHAZ ---------- */
+function detectDevice(){
+  const ua=navigator.userAgent;
+  let os="Bilinmeyen";
+  if(/Windows NT 10/.test(ua))os="Windows 10/11";
+  else if(/Windows/.test(ua))os="Windows";
+  else if(/iPhone|iPad|iPod/.test(ua))os="iOS (iPhone/iPad)";
+  else if(/Android/.test(ua)){const m=ua.match(/Android\s([\d.]+)/);os="Android"+(m?" "+m[1]:"");}
+  else if(/Mac OS X/.test(ua))os="macOS";
+  else if(/Linux/.test(ua))os="Linux";
+  let br="Tarayıcı";
+  if(/Edg\//.test(ua))br="Edge"; else if(/SamsungBrowser/.test(ua))br="Samsung Internet";
+  else if(/Chrome\//.test(ua))br="Chrome"; else if(/Firefox/.test(ua))br="Firefox";
+  else if(/Safari/.test(ua))br="Safari";
+  return {os, br, ua};
+}
+let HAZIRLAYAN = "";
+async function loadIdentity(){
+  try{ const r=await window.storage.get('ok_hazirlayan'); if(r&&r.value) HAZIRLAYAN=r.value; }catch(e){}
+}
+async function setIdentity(name){
+  HAZIRLAYAN=(name||'').trim();
+  try{ await window.storage.set('ok_hazirlayan', HAZIRLAYAN); }catch(e){}
+}
+function askIdentity(force){
+  if(HAZIRLAYAN && !force){ return; }
+  openSheet(`<h3>Hazırlayan</h3>
+    <div class="field"><label>Adınız Soyadınız</label>
+      <input id="hzn" placeholder="örn: İlker Dege" value="${esc(HAZIRLAYAN)}"></div>
+    <div class="muted-line" style="text-align:left;padding:0 0 6px">Bu isim raporlara otomatik yazılır. İstediğinde üstteki isme dokunup değiştirebilirsin.</div>
+    <div class="acts"><button class="btn gold" onclick="saveIdentity()">Kaydet</button></div>`);
+}
+async function saveIdentity(){
+  const v=($('#hzn')||{}).value||'';
+  if(!v.trim()){ toast("Lütfen adınızı girin"); return; }
+  await setIdentity(v); closeSheet(); render(); toast("Kaydedildi: "+HAZIRLAYAN);
+}
+
+/* ---------- INIT ---------- */
+(async()=>{ await loadIdentity(); await load(); render(); if(!HAZIRLAYAN) setTimeout(()=>askIdentity(false),400); })();
+</script>
+</body>
+</html>
