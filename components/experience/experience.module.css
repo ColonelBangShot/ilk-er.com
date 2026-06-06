@@ -151,3 +151,57 @@
   .statGrid, .cards { grid-template-columns: 1fr; }
   .block { padding: 0 24px; backdrop-filter: blur(1px); }
 }
+
+/* ── 3D floating chips (logo + name + status) ─────────── */
+.chip {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 7px 11px 7px 8px;
+  background: rgba(15, 14, 8, 0.82);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  backdrop-filter: blur(5px);
+  white-space: nowrap;
+  pointer-events: none;
+  animation: chipIn 0.6s var(--ease-out-expo) both;
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.4);
+}
+@keyframes chipIn {
+  from { opacity: 0; transform: translateY(8px) scale(0.96); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+.chipLogo {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-bright);
+  flex: none;
+}
+.chipLogo svg { width: 100%; height: 100%; display: block; }
+.chipMono {
+  width: 20px;
+  height: 20px;
+  flex: none;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--gold-dim);
+  color: var(--gold-bright);
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.chipText { display: flex; flex-direction: column; line-height: 1; }
+.chipName { font-family: var(--font-body); font-size: 12px; color: var(--text-bright); }
+.chipStatus {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--gold);
+  letter-spacing: 0.04em;
+  margin-top: 3px;
+}
