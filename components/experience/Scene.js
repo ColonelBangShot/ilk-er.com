@@ -1,15 +1,15 @@
 'use client';
-import { useRef, useMemo } from 'react';
+import { useRef, useMemo, useState, useEffect } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { Stars } from '@react-three/drei';
+import { Stars, Html } from '@react-three/drei';
 import * as THREE from 'three';
+import styles from './experience.module.css';
 
 const GOLD = '#c9a14a';
 const GOLD_BRIGHT = '#e0b86a';
 const FRONT = new THREE.Vector3(0, 0.12, 1).normalize();
 const R = 2;
 
-// lat/lng (degrees) -> unit direction on the sphere
 function latLngToVec(lat, lng) {
   const phi = (90 - lat) * (Math.PI / 180);
   const theta = (lng + 180) * (Math.PI / 180);
@@ -20,145 +20,174 @@ function latLngToVec(lat, lng) {
   ).normalize();
 }
 
-/* ── Wireframe globe + atmosphere, rotates to face the active focus ── */
-function Globe({ focus, markers }) {
-  const group = useRef();
-  const idleQ = useMemo(() => new THREE.Quaternion(), []);
+function monogram(name, mono) {
+  if (mono) return mono;
+  const parts = String(name).replace(/[^A-Za-zÀ-ÿ0-9 ]/g, '').trim().split(/\s+/);
+  return ((parts[0]?.[0] ?? '') + (parts[1]?.[0] ?? parts[0]?.[1] ?? '')).toUpperCase();
+}
+
+/* ── Floating logo/name/status chip anchored to a 3D point ── */
+function Chip({ item, position, occludeRef, index = 0 }) {
+  const icon = item.iconPath;
+  return (
+    <Html
+      position={position}
+      center
+      occlude={occludeRef ? [occludeRef] : undefined}
+      zIndexRange={[20, 0]}
+      pointerEvents="none"
+      style={{ pointerEvents: 'none' }}
+    >
+      <div className={styles.chip} style={{ animationDelay: `${index * 110}ms` }}>
+        {icon ? (
+          <span className={styles.chipLogo}>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d={icon} fill="currentColor" /></svg>
+          </span>
+        ) : (
+          <span className={styles.chipMono}>{monogram(item.name, item.mono)}</span>
+        )}
+        <span className={styles.chipText}>
+          <span className={styles.chipName}>{item.name}</span>
+          {item.status && <span className={styles.chipStatus}>{item.status}</span>}
+        </span>
+      </div>
+    </Html>
+  );
+}
+
+/* ── Globe: wireframe sphere that rotates to the active focus ── */
+function Globe({ focus, chips, halo, icons }) {
+  const world = useRef();
+  const core = useRef();
+  const haloGroup = useRef();
+  const haloScale = useRef(0.0001);
   const targetQ = useMemo(() => new THREE.Quaternion(), []);
   const spin = useMemo(
-    () => new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), 0.0016),
+    () => new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), 0.0018),
     []
   );
 
-  const markerDirs = useMemo(
-    () => (markers ?? []).map((m) => ({ ...m, dir: latLngToVec(m.lat, m.lng).multiplyScalar(R) })),
-    [markers]
+  // geo chips (hotels / languages / contact) sit on the rotating world group
+  const geoChips = useMemo(
+    () =>
+      (chips ?? [])
+        .filter((c) => c.lat !== undefined)
+        .map((c) => ({ ...c, pos: latLngToVec(c.lat, c.lng).multiplyScalar(R * 1.06), iconPath: c.logo ? icons[c.logo] : null })),
+    [chips, icons]
   );
 
-  useFrame((_, delta) => {
-    if (!group.current) return;
-    if (focus) {
-      const dir = latLngToVec(focus.lat, focus.lng);
-      targetQ.setFromUnitVectors(dir, FRONT);
-      group.current.quaternion.slerp(targetQ, Math.min(1, delta * 1.8));
-    } else {
-      group.current.quaternion.multiply(spin);
-    }
-  });
-
-  return (
-    <group ref={group}>
-      {/* solid core */}
-      <mesh>
-        <sphereGeometry args={[R * 0.985, 48, 48]} />
-        <meshStandardMaterial color="#15120b" roughness={1} metalness={0} />
-      </mesh>
-      {/* wireframe shell */}
-      <mesh>
-        <sphereGeometry args={[R, 36, 36]} />
-        <meshBasicMaterial color={GOLD} wireframe transparent opacity={0.22} />
-      </mesh>
-      {/* atmosphere rim */}
-      <mesh scale={1.14}>
-        <sphereGeometry args={[R, 48, 48]} />
-        <meshBasicMaterial color={GOLD} transparent opacity={0.05} side={THREE.BackSide} />
-      </mesh>
-      {/* location markers */}
-      {markerDirs.map((m, i) => (
-        <Marker key={i} pos={m.dir} primary={m.primary} />
-      ))}
-    </group>
-  );
-}
-
-function Marker({ pos, primary }) {
-  const ref = useRef();
-  const ring = useRef();
-  useFrame((state) => {
-    const t = state.clock.elapsedTime;
-    const s = 1 + Math.sin(t * 2.2) * 0.18;
-    if (ref.current) ref.current.scale.setScalar(s);
-    if (ring.current) {
-      const r = 1 + ((t * 0.6) % 1) * 2.2;
-      ring.current.scale.setScalar(r);
-      ring.current.material.opacity = 0.5 * (1 - ((t * 0.6) % 1));
-    }
-  });
-  const color = primary ? GOLD_BRIGHT : GOLD;
-  return (
-    <group position={pos.toArray()}>
-      <mesh ref={ref}>
-        <sphereGeometry args={[0.045, 16, 16]} />
-        <meshBasicMaterial color={color} />
-      </mesh>
-      <mesh ref={ring} rotation={[0, 0, 0]} onUpdate={(self) => self.lookAt(0, 0, 0)}>
-        <ringGeometry args={[0.05, 0.07, 24]} />
-        <meshBasicMaterial color={color} transparent opacity={0.4} side={THREE.DoubleSide} />
-      </mesh>
-    </group>
-  );
-}
-
-/* ── Orbiting tech halo for the PMS / AI sections ── */
-function TechHalo({ ring }) {
-  const group = useRef();
-  const scale = useRef(0.0001);
-  useFrame((_, delta) => {
-    if (!group.current) return;
-    const target = ring ? 1 : 0.0001;
-    scale.current = THREE.MathUtils.lerp(scale.current, target, Math.min(1, delta * 3));
-    group.current.scale.setScalar(scale.current);
-    group.current.rotation.z += delta * 0.25;
-    group.current.rotation.x = 0.5;
-  });
-
-  const nodes = useMemo(() => {
-    const count = ring?.count ?? 4;
-    const rad = R * 1.7;
-    return Array.from({ length: count }, (_, i) => {
-      const a = (i / count) * Math.PI * 2;
-      return [Math.cos(a) * rad, Math.sin(a) * rad, 0];
+  // halo chips (pms / ai) orbit on a ring around the globe
+  const haloChips = useMemo(() => {
+    if (!halo) return [];
+    const list = (chips ?? []).filter((c) => c.lat === undefined);
+    const rad = R * 1.55;
+    return list.map((c, i) => {
+      const a = (i / list.length) * Math.PI * 2;
+      return { ...c, pos: [Math.cos(a) * rad, Math.sin(a) * 0.35 * rad, Math.sin(a) * rad], iconPath: c.logo ? icons[c.logo] : null };
     });
-  }, [ring?.count]);
+  }, [chips, halo, icons]);
 
-  const hue = ring?.hue ?? GOLD;
+  useFrame((_, delta) => {
+    if (world.current) {
+      if (focus) {
+        targetQ.setFromUnitVectors(latLngToVec(focus.lat, focus.lng), FRONT);
+        world.current.quaternion.slerp(targetQ, Math.min(1, delta * 1.6));
+      } else {
+        world.current.quaternion.multiply(spin);
+      }
+    }
+    if (haloGroup.current) {
+      const target = halo ? 1 : 0.0001;
+      haloScale.current = THREE.MathUtils.lerp(haloScale.current, target, Math.min(1, delta * 3));
+      haloGroup.current.scale.setScalar(haloScale.current);
+      haloGroup.current.rotation.y += delta * 0.22;
+    }
+  });
+
+  const hue = halo?.hue ?? GOLD;
 
   return (
-    <group ref={group}>
-      <mesh rotation={[Math.PI / 2, 0, 0]}>
-        <torusGeometry args={[R * 1.7, 0.012, 12, 100]} />
-        <meshBasicMaterial color={hue} transparent opacity={0.5} />
-      </mesh>
-      {nodes.map((p, i) => (
-        <mesh key={i} position={p}>
-          <icosahedronGeometry args={[0.12, 0]} />
-          <meshBasicMaterial color={hue} wireframe />
+    <>
+      <group ref={world}>
+        <mesh ref={core}>
+          <sphereGeometry args={[R * 0.985, 48, 48]} />
+          <meshStandardMaterial color="#15120b" roughness={1} metalness={0} />
         </mesh>
-      ))}
-    </group>
+        <mesh>
+          <sphereGeometry args={[R, 36, 36]} />
+          <meshBasicMaterial color={GOLD} wireframe transparent opacity={0.2} />
+        </mesh>
+        <mesh scale={1.14}>
+          <sphereGeometry args={[R, 48, 48]} />
+          <meshBasicMaterial color={GOLD} transparent opacity={0.05} side={THREE.BackSide} />
+        </mesh>
+        {geoChips.map((c, i) => (
+          <group key={i} position={c.pos.toArray()}>
+            <mesh>
+              <sphereGeometry args={[0.04, 14, 14]} />
+              <meshBasicMaterial color={GOLD_BRIGHT} />
+            </mesh>
+            <Chip item={c} position={[0, 0, 0]} occludeRef={core} index={i} />
+          </group>
+        ))}
+      </group>
+
+      <group ref={haloGroup}>
+        <mesh rotation={[Math.PI / 2.6, 0, 0]}>
+          <torusGeometry args={[R * 1.55, 0.01, 12, 120]} />
+          <meshBasicMaterial color={hue} transparent opacity={0.45} />
+        </mesh>
+        {haloChips.map((c, i) => (
+          <group key={i} position={c.pos}>
+            <mesh>
+              <icosahedronGeometry args={[0.06, 0]} />
+              <meshBasicMaterial color={hue} wireframe />
+            </mesh>
+            <Chip item={c} position={[0, 0, 0]} occludeRef={core} index={i} />
+          </group>
+        ))}
+      </group>
+    </>
   );
 }
 
-function Rig({ section }) {
+function Rig({ section, icons }) {
   return (
     <>
       <ambientLight intensity={0.6} />
       <directionalLight position={[5, 3, 5]} intensity={1.1} color={GOLD_BRIGHT} />
-      <Stars radius={60} depth={40} count={1800} factor={3} saturation={0} fade speed={0.6} />
-      <Globe focus={section?.focus} markers={section?.markers} />
-      <TechHalo ring={section?.ring} />
+      <Stars radius={60} depth={40} count={1600} factor={3} saturation={0} fade speed={0.6} />
+      <Globe focus={section?.focus} chips={section?.chips} halo={section?.halo} icons={icons} />
     </>
   );
 }
 
 export default function Scene({ section }) {
+  const [icons, setIcons] = useState({});
+
+  // load simple-icons paths once (client only)
+  useEffect(() => {
+    let alive = true;
+    import('simple-icons')
+      .then((si) => {
+        const want = ['tui', 'radissonhotelgroup', 'ihg', 'oracle', 'anthropic', 'googlegemini', 'openai', 'x'];
+        const map = {};
+        for (const slug of want) {
+          const key = 'si' + slug.charAt(0).toUpperCase() + slug.slice(1);
+          const ic = si[key];
+          if (ic?.path) map[slug] = ic.path;
+        }
+        if (alive) setIcons(map);
+      })
+      .catch(() => {});
+    return () => {
+      alive = false;
+    };
+  }, []);
+
   return (
-    <Canvas
-      camera={{ position: [0, 0, 6], fov: 42 }}
-      dpr={[1, 2]}
-      gl={{ antialias: true, alpha: true }}
-    >
-      <Rig section={section} />
+    <Canvas camera={{ position: [0, 0, 6], fov: 42 }} dpr={[1, 2]} gl={{ antialias: true, alpha: true }}>
+      <Rig section={section} icons={icons} />
     </Canvas>
   );
 }
