@@ -1,4 +1,5 @@
 import { Fraunces, Manrope, JetBrains_Mono } from 'next/font/google';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import './globals.css';
 
 const fraunces = Fraunces({
@@ -40,7 +41,10 @@ export default function RootLayout({ children }) {
       lang="en"
       className={`${fraunces.variable} ${manrope.variable} ${jetbrainsMono.variable}`}
     >
-      <body>{children}</body>
+      <body>
+        {children}
+        <SpeedInsights />
+      </body>
     </html>
   );
 }
