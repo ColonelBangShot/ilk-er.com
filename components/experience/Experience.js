@@ -122,7 +122,7 @@ function Block({ section: s, activeNow }) {
               <div className={styles.card} key={sys.name}>
                 <div className={styles.cardName}>{sys.name}</div>
                 <div className={styles.cardSub}>{sys.vendor}</div>
-                <div className={styles.cardTag}>{sys.version} · {sys.years}</div>
+                <div className={styles.cardTag}>{sys.tag}</div>
               </div>
             ))}
           </div>
