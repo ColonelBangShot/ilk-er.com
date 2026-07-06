@@ -1,4 +1,4 @@
-··ğü—öş—şçşçş••••••••şüü···ü·ğş··şç—çİüüÖğşşğ···İ…ğğşöşöşşğşğ—üş📄×üüüüüğşş—öüşçüçŞşüşöüş—üçüö€₺üğüççğş—çğüüüşüöşöİş……şç—ş—üçüç✓——₺€₺—·üüüüğ→·→ÖÖüü−şÇş→·ğş✓·şşşşş·şİş✓İü·Ö·Ö<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
@@ -115,7 +115,7 @@
   <main>
     <div class="grid">
       <div>
-        <section><h2>Günlük Mizan <span class="tag">TRY</span></h2><table id="tblRevenue"></table><p class="small" id="kdvNote" style="margin-top:6px"></p></section>
+        <section><h2>Günlük Mizan <span class="tag" id="curTag">TRY</span></h2><table id="tblRevenue"></table><p class="small" id="kdvNote" style="margin-top:6px"></p></section>
         <section><h2>Tahsilat / Ödemeler</h2><table id="tblPayments"></table><p class="small" id="payNote" style="margin-top:6px"></p></section>
         <section><h2>Acenta Bazında Konaklama</h2><table id="tblAgencies"></table></section>
       </div>
@@ -196,8 +196,206 @@ function toB64(f){return new Promise((res,rej)=>{const r=new FileReader();r.onlo
 
 /* ---------- single API call (kendi proxy, max_tokens 4000) ---------- */
 const PROMPT = `Ekli otel night-audit PDF raporlarını incele (Günlük Mizan, Oda Tipi Müsaitlik, Günlük Oda Fiyat Detayı, Main Current, Oda Değişim, Folyo Transfer, Beklenen Gelişler — hangileri varsa). SADECE minified JSON döndür, başka hiçbir metin yazma. Sayıları düz sayı ver (binlik ayraç yok, ondalık nokta). Şema:
-{"date":"GG.AA.YYYY","occ":{"occupied":0,"empty":0,"tomorrowOccupied":0},"carry":{"yesterday":0,"tomorrow":0},"revenue":[{"n":"kalem","t":0,"net":0,"kdv":0}],"revTotal":{"t":0,"net":0,"kdv":0},"kdvSplit":{"p1":0,"p10":0},"payments":[{"n":"ad","a":0}],"payTotal":0,"balance":0,"agencies":[{"n":"acenta","r":0,"ad":0,"ch":0}],"changes":[{"f":"eski","to":"yeni","g":"misafir soyadı","ag":"acenta","typ":"K|R","note":"neden/not"}],"arrivals":[{"r":"oda","g":"misafir kısa","ag":"acenta","t":"saat","d":"ayrılış GG.AA","p":0}],"arrTotal":{"rooms":0,"pax":0},"folioTransfers":0,"departures":{"rooms":0,"cityLedger":0},"adjustments":["indirim/iade düzeltmeleri, oda no ile"],"alerts":["operasyonel dikkat noktaları: teknik arızalar, gece girişleri (21:00 sonrası/06:00 öncesi), kirli statüdeki geliş odaları — kısa Türkçe"]}
-Notlar: occ değerleri müsaitlik raporunun audit günü satırından (Dolu/Boş); tomorrowOccupied ertesi gün. agencies oda fiyat detayı Toplam satırlarından, odaya göre azalan. changes: Konaklayan=K, Rezervasyon=R. arrivals geliş saatine göre, max 15. İlgili rapor yoksa alanı boş dizi/0 bırak.`;
+{"date":"GG.AA.YYYY","currency":"TRY|EUR|USD","occ":{"occupied":0,"empty":0,"tomorrowOccupied":0},"carry":{"yesterday":0,"tomorrow":0},"revenue":[{"n":"kalem","t":0,"net":0,"kdv":0}],"revTotal":{"t":0,"net":0,"kdv":0},"kdvSplit":{"p1":0,"p10":0},"payments":[{"n":"ad","a":0}],"payTotal":0,"balance":0,"agencies":[{"n":"acenta","r":0,"ad":0,"ch":0}],"changes":[{"f":"eski","to":"yeni","g":"misafir soyadı","ag":"acenta","typ":"K|R","note":"neden/not"}],"arrivals":[{"r":"oda","g":"misafir kısa","ag":"acenta","t":"saat","d":"ayrılış GG.AA","p":0}],"arrTotal":{"rooms":0,"pax":0},"folioTransfers":0,"departures":{"rooms":0,"cityLedger":0},"adjustments":["indirim/iade düzeltmeleri, oda no ile"],"alerts":["operasyonel dikkat noktaları: teknik arızalar, gece girişleri (21:00 sonrası/06:00 öncesi)<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>TUI BLUE Maviss · Night Audit Analiz</title>
+<style>
+  :root{--navy:#092a5e;--navy-soft:#12407f;--sky:#eaf1fa;--line:#d8e1ee;--ink:#1c2430;--muted:#5b6b80;--pos:#0e7a4f;--neg:#b3261e}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"Segoe UI",system-ui,-apple-system,Arial,sans-serif;color:var(--ink);background:#f4f7fb;font-size:13px;line-height:1.45}
+  .page{max-width:1080px;margin:0 auto;background:#fff;min-height:100vh;box-shadow:0 0 30px rgba(9,42,94,.06)}
+  header{background:var(--navy);color:#fff;padding:22px 32px 18px;display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap}
+  .brand .hotel{font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:#9fb6da}
+  .brand h1{font-size:22px;font-weight:700}
+  .brand .sub{font-size:12px;color:#c7d5ea;margin-top:2px}
+  #hdrDate{text-align:right}
+  #hdrDate .d{font-size:26px;font-weight:700}
+  #hdrDate .l{font-size:11px;color:#9fb6da;text-transform:uppercase;letter-spacing:.18em}
+
+  /* auth gate */
+  #gate{padding:60px 32px;max-width:420px;margin:0 auto;text-align:center}
+  #gate h2{font-size:16px;color:var(--navy);margin-bottom:8px;border:none}
+  #gate p{color:var(--muted);margin-bottom:18px}
+  #gate input{width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:6px;font-size:15px;text-align:center;letter-spacing:.2em;margin-bottom:12px}
+  #gate input:focus{outline:none;border-color:var(--navy)}
+  #gateErr{color:var(--neg);font-size:12px;margin-top:8px;min-height:16px}
+
+  #uploader{padding:34px 32px;display:none}
+  #dropzone{border:2px dashed var(--navy-soft);border-radius:10px;background:var(--sky);padding:44px 24px;text-align:center;cursor:pointer;transition:.15s}
+  #dropzone.drag{background:#dcebff;border-color:var(--navy)}
+  #dropzone .big{font-size:17px;font-weight:600;color:var(--navy);margin-bottom:6px}
+  #dropzone .hint{color:var(--muted);font-size:12.5px}
+  #fileInput{display:none}
+  #fileList{margin-top:16px;display:flex;flex-wrap:wrap;gap:8px}
+  .chip{background:#fff;border:1px solid var(--line);border-radius:16px;padding:4px 12px;font-size:12px;display:flex;align-items:center;gap:8px}
+  .chip .sz{color:var(--muted);font-size:11px}
+  .chip button{border:none;background:none;color:var(--neg);cursor:pointer;font-size:13px;font-weight:700;padding:0}
+  #actions{margin-top:18px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .btn{background:var(--navy);color:#fff;border:none;border-radius:6px;padding:11px 26px;font-size:14px;font-weight:600;cursor:pointer}
+  .btn:disabled{background:#9fb0c8;cursor:not-allowed}
+  .btn.ghost{background:#fff;color:var(--navy);border:1.5px solid var(--navy)}
+  #status{font-size:12.5px;color:var(--muted)}
+  #status.err{color:var(--neg);font-weight:600}
+  .spinner{display:inline-block;width:14px;height:14px;border:2px solid var(--line);border-top-color:var(--navy);border-radius:50%;animation:spin .8s linear infinite;vertical-align:-2px;margin-right:6px}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  #dash{display:none}
+  .kpis{display:grid;grid-template-columns:repeat(5,1fr);border-top:2px solid var(--navy);border-bottom:2px solid var(--navy)}
+  .kpi{padding:14px 16px;border-right:1px solid var(--line)}
+  .kpi:last-child{border-right:none}
+  .kpi .label{font-size:10px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);margin-bottom:4px}
+  .kpi .value{font-size:19px;font-weight:700;color:var(--navy);white-space:nowrap}
+  .kpi .note{font-size:11px;color:var(--muted);margin-top:2px}
+  main{padding:20px 32px 28px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+  section{margin-bottom:22px}
+  h2{font-size:12px;text-transform:uppercase;letter-spacing:.16em;color:var(--navy);border-bottom:2px solid var(--navy);padding-bottom:5px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:baseline}
+  h2 .tag{font-size:10px;color:var(--muted);text-transform:none;font-weight:400;letter-spacing:.05em}
+  table{width:100%;border-collapse:collapse;font-size:12.5px}
+  th{text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);padding:4px 8px;border-bottom:1px solid var(--line);font-weight:600}
+  td{padding:5px 8px;border-bottom:1px solid #edf1f7;vertical-align:top}
+  tr:last-child td{border-bottom:none}
+  td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+  tr.total td{border-top:2px solid var(--navy);font-weight:700;color:var(--navy);background:var(--sky)}
+  .neg{color:var(--neg)} .small{font-size:11px;color:var(--muted)}
+  .badge{display:inline-block;font-size:10px;font-weight:600;padding:1px 7px;border-radius:9px;background:var(--sky);color:var(--navy);white-space:nowrap}
+  .badge.warn{background:#fbeeec;color:var(--neg)}
+  .callout{background:var(--sky);border-left:4px solid var(--navy);padding:10px 14px;font-size:12.5px;border-radius:0 4px 4px 0}
+  footer{padding:12px 32px;border-top:1px solid var(--line);display:flex;justify-content:space-between;color:var(--muted);font-size:11px;background:#fbfcfe;flex-wrap:wrap;gap:6px}
+  @media (max-width:760px){.kpis{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}header{flex-direction:column;align-items:flex-start}#hdrDate{text-align:left}}
+  @media print{#uploader,#actions,#gate{display:none!important}body{background:#fff}header{-webkit-print-color-adjust:exact;print-color-adjust:exact}section{break-inside:avoid}}
+</style>
+</head>
+<body>
+<div class="page">
+
+<header>
+  <div class="brand">
+    <span class="hotel">TUI BLUE Maviss · Boğazkent / Antalya</span>
+    <h1>Night Audit Analiz Aracı</h1>
+    <div class="sub">Gün sonu PDF raporlarını bırakın — konsolide özet otomatik oluşturulur</div>
+  </div>
+  <div id="hdrDate">
+    <div class="l">Audit Tarihi</div>
+    <div class="d" id="auditDate">—</div>
+  </div>
+</header>
+
+<div id="gate">
+  <h2>Erişim Kodu</h2>
+  <p>Bu araç kısıtlı erişimlidir. Devam etmek için erişim kodunu girin.</p>
+  <input type="password" id="pinInput" placeholder="••••••••" autocomplete="off">
+  <button class="btn" id="pinBtn" style="width:100%">Giriş</button>
+  <div id="gateErr"></div>
+</div>
+
+<div id="uploader">
+  <div id="dropzone">
+    <div class="big">Elektraweb PDF raporlarını buraya sürükleyin</div>
+    <div class="hint">Mizan · Main Current · Oda Fiyat Detayı · Müsaitlik · Oda Değişim · Folyo Transfer · Beklenen Gelişler<br>veya tıklayıp seçin — toplam boyut 3 MB'ı geçmemeli</div>
+  </div>
+  <input type="file" id="fileInput" accept="application/pdf" multiple>
+  <div id="fileList"></div>
+  <div id="actions">
+    <button class="btn" id="analyzeBtn" disabled>Analiz Et</button>
+    <button class="btn ghost" id="downloadBtn" style="display:none">Raporu İndir (HTML)</button>
+    <button class="btn ghost" id="resetBtn" style="display:none">Yeni Analiz</button>
+    <span id="status"></span>
+  </div>
+</div>
+
+<div id="dash">
+  <div class="kpis" id="kpiRow"></div>
+  <main>
+    <div class="grid">
+      <div>
+        <section><h2>Günlük Mizan <span class="tag" id="curTag">TRY</span></h2><table id="tblRevenue"></table><p class="small" id="kdvNote" style="margin-top:6px"></p></section>
+        <section><h2>Tahsilat / Ödemeler</h2><table id="tblPayments"></table><p class="small" id="payNote" style="margin-top:6px"></p></section>
+        <section><h2>Acenta Bazında Konaklama</h2><table id="tblAgencies"></table></section>
+      </div>
+      <div>
+        <section><h2>Oda Değişimleri <span class="tag" id="rcTag"></span></h2><table id="tblChanges"></table></section>
+        <section><h2>Beklenen Gelişler <span class="tag" id="arrTag"></span></h2><table id="tblArrivals"></table></section>
+        <section><h2>Diğer Hareketler</h2><table id="tblOther"></table></section>
+        <section><div class="callout" id="summaryBox"></div></section>
+      </div>
+    </div>
+  </main>
+</div>
+
+<footer>
+  <span>TUI BLUE Maviss · Night Audit Analiz Aracı · self-hosted @ ilk-er.com</span>
+  <span>Front Office · İlker Dege</span>
+</footer>
+
+</div>
+
+<script>
+const API_ENDPOINT = '/api/nightaudit';   // kendi Vercel route'unuz
+const state = { files: [], token: sessionStorage.getItem('auditToken') || '' };
+const $ = id => document.getElementById(id);
+const dz=$('dropzone'),fi=$('fileInput'),fl=$('fileList'),btn=$('analyzeBtn'),dl=$('downloadBtn'),rst=$('resetBtn'),st=$('status');
+
+/* ---------- gate ---------- */
+function unlock(){ $('gate').style.display='none'; $('uploader').style.display='block'; }
+if(state.token) unlock();
+$('pinBtn').onclick = tryPin;
+$('pinInput').addEventListener('keydown', e => { if(e.key==='Enter') tryPin(); });
+async function tryPin(){
+  const pin = $('pinInput').value.trim();
+  if(!pin) return;
+  $('gateErr').textContent = 'Kontrol ediliyor…';
+  // hafif bir doğrulama isteği: boş messages 400 döner ama token yanlışsa 401 döner
+  const r = await fetch(API_ENDPOINT, { method:'POST', headers:{'Content-Type':'application/json','X-Audit-Token':pin}, body:'{"messages":[]}' });
+  if(r.status === 401){ $('gateErr').textContent = 'Erişim kodu hatalı.'; return; }
+  if(r.status === 503){ const d = await r.json().catch(()=>({})); $('gateErr').textContent = (d.error&&d.error.message)||'Sunucu yapılandırılmamış (env değişkenleri eksik).'; return; }
+  state.token = pin;
+  sessionStorage.setItem('auditToken', pin);
+  $('gateErr').textContent = '';
+  unlock();
+}
+
+/* ---------- files ---------- */
+dz.onclick = () => fi.click();
+dz.ondragover = e => { e.preventDefault(); dz.classList.add('drag'); };
+dz.ondragleave = () => dz.classList.remove('drag');
+dz.ondrop = e => { e.preventDefault(); dz.classList.remove('drag'); addFiles(e.dataTransfer.files); };
+fi.onchange = () => { addFiles(fi.files); fi.value=''; };
+
+function addFiles(list){
+  for(const f of list){
+    if(f.type!=='application/pdf'){ setStatus(f.name+' PDF değil, atlandı.',true); continue; }
+    if(state.files.some(x=>x.name===f.name&&x.size===f.size)) continue;
+    state.files.push(f);
+  }
+  const tot = state.files.reduce((s,f)=>s+f.size,0);
+  if(tot > 3*1024*1024) setStatus('Uyarı: toplam '+(tot/1048576).toFixed(1)+' MB — 3 MB üzeri isteklerde sunucu limiti aşılabilir.', true);
+  renderChips();
+}
+function renderChips(){
+  fl.innerHTML='';
+  state.files.forEach((f,i)=>{
+    const c=document.createElement('div');c.className='chip';
+    c.innerHTML='<span>📄 '+esc(f.name)+'</span><span class="sz">'+(f.size/1024).toFixed(0)+' KB</span>';
+    const x=document.createElement('button');x.textContent='×';
+    x.onclick=e=>{e.stopPropagation();state.files.splice(i,1);renderChips();};
+    c.appendChild(x);fl.appendChild(c);
+  });
+  btn.disabled = state.files.length===0;
+}
+function esc(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
+function setStatus(m,e){st.textContent=m;st.className=e?'err':'';}
+function setBusy(m){st.innerHTML='<span class="spinner"></span>'+esc(m);st.className='';}
+function toB64(f){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result.split(',')[1]);r.onerror=()=>rej(new Error(f.name+' okunamadı'));r.readAsDataURL(f);});}
+
+/* ---------- single API call (kendi proxy, max_tokens 4000) ---------- */
+const PROMPT = `Ekli otel night-audit PDF raporlarını incele (Günlük Mizan, Oda Tipi Müsaitlik, Günlük Oda Fiyat Detayı, Main Current, Oda Değişim, Folyo Transfer, Beklenen Gelişler — hangileri varsa). SADECE minified JSON döndür, başka hiçbir metin yazma. Sayıları düz sayı ver (binlik ayraç yok, ondalık nokta). Şema:
+{"date":"GG.AA.YYYY","currency":"TRY|EUR|USD","occ":{"occupied":0,"empty":0,"tomorrowOccupied":0},"carry":{"yesterday":0,"tomorrow":0},"revenue":[{"n":"kalem","t":0,"net":0,"kdv":0}],"revTotal":{"t":0,"net":0,"kdv":0},"kdvSplit":{"p1":0,"p10":0},"payments":[{"n":"ad","a":0}],"payTotal":0,"balance":0,"agencies":[{"n":"acenta","r":0,"ad":0,"ch":0}],"changes":[{"f":"eski","to":"yeni","g":"misafir soyadı","ag":"acenta","typ":"K|R","note":"neden/not"}],"arrivals":[{"r":"oda","g":"misafir kısa","ag":"acenta","t":"saat","d":"ayrılış GG.AA","p":0}],"arrTotal":{"rooms":0,"pax":0},"folioTransfers":0,"departures":{"rooms":0,"cityLedger":0},"adjustments":["indirim/iade düzeltmeleri, oda no ile"],"alerts":["operasyonel dikkat noktaları: teknik arızalar, gece girişleri (21:00 sonrası/06:00 öncesi), kirli statüdeki geliş odaları — kısa Türkçe"]}
+Notlar: currency alanını raporların üst kısmındaki para birimi ibaresinden belirle (örn. \"- TRY\" veya \"- EUR\" ibaresi, ya da tutarların yanındaki € / ₺ / $ sembolü); emin değilsen TRY varsay. Tüm parasal alanları (revenue, payments, agencies hariç sayısal olanlar, carry, balance, arrTotal.pax hariç departures.cityLedger, adjustments) bu tespit ettiğin currency cinsinden ver, birimi karıştırma — rapordaki hangi para birimiyle yazılıysa onu aynen kullan, çevirme yapma. occ değerleri müsaitlik raporunun audit günü satırından (Dolu/Boş); tomorrowOccupied ertesi gün. agencies oda fiyat detayı Toplam satırlarından, odaya göre azalan. changes: Konaklayan=K, Rezervasyon=R. arrivals geliş saatine göre, max 15. İlgili rapor yoksa alanı boş dizi/0 bırak.`;
 
 btn.onclick = async () => {
   btn.disabled = true;
@@ -239,6 +437,8 @@ const fmt0=n=>(typeof n==='number'?n:parseFloat(n)||0).toLocaleString('tr-TR');
 
 function render(D){
   $('auditDate').textContent = D.date||'—';
+  const CUR = {TRY:'₺',EUR:'€',USD:'$'}[D.currency] || '₺';
+  const curEl=document.getElementById('curTag'); if(curEl) curEl.textContent = D.currency || 'TRY';
   const occT=(D.occ.occupied||0)+(D.occ.empty||0);
   const occP=occT?(100*D.occ.occupied/occT).toFixed(1):'—';
   const roomRev=(D.revenue.find(r=>/room$/i.test(r.n)||/^01/.test(r.n))||D.revenue[0]||{t:0}).t;
@@ -246,23 +446,23 @@ function render(D){
 
   $('kpiRow').innerHTML=[
     kpi('Doluluk',fmt0(D.occ.occupied)+' / '+fmt0(occT),'%'+occP+' · Yarın: '+fmt0(D.occ.tomorrowOccupied)+' oda'),
-    kpi('Günlük Toplam Gelir',fmt(D.revTotal.t)+' ₺','Net '+fmt(D.revTotal.net)+' + KDV '+fmt(D.revTotal.kdv)),
-    kpi('Oda Geliri',fmt(roomRev)+' ₺',D.revTotal.t?'Gelirin %'+(100*roomRev/D.revTotal.t).toFixed(1)+"'i":''),
-    kpi('ARR (Brüt)',fmt(arr)+' ₺','Oda geliri / dolu oda'),
-    kpi('Yarına Devir',fmt(D.carry.tomorrow)+' ₺','Dünden devir: '+fmt(D.carry.yesterday)+' ₺')
+    kpi('Günlük Toplam Gelir',fmt(D.revTotal.t)+' '+CUR,'Net '+fmt(D.revTotal.net)+' + KDV '+fmt(D.revTotal.kdv)),
+    kpi('Oda Geliri',fmt(roomRev)+' '+CUR,D.revTotal.t?'Gelirin %'+(100*roomRev/D.revTotal.t).toFixed(1)+"'i":''),
+    kpi('ARR (Brüt)',fmt(arr)+' '+CUR,'Oda geliri / dolu oda'),
+    kpi('Yarına Devir',fmt(D.carry.tomorrow)+' '+CUR,'Dünden devir: '+fmt(D.carry.yesterday)+' '+CUR)
   ].join('');
 
   let h='<tr><th>Gelir Kalemi</th><th class="num">Toplam</th><th class="num">Net</th><th class="num">KDV</th></tr>';
   D.revenue.forEach(r=>h+=`<tr><td>${esc(r.n)}</td><td class="num">${fmt(r.t)}</td><td class="num">${fmt(r.net)}</td><td class="num">${fmt(r.kdv)}</td></tr>`);
   h+=`<tr class="total"><td>Toplam Gelir</td><td class="num">${fmt(D.revTotal.t)}</td><td class="num">${fmt(D.revTotal.net)}</td><td class="num">${fmt(D.revTotal.kdv)}</td></tr>`;
   $('tblRevenue').innerHTML=h;
-  $('kdvNote').textContent=D.kdvSplit?`KDV dağılımı: %1 → ${fmt(D.kdvSplit.p1)} ₺ · %10 → ${fmt(D.kdvSplit.p10)} ₺`:'';
+  $('kdvNote').textContent=D.kdvSplit?`KDV dağılımı: %1 → ${fmt(D.kdvSplit.p1)} ${CUR} · %10 → ${fmt(D.kdvSplit.p10)} ${CUR}`:'';
 
   h='<tr><th>Ödeme Tipi</th><th class="num">Tutar</th></tr>';
   D.payments.forEach(p=>h+=`<tr><td>${esc(p.n)}</td><td class="num neg">${fmt(p.a)}</td></tr>`);
   h+=`<tr class="total"><td>Toplam Ödeme</td><td class="num">${fmt(D.payTotal)}</td></tr>`;
   $('tblPayments').innerHTML=h;
-  $('payNote').innerHTML=`Günlük bakiye: <strong class="neg">${fmt(D.balance)} ₺</strong> (gelir − tahsilat)`;
+  $('payNote').innerHTML=`Günlük bakiye: <strong class="neg">${fmt(D.balance)} ${CUR}</strong> (gelir − tahsilat)`;
 
   const totR=D.agencies.reduce((s,a)=>s+(a.r||0),0);
   h='<tr><th>Acenta</th><th class="num">Oda</th><th class="num">Ytş</th><th class="num">Çck</th><th>Pay</th></tr>';
@@ -284,7 +484,7 @@ function render(D){
   if(!(D.arrivals||[]).length)h+='<tr><td colspan="5" class="small">Beklenen geliş yok</td></tr>';
   $('tblArrivals').innerHTML=h;
 
-  h=`<tr><td>Ayrılışlar</td><td class="num"><strong>${fmt0(D.departures?.rooms||0)} oda</strong>${D.departures?.cityLedger?' · city ledger devri '+fmt(D.departures.cityLedger)+' ₺':''}</td></tr>`;
+  h=`<tr><td>Ayrılışlar</td><td class="num"><strong>${fmt0(D.departures?.rooms||0)} oda</strong>${D.departures?.cityLedger?' · city ledger devri '+fmt(D.departures.cityLedger)+' '+CUR:''}</td></tr>`;
   h+=`<tr><td>Folyo Transferleri</td><td class="num">${D.folioTransfers?fmt0(D.folioTransfers)+' işlem':'İşlem yok ✓'}</td></tr>`;
   (D.adjustments||[]).forEach(a=>h+=`<tr><td>İndirim / Düzeltme</td><td class="num">${esc(a)}</td></tr>`);
   $('tblOther').innerHTML=h;
