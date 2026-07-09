@@ -196,7 +196,7 @@ function toB64(f){return new Promise((res,rej)=>{const r=new FileReader();r.onlo
 
 /* ---------- single API call (kendi proxy, max_tokens 4000) ---------- */
 const PROMPT = `Ekli otel night-audit PDF raporlarını incele (Günlük Mizan, Oda Tipi Müsaitlik, Günlük Oda Fiyat Detayı, Main Current, Oda Değişim, Folyo Transfer, Beklenen Gelişler — hangileri varsa; Main Current yüklenmemiş olabilir, bu normaldir, diğer raporlarla devam et). SADECE minified JSON döndür, başka hiçbir metin yazma. Sayıları düz sayı ver (binlik ayraç yok, ondalık nokta). Şema:
-{"date":"GG.AA.YYYY","currency":"TRY|EUR|USD","currencyEvidence":"Mizan başlığından birebir alıntı, örn. 02.07.2026 - TRY","occ":{"occupied":0,"empty":0,"tomorrowOccupied":0},"carry":{"yesterday":0,"tomorrow":0},"revenue":[{"n":"kalem adı (rapordaki isimle birebir)","t":0,"net":0,"kdv":0}],"roomRevenue":0,"revTotal":{"t":0,"net":0,"kdv":0},"kdvSplit":[{"label":"KDV %10 veya Konaklama Vergisi %1","amount":0}],"payments":[{"n":"ad","a":0}],"payTotal":0,"balance":0,"agencies":[{"n":"acenta","r":0,"ad":0,"ch":0}],"changes":[{"f":"eski","to":"yeni","g":"misafir soyadı","ag":"acenta","typ":"K|R","note":"neden/not"}],"arrivals":[{"r":"oda","g":"misafir kısa","ag":"acenta","t":"saat","d":"ayrılış GG.AA","p":0}],"arrTotal":{"rooms":0,"pax":0},"folioTransfers":0,"departures":{"rooms":0,"cityLedger":0},"adjustments":["indirim/iade düzeltmeleri, oda no + misafir + tutar VE KENDİ para birimiyle, örn. '1114 Batmanbozkurt - K.Kart indirim: -803.23 TRY'"],"alerts":["operasyonel dikkat noktaları: teknik arızalar, gece girişleri (21:00 sonrası/06:00 öncesi), kirli statüdeki geliş odaları, tutarsız görünen rakamlar — kısa Türkçe"]}
+{"date":"GG.AA.YYYY","currency":"TRY|EUR|USD","currencyEvidence":"Mizan başlığından birebir alıntı, örn. 02.07.2026 - TRY","exchangeRate":{"used":false,"date":"GG.AA.YYYY","rate":0,"source":"TCMB döviz satış kuru"},"occ":{"occupied":0,"empty":0,"tomorrowOccupied":0},"carry":{"yesterday":0,"tomorrow":0},"revenue":[{"n":"kalem adı (rapordaki isimle birebir)","t":0,"net":0,"kdv":0}],"roomRevenue":0,"revTotal":{"t":0,"net":0,"kdv":0},"kdvSplit":[{"label":"KDV %10 veya Konaklama Vergisi %1","amount":0}],"payments":[{"n":"ad","a":0}],"payTotal":0,"balance":0,"agencies":[{"n":"acenta","r":0,"ad":0,"ch":0}],"changes":[{"f":"eski","to":"yeni","g":"misafir soyadı","ag":"acenta","typ":"K|R","note":"neden/not"}],"arrivals":[{"r":"oda","g":"misafir kısa","ag":"acenta","t":"saat","d":"ayrılış GG.AA","p":0}],"arrTotal":{"rooms":0,"pax":0},"folioTransfers":0,"departures":{"rooms":0,"cityLedger":0},"adjustments":["indirim/iade düzeltmeleri, oda no + misafir + tutar VE KENDİ para birimiyle, örn. '1114 Batmanbozkurt - K.Kart indirim: -803.23 TRY'"],"alerts":["operasyonel dikkat noktaları: teknik arızalar, gece girişleri (21:00 sonrası/06:00 öncesi), kirli statüdeki geliş odaları, tutarsız görünen rakamlar — kısa Türkçe"]}
 
 KRİTİK — PARA BİRİMİ (currency), Main Current'ın yüklenip yüklenmediğinden BAĞIMSIZ olarak SADECE şu şekilde belirlenir:
 1) "Günlük Mizan (Trial Balans)" raporunun başlığında mutlaka "GG.AA.YYYY - XXX" formatında bir para birimi kodu vardır (örn. "02.07.2026 - TRY" veya "07.07.2026 - EUR"). Bu satırı bul ve currencyEvidence alanına BİREBİR kopyala. currency alanı SADECE bu koda göre belirlenir.
@@ -212,7 +212,11 @@ KRİTİK — KDV DAĞILIMI (kdvSplit) ve KONAKLAMA VERGİSİ: Türkiye'de gecele
 
 KRİTİK — ACENTA TABLOSU (agencies): r=oda sayısı (tam sayı), ad=yetişkin KİŞİ SAYISI (tam sayı, genellikle oda başına 1-4), ch=çocuk KİŞİ SAYISI (tam sayı). Bu değerler Oda Fiyat Detayı raporundaki "Ytş" ve "Çck" sütunlarından gelir — bunlar KİŞİ SAYISIdır, asla parasal tutar (Oda F., Kont. F., Folio Gelir gibi ondalıklı tutarlar) DEĞİLDİR. ad/ch değerleri her zaman tam sayı olmalı; ondalıklı çıkıyorsa yanlış sütunu okumuşsundur.
 
-TUTARLILIK KONTROLÜ: carry.yesterday + balance ≈ carry.tomorrow denklemini kontrol et (Mizan'daki "Yarına Devreden Bakiye" ile karşılaştır). Büyük bir sapma varsa alerts dizisine kısa bir Türkçe uyarı ekle, rakamı olduğu gibi bırak (uydurma/yuvarlama yapma).
+KRİTİK — DEVİR BAKİYESİ (carry): carry.yesterday ve carry.tomorrow DEĞERLERİNİ SADECE Mizan raporunda birebir "Dünden Devreden Bakiye" ve "Yarına Devreden Bakiye" (veya bire bir eş anlamlı) etiketiyle yazılı satırlardan al. Bu iki etiketli satırı Mizan'da bulamıyorsan (rapor eksikse, format farklıysa, ya da emin değilsen) KESİNLİKLE rakam uydurma — carry.yesterday ve/veya carry.tomorrow alanını null bırak ve alerts dizisine "Mizan'da devir bakiyesi satırı bulunamadı, carry alanı boş bırakıldı" ekle. Yanlış/tahmini bir devir rakamı, boş bırakılmış bir rakamdan çok daha zararlıdır — küçük bir otel birkaç milyon EUR/TRY devir taşıyamaz, böyle bir rakam çıkarsan bu kesin bir hatadır, null'a çevir.
+
+TUTARLILIK KONTROLÜ: carry değerleri doluysa, carry.yesterday + balance ≈ carry.tomorrow denklemini kontrol et. Büyük bir sapma varsa alerts dizisine kısa bir Türkçe uyarı ekle, rakamı olduğu gibi bırak (uydurma/yuvarlama yapma).
+
+KRİTİK — TCMB KURU İLE PARA BİRİMİ UZLAŞTIRMA (exchangeRate): Otel, gece denetimi sonrası TCMB'nin o günkü döviz kurunu Elektraweb'e otomatik çekmektedir. Eğer yüklenen raporlar GERÇEKTEN birden fazla para birimi içeriyorsa VE bunları tek bir para biriminde göstermen gerekiyorsa (örn. Mizan TRY ama sen kullanıcının istediği EUR bazlı bir özet üretmen gerekiyorsa), web_search aracıyla şu formatta ara: "TCMB [GG.AA.YYYY tarihi] döviz satış kuru EUR" (tarihi raporun date alanındaki gün olarak kullan). Arama sonucunda bulduğun GERÇEK TCMB satış kurunu kullanarak çevrimi yap ve exchangeRate alanını {"used":true,"date":"GG.AA.YYYY","rate":bulduğun_kur,"source":"TCMB"} olarak doldur. ASLA kur tahmin etme veya ezberden yazma — sadece arama sonucunda gördüğün gerçek rakamı kullan; arama başarısız olursa veya güvenilir bir TCMB rakamı bulamazsan çevirme yapma, exchangeRate.used=false bırak ve orijinal para biriminde devam et, alerts'e kısaca sebebini yaz. Normal durumda (raporların tümü zaten aynı para biriminde ise) bu adıma hiç gerek yoktur, exchangeRate.used=false bırak.
 
 Diğer notlar: occ değerleri müsaitlik raporunun audit günü satırından (Dolu/Boş); tomorrowOccupied ertesi gün. changes: Konaklayan=K, Rezervasyon=R. arrivals geliş saatine göre, max 15. İlgili rapor yoksa alanı boş dizi/0 bırak.`;
 
@@ -253,6 +257,7 @@ rst.onclick = () => {
 /* ---------- rendering ---------- */
 const fmt=n=>(typeof n==='number'?n:parseFloat(n)||0).toLocaleString('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2});
 const fmt0=n=>(typeof n==='number'?n:parseFloat(n)||0).toLocaleString('tr-TR');
+const fmtOrDash=n=>(typeof n==='number')?fmt(n):'—';
 
 function render(D){
   $('auditDate').textContent = D.date||'—';
@@ -262,16 +267,18 @@ function render(D){
   const occP=occT?(100*D.occ.occupied/occT).toFixed(1):'—';
   const roomRev=(typeof D.roomRevenue==='number'?D.roomRevenue:(D.revenue.find(r=>/room$/i.test(r.n)||/^01/.test(r.n))||D.revenue[0]||{t:0}).t);
   const arr=D.occ.occupied?roomRev/D.occ.occupied:0;
+  const fxNote=(D.exchangeRate&&D.exchangeRate.used)?(' · TCMB kur '+D.exchangeRate.rate+' ('+D.exchangeRate.date+')'):'';
 
   $('kpiRow').innerHTML=[
     kpi('Doluluk',fmt0(D.occ.occupied)+' / '+fmt0(occT),'%'+occP+' · Yarın: '+fmt0(D.occ.tomorrowOccupied)+' oda'),
     kpi('Günlük Toplam Gelir',fmt(D.revTotal.t)+' '+CUR,'Net '+fmt(D.revTotal.net)+' + KDV '+fmt(D.revTotal.kdv)),
     kpi('Oda Geliri',fmt(roomRev)+' '+CUR,D.revTotal.t?'Gelirin %'+(100*roomRev/D.revTotal.t).toFixed(1)+"'i":''),
     kpi('ARR (Brüt)',fmt(arr)+' '+CUR,'Oda geliri / dolu oda'),
-    kpi('Yarına Devir',fmt(D.carry.tomorrow)+' '+CUR,'Dünden devir: '+fmt(D.carry.yesterday)+' '+CUR)
+    kpi('Yarına Devir',fmtOrDash(D.carry.tomorrow)+' '+CUR,'Dünden devir: '+fmtOrDash(D.carry.yesterday)+' '+CUR+fxNote)
   ].join('');
 
   let h='<tr><th>Gelir Kalemi</th><th class="num">Toplam</th><th class="num">Net</th><th class="num">KDV</th></tr>';
+
   D.revenue.forEach(r=>h+=`<tr><td>${esc(r.n)}</td><td class="num">${fmt(r.t)}</td><td class="num">${fmt(r.net)}</td><td class="num">${fmt(r.kdv)}</td></tr>`);
   h+=`<tr class="total"><td>Toplam Gelir</td><td class="num">${fmt(D.revTotal.t)}</td><td class="num">${fmt(D.revTotal.net)}</td><td class="num">${fmt(D.revTotal.kdv)}</td></tr>`;
   $('tblRevenue').innerHTML=h;
