@@ -195,9 +195,26 @@ function setBusy(m){st.innerHTML='<span class="spinner"></span>'+esc(m);st.class
 function toB64(f){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result.split(',')[1]);r.onerror=()=>rej(new Error(f.name+' okunamadı'));r.readAsDataURL(f);});}
 
 /* ---------- single API call (kendi proxy, max_tokens 4000) ---------- */
-const PROMPT = `Ekli otel night-audit PDF raporlarını incele (Günlük Mizan, Oda Tipi Müsaitlik, Günlük Oda Fiyat Detayı, Main Current, Oda Değişim, Folyo Transfer, Beklenen Gelişler — hangileri varsa). SADECE minified JSON döndür, başka hiçbir metin yazma. Sayıları düz sayı ver (binlik ayraç yok, ondalık nokta). Şema:
-{"date":"GG.AA.YYYY","currency":"TRY|EUR|USD","occ":{"occupied":0,"empty":0,"tomorrowOccupied":0},"carry":{"yesterday":0,"tomorrow":0},"revenue":[{"n":"kalem","t":0,"net":0,"kdv":0}],"revTotal":{"t":0,"net":0,"kdv":0},"kdvSplit":{"p1":0,"p10":0},"payments":[{"n":"ad","a":0}],"payTotal":0,"balance":0,"agencies":[{"n":"acenta","r":0,"ad":0,"ch":0}],"changes":[{"f":"eski","to":"yeni","g":"misafir soyadı","ag":"acenta","typ":"K|R","note":"neden/not"}],"arrivals":[{"r":"oda","g":"misafir kısa","ag":"acenta","t":"saat","d":"ayrılış GG.AA","p":0}],"arrTotal":{"rooms":0,"pax":0},"folioTransfers":0,"departures":{"rooms":0,"cityLedger":0},"adjustments":["indirim/iade düzeltmeleri, oda no ile"],"alerts":["operasyonel dikkat noktaları: teknik arızalar, gece girişleri (21:00 sonrası/06:00 öncesi), kirli statüdeki geliş odaları — kısa Türkçe"]}
-Notlar: currency alanını raporların üst kısmındaki para birimi ibaresinden belirle (örn. \"- TRY\" veya \"- EUR\" ibaresi, ya da tutarların yanındaki € / ₺ / $ sembolü); emin değilsen TRY varsay. Tüm parasal alanları (revenue, payments, agencies hariç sayısal olanlar, carry, balance, arrTotal.pax hariç departures.cityLedger, adjustments) bu tespit ettiğin currency cinsinden ver, birimi karıştırma — rapordaki hangi para birimiyle yazılıysa onu aynen kullan, çevirme yapma. occ değerleri müsaitlik raporunun audit günü satırından (Dolu/Boş); tomorrowOccupied ertesi gün. agencies oda fiyat detayı Toplam satırlarından, odaya göre azalan. changes: Konaklayan=K, Rezervasyon=R. arrivals geliş saatine göre, max 15. İlgili rapor yoksa alanı boş dizi/0 bırak.`;
+const PROMPT = `Ekli otel night-audit PDF raporlarını incele (Günlük Mizan, Oda Tipi Müsaitlik, Günlük Oda Fiyat Detayı, Main Current, Oda Değişim, Folyo Transfer, Beklenen Gelişler — hangileri varsa; Main Current yüklenmemiş olabilir, bu normaldir, diğer raporlarla devam et). SADECE minified JSON döndür, başka hiçbir metin yazma. Sayıları düz sayı ver (binlik ayraç yok, ondalık nokta). Şema:
+{"date":"GG.AA.YYYY","currency":"TRY|EUR|USD","currencyEvidence":"Mizan başlığından birebir alıntı, örn. 02.07.2026 - TRY","occ":{"occupied":0,"empty":0,"tomorrowOccupied":0},"carry":{"yesterday":0,"tomorrow":0},"revenue":[{"n":"kalem adı (rapordaki isimle birebir)","t":0,"net":0,"kdv":0}],"roomRevenue":0,"revTotal":{"t":0,"net":0,"kdv":0},"kdvSplit":[{"label":"KDV %10 veya Konaklama Vergisi %1","amount":0}],"payments":[{"n":"ad","a":0}],"payTotal":0,"balance":0,"agencies":[{"n":"acenta","r":0,"ad":0,"ch":0}],"changes":[{"f":"eski","to":"yeni","g":"misafir soyadı","ag":"acenta","typ":"K|R","note":"neden/not"}],"arrivals":[{"r":"oda","g":"misafir kısa","ag":"acenta","t":"saat","d":"ayrılış GG.AA","p":0}],"arrTotal":{"rooms":0,"pax":0},"folioTransfers":0,"departures":{"rooms":0,"cityLedger":0},"adjustments":["indirim/iade düzeltmeleri, oda no + misafir + tutar VE KENDİ para birimiyle, örn. '1114 Batmanbozkurt - K.Kart indirim: -803.23 TRY'"],"alerts":["operasyonel dikkat noktaları: teknik arızalar, gece girişleri (21:00 sonrası/06:00 öncesi), kirli statüdeki geliş odaları, tutarsız görünen rakamlar — kısa Türkçe"]}
+
+KRİTİK — PARA BİRİMİ (currency), Main Current'ın yüklenip yüklenmediğinden BAĞIMSIZ olarak SADECE şu şekilde belirlenir:
+1) "Günlük Mizan (Trial Balans)" raporunun başlığında mutlaka "GG.AA.YYYY - XXX" formatında bir para birimi kodu vardır (örn. "02.07.2026 - TRY" veya "07.07.2026 - EUR"). Bu satırı bul ve currencyEvidence alanına BİREBİR kopyala. currency alanı SADECE bu koda göre belirlenir.
+2) Mizan raporu hiç yoksa (yüklenmemişse), ikinci öncelik Main Current başlığındaki aynı formattaki para birimi kodudur.
+3) Hiçbiri yoksa, en büyük tutarlı rapor hangi sembolle yazılmışsa onu kullan ve currencyEvidence'a "tahmin: [sebep]" yaz.
+4) Oda Fiyat Detayı / Main Current içindeki BİREYSEL rezervasyon satırlarında görünen EUR/USD tutarları (örn. "231,19 EUR") SADECE o rezervasyonun tur operatörü KONTRAT para birimidir — otelin muhasebe defteri para birimini GÖSTERMEZ ve currency belirlerken ASLA kullanılmaz, Main Current yoksa bile bu satırlara bakıp EUR/USD sonucuna varma.
+5) Yarına/Dünden Devreden Bakiye gibi yüz binler-milyonlar mertebesindeki rakamlar neredeyse hep TRY'dir (bir otel defteri milyonlarca EUR taşımaz) — büyük bir rakamı EUR/USD etiketlemeden önce mutlaka currencyEvidence'daki alıntıyla çapraz kontrol et.
+6) revenue, roomRevenue, revTotal, kdvSplit, payments, payTotal, balance, carry, departures.cityLedger alanlarının TÜMÜ currency'de belirlenen tek para birimindedir, ASLA çevirme. Bunun İSTİSNASI: adjustments listesindeki her satır kendi GERÇEK işlem para birimini taşıyabilir (örn. bir K.Kart tahsilatı yerel bankada her zaman TRY işler, oda kontratı EUR olsa bile) — bu yüzden adjustments'ta tutarın yanına HER ZAMAN o satırın kendi para birimini yaz, currency alanına zorlama.
+
+KRİTİK — ODA GELİRİ (roomRevenue): Mizan'ın "Gelir" tablosunda saf oda/konaklama gelirini temsil eden TEK satırı bul (genelde "01 - ROOM", "ROOM" veya buna en yakın isim; "ROOM EXTRA", "EXTRA", "GREEN & GRILL", "LOBBY BAR", "OTHER", "KUR FARKI" gibi satırlar EXTRA/yan gelirdir, ROOM DEĞİLDİR, roomRevenue'ya karıştırma). O satırın "t" (toplam) değerini roomRevenue alanına yaz. revenue dizisindeki HER satırı da rapordaki isimle birebir, olduğu gibi listele (birleştirme, yeniden adlandırma, atlama yapma).
+
+KRİTİK — KDV DAĞILIMI (kdvSplit) ve KONAKLAMA VERGİSİ: Türkiye'de geceleme hizmetinde KDV oranı %10'dur (2023'ten beri); ayrıca buna ek, KDV matrahına dahil olmayan, KDV'den TAMAMEN AYRI bir "Konaklama Vergisi" vardır (bu ikisi toplanıp tek bir "%10 KDV" değildir). Konaklama Vergisi oranı normalde %2'dir, ancak 01.05.2026-31.12.2026 arası geçici olarak %1'e düşürülmüştür. Elektraweb gibi PMS'lerin Mizan raporu bu Konaklama Vergisini çoğu zaman "KDV" başlığı altına, düşük bir yüzde (%1 veya %2) satırı olarak YANLIŞLIKLA gruplar — bu bir yazılım/rapor kusurudur, gerçek bir KDV oranı DEĞİLDİR. Bu yüzden: Mizan'ın KDV bölümündeki en düşük yüzdeli satır (%1 veya %2) muhtemelen Konaklama Vergisidir — bunu kdvSplit içinde "Konaklama Vergisi %1" (veya %2) olarak etiketle, "KDV %1" DEĞİL. %8/%10/%18/%20 gibi diğer satırları gerçek "KDV %X" olarak etiketle. Emin olmak için: bu düşük yüzdeli tutar, roomRevenue'nun yaklaşık %1'i (veya %2'si) kadarsa bu doğrulamayı destekler. kdvSplit içindeki TÜM amount değerlerinin toplamı revTotal.kdv'ye eşit olmalı (Mizan'ın kendi "Toplam KDV" satırı, konaklama vergisini de içerecek şekilde raporluyorsa bu tutarlıdır — sadece etiketlemeyi düzelt, revTotal.kdv rakamını değiştirme).
+
+KRİTİK — ACENTA TABLOSU (agencies): r=oda sayısı (tam sayı), ad=yetişkin KİŞİ SAYISI (tam sayı, genellikle oda başına 1-4), ch=çocuk KİŞİ SAYISI (tam sayı). Bu değerler Oda Fiyat Detayı raporundaki "Ytş" ve "Çck" sütunlarından gelir — bunlar KİŞİ SAYISIdır, asla parasal tutar (Oda F., Kont. F., Folio Gelir gibi ondalıklı tutarlar) DEĞİLDİR. ad/ch değerleri her zaman tam sayı olmalı; ondalıklı çıkıyorsa yanlış sütunu okumuşsundur.
+
+TUTARLILIK KONTROLÜ: carry.yesterday + balance ≈ carry.tomorrow denklemini kontrol et (Mizan'daki "Yarına Devreden Bakiye" ile karşılaştır). Büyük bir sapma varsa alerts dizisine kısa bir Türkçe uyarı ekle, rakamı olduğu gibi bırak (uydurma/yuvarlama yapma).
+
+Diğer notlar: occ değerleri müsaitlik raporunun audit günü satırından (Dolu/Boş); tomorrowOccupied ertesi gün. changes: Konaklayan=K, Rezervasyon=R. arrivals geliş saatine göre, max 15. İlgili rapor yoksa alanı boş dizi/0 bırak.`;
 
 btn.onclick = async () => {
   btn.disabled = true;
@@ -240,10 +257,10 @@ const fmt0=n=>(typeof n==='number'?n:parseFloat(n)||0).toLocaleString('tr-TR');
 function render(D){
   $('auditDate').textContent = D.date||'—';
   const CUR = {TRY:'₺',EUR:'€',USD:'$'}[D.currency] || '₺';
-  const curEl=document.getElementById('curTag'); if(curEl) curEl.textContent = D.currency || 'TRY';
+  const curEl=document.getElementById('curTag'); if(curEl){ curEl.textContent = D.currency || 'TRY'; if(D.currencyEvidence) curEl.title = 'Kaynak: ' + D.currencyEvidence; }
   const occT=(D.occ.occupied||0)+(D.occ.empty||0);
   const occP=occT?(100*D.occ.occupied/occT).toFixed(1):'—';
-  const roomRev=(D.revenue.find(r=>/room$/i.test(r.n)||/^01/.test(r.n))||D.revenue[0]||{t:0}).t;
+  const roomRev=(typeof D.roomRevenue==='number'?D.roomRevenue:(D.revenue.find(r=>/room$/i.test(r.n)||/^01/.test(r.n))||D.revenue[0]||{t:0}).t);
   const arr=D.occ.occupied?roomRev/D.occ.occupied:0;
 
   $('kpiRow').innerHTML=[
@@ -258,7 +275,7 @@ function render(D){
   D.revenue.forEach(r=>h+=`<tr><td>${esc(r.n)}</td><td class="num">${fmt(r.t)}</td><td class="num">${fmt(r.net)}</td><td class="num">${fmt(r.kdv)}</td></tr>`);
   h+=`<tr class="total"><td>Toplam Gelir</td><td class="num">${fmt(D.revTotal.t)}</td><td class="num">${fmt(D.revTotal.net)}</td><td class="num">${fmt(D.revTotal.kdv)}</td></tr>`;
   $('tblRevenue').innerHTML=h;
-  $('kdvNote').textContent=D.kdvSplit?`KDV dağılımı: %1 → ${fmt(D.kdvSplit.p1)} ${CUR} · %10 → ${fmt(D.kdvSplit.p10)} ${CUR}`:'';
+  $('kdvNote').textContent=(D.kdvSplit&&D.kdvSplit.length)?('Vergi dağılımı: '+D.kdvSplit.map(k=>(k.label||k.rate||'')+' → '+fmt(k.amount)+' '+CUR).join(' · ')):'';
 
   h='<tr><th>Ödeme Tipi</th><th class="num">Tutar</th></tr>';
   D.payments.forEach(p=>h+=`<tr><td>${esc(p.n)}</td><td class="num neg">${fmt(p.a)}</td></tr>`);
