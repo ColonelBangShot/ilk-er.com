@@ -242,6 +242,12 @@ btn.onclick = async () => {
     });
     if(r.status===401){ sessionStorage.removeItem('auditToken'); throw new Error('Erişim kodu geçersiz — sayfayı yenileyin'); }
     if(r.status===413) throw new Error('PDF toplamı sunucu limitini aştı — daha az/daha küçük dosya deneyin');
+    if(r.status===504) throw new Error('Analiz süresi doldu (sunucu zaman aşımı) — dosya sayısını azaltıp tekrar deneyin');
+    const ct = r.headers.get('content-type')||'';
+    if(!ct.includes('application/json')){
+      const raw = await r.text();
+      throw new Error('Sunucu beklenmedik bir yanıt döndürdü (HTTP '+r.status+'): '+raw.slice(0,120));
+    }
     const data = await r.json();
     if(data.error) throw new Error(data.error.message||'API hatası ('+r.status+')');
     const text = (data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('\n');
@@ -261,7 +267,7 @@ rst.onclick = () => {
   $('auditDate').textContent='—'; setStatus('');
 };
 
-/* ---------- rendering ---------- */
+/* ---------- rendering ---------- *//
 const fmt=n=>(typeof n==='number'?n:parseFloat(n)||0).toLocaleString('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2});
 const fmt0=n=>(typeof n==='number'?n:parseFloat(n)||0).toLocaleString('tr-TR');
 const fmtOrDash=n=>(typeof n==='number')?fmt(n):'—';
