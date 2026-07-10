@@ -267,7 +267,7 @@ rst.onclick = () => {
   $('auditDate').textContent='—'; setStatus('');
 };
 
-/* ---------- rendering ---------- *//
+/* ---------- rendering ---------- */
 const fmt=n=>(typeof n==='number'?n:parseFloat(n)||0).toLocaleString('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2});
 const fmt0=n=>(typeof n==='number'?n:parseFloat(n)||0).toLocaleString('tr-TR');
 const fmtOrDash=n=>(typeof n==='number')?fmt(n):'—';
