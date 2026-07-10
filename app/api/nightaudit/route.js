@@ -9,7 +9,7 @@
 // alttaki App Router export'u yerine "export default async function handler(req,res)"
 // kalıbına çevirin — mantık aynı.
 
-export const maxDuration = 60; // Vercel: uzun PDF analizleri için süre limiti (Pro planda 60 sn)
+export const maxDuration = 180; // Vercel Hobby + Fluid Compute: 300 sn tavan var, web_search + çoklu PDF analizine güvenli pay bırakıyoruz
 
 const ALLOWED_MODELS = ['claude-sonnet-4-6', 'claude-haiku-4-5-20251001'];
 const MAX_TOKENS_CAP = 6000;
