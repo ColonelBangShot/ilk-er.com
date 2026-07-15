@@ -341,7 +341,7 @@ function render(D){
     kpi('Günlük Toplam Gelir',fmt(D.revTotal.t)+' '+CUR,'Net '+fmt(D.revTotal.net)+' + KDV '+fmt(D.revTotal.kdv)),
     kpi('Oda Geliri',fmt(roomRev)+' '+CUR,D.revTotal.t?'Gelirin %'+(100*roomRev/D.revTotal.t).toFixed(1)+"'i":''),
     kpi('ARR (Brüt)',fmt(arr)+' '+CUR,'Oda geliri / dolu oda'),
-    kpi('Yarına Devir',fmtOrDash(D.carry.tomorrow)+' '+CUR,'Dünden devir: '+fmtOrDash(D.carry.yesterday)+' '+CUR+fxNote)
+    kpi('Yarına Devir',fmtOrDash(D.carry&&D.carry.tomorrow)+' '+CUR,(D.carry&&(typeof D.carry.tomorrow==='number'||typeof D.carry.yesterday==='number')?'Dünden devir: '+fmtOrDash(D.carry.yesterday)+' '+CUR:'Devir için Günlük Mizan PDF\'ini de yükleyin')+fxNote)
   ].join('');
 
   let h='<tr><th>Gelir Kalemi</th><th class="num">Toplam</th><th class="num">Net</th><th class="num">KDV</th></tr>';
@@ -400,7 +400,9 @@ dl.onclick=()=>{
   const a=document.createElement('a');
   a.href=URL.createObjectURL(b);
   a.download='night-audit-ozet-'+date.replace(/\./g,'')+'.html';
-  a.click();URL.revokeObjectURL(a.href);
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},1500);
 };
 </script>
 </body>
