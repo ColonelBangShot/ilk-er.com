@@ -194,8 +194,8 @@ function setStatus(m,e){st.textContent=m;st.className=e?'err':'';}
 function setBusy(m){st.innerHTML='<span class="spinner"></span>'+esc(m);st.className='';}
 function toB64(f){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result.split(',')[1]);r.onerror=()=>rej(new Error(f.name+' okunamadı'));r.readAsDataURL(f);});}
 
-/* ---------- single API call (kendi proxy, max_tokens 4000) ---------- */
-const PROMPT = `Ekli otel night-audit PDF raporlarını incele (Günlük Mizan, Oda Tipi Müsaitlik, Günlük Oda Fiyat Detayı, Main Current, Oda Değişim, Folyo Transfer, Beklenen Gelişler — hangileri varsa; Main Current yüklenmemiş olabilir, bu normaldir, diğer raporlarla devam et). SADECE minified JSON döndür, başka hiçbir metin yazma. Sayıları düz sayı ver (binlik ayraç yok, ondalık nokta). Şema:
+/* ---------- single API call (kendi proxy, max_tokens 4096) ---------- */
+const PROMPT = `Ekli otel night-audit PDF raporlarını incele (Günlük Mizan, Oda Tipi Müsaitlik, Günlük Oda Fiyat Detayı, Main Current, Oda Değişim, Folyo Transfer, Beklenen Gelişler — hangileri varsa; Main Current yüklenmemiş olabilir, bu normaldir, diğer raporlarla devam et). SADECE minified JSON döndür, başka hiçbir metin yazma; yanıtının İLK karakteri { ve SON karakteri } olmalı, açıklama/özür/önsöz yazma. Sayıları düz sayı ver (binlik ayraç yok, ondalık nokta). Şema:
 {"date":"GG.AA.YYYY","currency":"TRY|EUR|USD","currencyEvidence":"Mizan başlığından birebir alıntı, örn. 02.07.2026 - TRY","exchangeRate":{"used":false,"date":"GG.AA.YYYY","rate":0,"source":"TCMB döviz satış kuru"},"occ":{"occupied":0,"empty":0,"tomorrowOccupied":0},"carry":{"yesterday":0,"tomorrow":0},"revenue":[{"n":"kalem adı (rapordaki isimle birebir)","t":0,"net":0,"kdv":0}],"roomRevenue":0,"revTotal":{"t":0,"net":0,"kdv":0},"kdvSplit":[{"label":"KDV %10 veya Konaklama Vergisi %1","amount":0}],"payments":[{"n":"ad","a":0}],"payTotal":0,"balance":0,"agencies":[{"n":"acenta","r":0,"ad":0,"ch":0}],"changes":[{"f":"eski","to":"yeni","g":"misafir soyadı","ag":"acenta","typ":"K|R","note":"neden/not"}],"arrivals":[{"r":"oda","g":"misafir kısa","ag":"acenta","t":"saat","d":"ayrılış GG.AA","p":0}],"arrTotal":{"rooms":0,"pax":0},"folioTransfers":0,"departures":{"rooms":0,"cityLedger":0},"adjustments":["indirim/iade düzeltmeleri, oda no + misafir + tutar VE KENDİ para birimiyle, örn. '1114 Batmanbozkurt - K.Kart indirim: -803.23 TRY'"],"alerts":["operasyonel dikkat noktaları: teknik arızalar, gece girişleri (21:00 sonrası/06:00 öncesi), kirli statüdeki geliş odaları, tutarsız görünen rakamlar — kısa Türkçe"]}
 
 KRİTİK — PARA BİRİMİ (currency), Main Current'ın yüklenip yüklenmediğinden BAĞIMSIZ olarak SADECE şu şekilde belirlenir:
@@ -216,16 +216,7 @@ KRİTİK — DEVİR BAKİYESİ (carry): carry.yesterday ve carry.tomorrow DEĞER
 
 TUTARLILIK KONTROLÜ: carry değerleri doluysa, carry.yesterday + balance ≈ carry.tomorrow denklemini kontrol et. Büyük bir sapma varsa alerts dizisine kısa bir Türkçe uyarı ekle, rakamı olduğu gibi bırak (uydurma/yuvarlama yapma).
 
-KRİTİK — ZORUNLU EUR ÇEVRİMİ, BİR ÖNCEKİ GÜNÜN TCMB KURUYLA (exchangeRate): Kullanıcı TÜM analizlerin EUR cinsinden gösterilmesini istiyor. Bu yüzden bu adım OPSİYONEL DEĞİL, HER ZAMAN UYGULANIR:
-1) Yukarıdaki kurallarla currency alanını (kaynağın gerçek para birimi, örn. TRY) ve currencyEvidence'ı belirle — bu adım değişmedi, hâlâ SADECE Mizan başlığından okunur.
-2) Eğer belirlediğin currency "EUR" DEĞİLSE (yani TRY veya USD ise): web_search aracıyla ZORUNLU olarak şu aramayı yap: "TCMB [ÖNCEKİ GÜN GG.AA.YYYY] döviz satış kuru EUR" — burada ÖNCEKİ GÜN, raporun date alanındaki günden BİR GÜN ÖNCESİDİR (örn. rapor tarihi 07.07.2026 ise 06.07.2026 TCMB kurunu ara; rapor tarihi ayın 1'i ise bir önceki ayın son günü). Bu, otelin kendi muhasebe pratiğiyle birebir aynıdır (gece denetimi sonrası bir önceki günün TCMB kuru kullanılır).
-3) Arama sonucunda bulduğun GERÇEK TCMB EUR satış kurunu (1 EUR = X TRY şeklinde) kullanarak şu alanların TÜMÜNÜ TRY'den EUR'ya çevir: revenue (her satırın t/net/kdv), roomRevenue, revTotal (t/net/kdv), kdvSplit (her satırın amount'u), payments (her satırın a'sı), payTotal, balance, carry (yesterday/tomorrow, null değilse), departures.cityLedger. Çevrim formülü: EUR_tutar = TRY_tutar / kur (kur = 1 EUR'nun kaç TRY ettiği).
-4) Çevrimi yaptıktan sonra currency alanını "EUR" olarak GÜNCELLE (artık tüm rakamlar EUR'dur) ve currencyEvidence'ı olduğu gibi bırak (kaynağın orijinal para birimini kanıtlamak için). exchangeRate alanını {"used":true,"date":"ÖNCEKİ GÜN GG.AA.YYYY","rate":bulduğun_kur,"source":"TCMB"} olarak doldur.
-5) ASLA kur tahmin etme, ezberden yazma veya yuvarlak bir sayı uydurma — sadece arama sonucunda gerçekten gördüğün TCMB rakamını kullan. Arama başarısız olursa veya güvenilir bir TCMB rakamı bulamazsan: çevirme yapma, currency'yi orijinal haliyle (TRY) bırak, exchangeRate.used=false yap, alerts dizisine "TCMB kuru bulunamadı, rakamlar orijinal para biriminde (TRY) bırakıldı" ekle — asla tahmini bir kurla sessizce çevirme.
-6) Eğer currency zaten "EUR" ise (kaynak zaten EUR ise), bu adıma hiç gerek yok, exchangeRate.used=false bırak, hiçbir çevirme yapma.
-7) adjustments listesindeki her satır, önceki kuralda belirtildiği gibi kendi orijinal para birimini (TRY/EUR) metin içinde korumaya devam eder — bu liste ÇEVRİLMEZ, sadece referans amaçlıdır.
-
-Diğer notlar: occ değerleri müsaitlik raporunun audit günü satırından (Dolu/Boş); tomorrowOccupied ertesi gün. changes: Konaklayan=K, Rezervasyon=R. arrivals geliş saatine göre, max 15. İlgili rapor yoksa alanı boş dizi/0 bırak.`;
+KRİTİK — PARA BİRİMİ ÇEVİRME YAPMA: Elinde web araması veya başka hiçbir araç YOK; sadece ekli PDF'leri oku. TÜM parasal alanları, Mizan başlığından belirlediğin ORİJİNAL para biriminde bırak (EUR çevirisini bu aracın kendisi, gerçek TCMB kurunu çekerek sonradan yapacak). exchangeRate alanını her zaman {"used":false,"date":"","rate":0,"source":""} olarak döndür. ASLA kur tahmin etme, ASLA kendin çevirme.\n\nDiğer notlar: occ değerleri müsaitlik raporunun audit günü satırından (Dolu/Boş); tomorrowOccupied ertesi gün. changes: Konaklayan=K, Rezervasyon=R. arrivals geliş saatine göre, max 15. İlgili rapor yoksa alanı boş dizi/0 bırak.`;
 
 btn.onclick = async () => {
   btn.disabled = true;
@@ -238,7 +229,7 @@ btn.onclick = async () => {
     const r = await fetch(API_ENDPOINT,{
       method:'POST',
       headers:{'Content-Type':'application/json','X-Audit-Token':state.token},
-      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:4000,messages:[{role:'user',content}]})
+      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:4096,messages:[{role:'user',content}]})
     });
     if(r.status===401){ sessionStorage.removeItem('auditToken'); throw new Error('Erişim kodu geçersiz — sayfayı yenileyin'); }
     if(r.status===413) throw new Error('PDF toplamı sunucu limitini aştı — daha az/daha küçük dosya deneyin');
@@ -253,8 +244,12 @@ btn.onclick = async () => {
     const text = (data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('\n');
     const clean = text.replace(/```json|```/g,'').trim();
     const s=clean.indexOf('{'),e=clean.lastIndexOf('}');
-    if(s===-1) throw new Error('Modelden geçerli JSON alınamadı');
-    render(JSON.parse(clean.slice(s,e+1)));
+    if(s===-1) throw new Error('Modelden geçerli JSON alınamadı'+(data.stop_reason==='max_tokens'?' — yanıt token limitinde kesildi':'')+(clean?' — model yanıtı: “'+clean.slice(0,160)+'…”':' — model boş yanıt döndürdü'));
+    let D;
+    try{ D = JSON.parse(clean.slice(s,e+1)); }
+    catch(pe){ throw new Error('Model JSON\'u eksik/bozuk döndürdü'+(data.stop_reason==='max_tokens'?' (token limitinde kesildi — daha az dosya deneyin)':'')+': '+pe.message); }
+    D = await maybeConvertToEUR(D);
+    render(D);
     setStatus('Analiz tamamlandı ✓');
     dl.style.display='inline-block'; rst.style.display='inline-block';
   }catch(err){ console.error(err); setStatus('Hata: '+err.message,true); }
@@ -266,6 +261,65 @@ rst.onclick = () => {
   $('dash').style.display='none'; dl.style.display='none'; rst.style.display='none';
   $('auditDate').textContent='—'; setStatus('');
 };
+
+/* ---------- TCMB EUR çevrimi (istemci tarafı, deterministik) ---------- */
+async function fetchTcmbEurRate(dStr){
+  // dStr: rapor tarihi GG.AA.YYYY — bir önceki İŞ GÜNÜNÜN satış kuru aranır (otel muhasebe pratiği)
+  const [dd,mm,yy] = dStr.split('.').map(Number);
+  let d = new Date(yy, mm-1, dd);
+  for(let i=0;i<8;i++){
+    d.setDate(d.getDate()-1); // önce bir gün geri
+    const D2=String(d.getDate()).padStart(2,'0'), M2=String(d.getMonth()+1).padStart(2,'0'), Y=d.getFullYear();
+    const tcmb = `https://www.tcmb.gov.tr/kurlar/${Y}${M2}/${D2}${M2}${Y}.xml`;
+    const wrappers = [
+      'https://api.allorigins.win/raw?url='+encodeURIComponent(tcmb),
+      'https://corsproxy.io/?url='+encodeURIComponent(tcmb)
+    ];
+    for(const u of wrappers){
+      try{
+        const r = await fetch(u, {signal: AbortSignal.timeout(8000)});
+        if(!r.ok) continue;
+        const xml = await r.text();
+        if(!xml.includes('CurrencyCode="EUR"')) continue; // hafta sonu/tatil: XML yok
+        const eur = xml.split('CurrencyCode="EUR"')[1] || '';
+        const m = eur.match(/<ForexSelling>\s*([\d.,]+)\s*<\/ForexSelling>/);
+        if(m){
+          const rate = parseFloat(m[1].replace(',','.'));
+          if(rate > 1) return { rate, date: `${D2}.${M2}.${Y}` };
+        }
+      }catch(_){}
+    }
+  }
+  return null;
+}
+function cvt(n,rate){ return (typeof n==='number') ? Math.round(n/rate*100)/100 : n; }
+async function maybeConvertToEUR(D){
+  if(!D || D.currency==='EUR') return D;
+  setBusy('TCMB kuru alınıyor…');
+  let fx = null;
+  if(D.date && /^\d{2}\.\d{2}\.\d{4}$/.test(D.date)) fx = await fetchTcmbEurRate(D.date);
+  if(!fx){
+    const man = window.prompt('TCMB kuru otomatik alınamadı.\nBir önceki günün TCMB EUR SATIŞ kurunu girin (1 EUR = ? '+(D.currency||'TRY')+').\nBoş bırakırsanız rakamlar '+(D.currency||'TRY')+' olarak gösterilir:','');
+    const r = man ? parseFloat(man.replace(',','.')) : NaN;
+    if(isFinite(r) && r>1) fx = { rate:r, date:'manuel', manual:true };
+  }
+  if(!fx){
+    (D.alerts=D.alerts||[]).push('TCMB kuru alınamadı — tüm rakamlar '+(D.currency||'TRY')+' cinsindedir.');
+    return D;
+  }
+  const R = fx.rate;
+  (D.revenue||[]).forEach(r=>{ r.t=cvt(r.t,R); r.net=cvt(r.net,R); r.kdv=cvt(r.kdv,R); });
+  if(typeof D.roomRevenue==='number') D.roomRevenue=cvt(D.roomRevenue,R);
+  if(D.revTotal){ D.revTotal.t=cvt(D.revTotal.t,R); D.revTotal.net=cvt(D.revTotal.net,R); D.revTotal.kdv=cvt(D.revTotal.kdv,R); }
+  (D.kdvSplit||[]).forEach(k=>k.amount=cvt(k.amount,R));
+  (D.payments||[]).forEach(pm=>pm.a=cvt(pm.a,R));
+  D.payTotal=cvt(D.payTotal,R); D.balance=cvt(D.balance,R);
+  if(D.carry){ D.carry.yesterday=cvt(D.carry.yesterday,R); D.carry.tomorrow=cvt(D.carry.tomorrow,R); }
+  if(D.departures && typeof D.departures.cityLedger==='number') D.departures.cityLedger=cvt(D.departures.cityLedger,R);
+  D.exchangeRate={used:true,date:fx.date,rate:R,source:fx.manual?'manuel giriş':'TCMB satış'};
+  D.currency='EUR';
+  return D;
+}
 
 /* ---------- rendering ---------- */
 const fmt=n=>(typeof n==='number'?n:parseFloat(n)||0).toLocaleString('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2});
