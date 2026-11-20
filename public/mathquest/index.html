@@ -337,6 +337,14 @@ td.n,th.n{text-align:right;white-space:nowrap}
 .brk.pz{background:linear-gradient(180deg,#1b2550,#0d1433)}
 .pz .brkin .me{animation:none}
 #pauseBtn{cursor:pointer;color:var(--ink)}
+/* subjects */
+.subjects{display:grid;grid-template-columns:repeat(auto-fit,minmax(96px,1fr));gap:8px;margin:0 0 14px}
+.subj{display:grid;justify-items:center;gap:4px;padding:8px 4px;font-weight:700;font-size:15px;background:var(--ui);box-shadow:inset 3px 3px 0 var(--hi),inset -3px -3px 0 var(--lo),0 0 0 3px #111}
+.subj svg{width:30px;height:30px}
+.subj.on{background:#4caf3a;color:#fff;box-shadow:inset 3px 3px 0 #82df63,inset -3px -3px 0 #2a6b1e,0 0 0 3px #111}
+.passage{width:100%;max-width:640px;text-align:left;font-weight:500;font-size:clamp(17px,2.4vw,20px);line-height:1.6;padding:12px 16px;background:#fffbe8;color:#1a1a1a;box-shadow:inset 2px 2px 0 #d8cfa3,0 0 0 2px #111}
+.answers.txt{grid-template-columns:minmax(0,1fr)}
+.answers.txt .ans{font-size:clamp(18px,2.6vw,22px);min-height:60px;text-align:left;padding:10px 16px;text-shadow:0 1px 0 rgba(0,0,0,.35)}
 /* break */
 .brk{position:fixed;inset:0;z-index:90;display:none;overflow:auto;padding:max(16px,env(safe-area-inset-top)) 16px 24px;background:linear-gradient(180deg,#5cb135,#3d8a22)}
 .brk.on{display:block}
@@ -398,7 +406,7 @@ function normalizeS(){
  if(!S.v2){S.speech=true;S.narrate=true;S.v2=1}
  if(!S.v3){S.v3=1;S.best=S.best||{};S.legacy=S.legacy||{};for(const k in (S.stars||{}))if(S.stars[k]>0){const i=k.lastIndexOf('-'),w=k.slice(0,i),l=+k.slice(i+1);S.legacy[w+'-'+(l+1)]=true;if(l===3)S.legacy[w+'-boss']=true}
   if(S.realm===2||Object.keys(S.stars||{}).some(k=>/^(stack|longdiv|twodig|factors|mean|frac2)-/.test(k))||(S.checks||[]).some(c=>c.r===2))S.skyUnlocked=true}
- if(!S.best)S.best={};if(!S.legacy)S.legacy={};if(!S.passMark)S.passMark=80;
+ if(!S.best)S.best={};if(!S.legacy)S.legacy={};if(!S.passMark)S.passMark=80;if(!S.subject)S.subject='math';
  if(S.realm!==2)S.realm=1;if(!S.paths||typeof S.paths!=='object')S.paths={};
  for(const k of ['skill','sr','sessions','stars','stats','facts','missed','crafted','bosses','seen'])if(!S[k]||typeof S[k]!=='object')S[k]={};for(const k of ['checks','log','pathHist'])if(!Array.isArray(S[k]))S[k]=[];
  if(SESSION)S.name=SESSION.name;
@@ -714,7 +722,7 @@ const RS=(r=S.realm||1)=>r===2?[...SK2,SKM.d4,SKM.d5,SKM.rem,SKM.story]:SK1;
 const DS={d1:[2,5,10],d2:[3,4],d3:[6,7],d4:[8,9],d5:[11,12]};
 const dsk=d=>Object.keys(DS).find(k=>DS[k].includes(d))||null;
 function skillOf(q){const e=q.ex||{};
- if(realmOf(q.w)===2)return q.w;
+ if(realmOf(q.w)!==1)return q.w;
  if(q.w==='share')return 'meaning';if(q.w==='rem')return 'rem';if(q.w==='story')return 'story';if(q.w==='mult')return 'mult';if(q.w==='family')return 'family';
  if(q.w==='big')return e.k==='frac'?'frac':'bigdiv';if(e.k==='div')return dsk(e.d);return null}
 const fq=(set,a,b)=>()=>{const d=pick(set),qq=R(a,b);return Object.assign(factQ(d*qq,d,'gold'),{w:'mine'})};
@@ -732,7 +740,7 @@ const avgScore=(sc,r=S.realm||1)=>{const L=RS(r);return Math.round(L.reduce((a,x
 const lastCheck=(r=S.realm||1,back=0)=>{const L=S.checks.filter(c=>(c.r||1)===r);return L[L.length-1-back]||null};
 const rankName=(v,r=S.realm||1)=>r===2?(v>=90?'Sky Legend':v>=75?'Sky Knight':v>=60?'Sky Explorer':v>=40?'Cloud Climber':'Sky Rookie'):v>=90?'Gem Master':v>=75?'Crystal Miner':v>=60?'Gold Miner':v>=40?'Iron Miner':'Stone Miner';
 const lvlFor=sk=>{const v=S.skill[sk]??50;return v<40?'e':v<75?'m':'h'};
-const fastMs=q=>(q.w==='story'||q.prompt.length>60)?25000:(q.ex&&q.ex.k==='div'&&q.w==='mine')?7000:14000;
+const fastMs=q=>q.long?45000:(q.w==='story'||q.prompt.length>60)?25000:(q.ex&&q.ex.k==='div'&&q.w==='mine')?7000:14000;
 const addDays=n=>{const d=new Date();d.setDate(d.getDate()+n);return dayStr(d)};
 const dueFacts=()=>Object.entries(S.sr).filter(([k,v])=>v.due<=dayStr()).map(e=>e[0]);
 function choicesFor(q){
@@ -747,6 +755,342 @@ function choicesFor(q){
  return shuf([...s]);
 }
 
+/* ================= SUBJECTS: Science, Geography, Reading, Türkçe, English, Deutsch ================= */
+const SUBJ=[{id:'math',n:'Math',t:'ore'},{id:'sci',n:'Science',t:'leaves'},{id:'geo',n:'Geography',t:'grasstop'},{id:'lit',n:'Reading',t:'planks'},{id:'tr',n:'Türkçe',t:'redwool'},{id:'en',n:'English',t:'water'},{id:'de',n:'Deutsch',t:'gold'}];
+const SUBJM=Object.fromEntries(SUBJ.map(x=>[x.id,x]));
+const NOFLAGS=/Windows/i.test(navigator.userAgent||'');
+const others=(list,ans,n=3)=>shuf([...new Set(list.filter(x=>x!==ans))]).slice(0,n);
+function mc(o){const ch=o.ch?o.ch:shuf([o.ans,...others(o.wrong||[],o.ans,(o.nch||4)-1)]);return Object.assign({key:o.prompt+'|'+o.ans,show:'',vis:'',hint:'',say:'',ex:{k:'learn'}},o,{ch})}
+const big=e=>`<span style="font-size:1.25em">${e}</span>`;
+const lvPick=(items,l)=>{let p=items.filter(x=>(x.lv||1)<=l&&(x.lv||1)>=l-1);if(!p.length)p=items.filter(x=>(x.lv||1)<=l);return pick(p.length?p:items)};
+const passage=t=>`<div class="passage">${t}</div>`;
+
+/* ---------- shared vocabulary (emoji, English, Türkçe, Deutsch with article) ---------- */
+const VOC=[
+ ['🐶','dog','köpek','Hund','der','animals'],['🐱','cat','kedi','Katze','die','animals'],['🐦','bird','kuş','Vogel','der','animals'],['🐟','fish','balık','Fisch','der','animals'],['🐴','horse','at','Pferd','das','animals'],['🐄','cow','inek','Kuh','die','animals'],['🐑','sheep','koyun','Schaf','das','animals'],['🐭','mouse','fare','Maus','die','animals'],['🐻','bear','ayı','Bär','der','animals'],['🦁','lion','aslan','Löwe','der','animals'],['🐘','elephant','fil','Elefant','der','animals'],['🐸','frog','kurbağa','Frosch','der','animals'],['🐰','rabbit','tavşan','Hase','der','animals'],['🐝','bee','arı','Biene','die','animals'],['🐒','monkey','maymun','Affe','der','animals'],['🐢','turtle','kaplumbağa','Schildkröte','die','animals'],
+ ['🍎','apple','elma','Apfel','der','food'],['🍌','banana','muz','Banane','die','food'],['🍞','bread','ekmek','Brot','das','food'],['🥛','milk','süt','Milch','die','food'],['🧀','cheese','peynir','Käse','der','food'],['🥚','egg','yumurta','Ei','das','food'],['💧','water','su','Wasser','das','food'],['🍊','orange','portakal','Orange','die','food'],['🍓','strawberry','çilek','Erdbeere','die','food'],['🥕','carrot','havuç','Karotte','die','food'],['🍅','tomato','domates','Tomate','die','food'],['🎂','cake','pasta','Kuchen','der','food'],['🍦','ice cream','dondurma','Eis','das','food'],['🍇','grapes','üzüm','Trauben','die','food'],
+ ['👁️','eye','göz','Auge','das','body'],['👂','ear','kulak','Ohr','das','body'],['👃','nose','burun','Nase','die','body'],['👄','mouth','ağız','Mund','der','body'],['✋','hand','el','Hand','die','body'],['🦶','foot','ayak','Fuß','der','body'],['🦷','tooth','diş','Zahn','der','body'],
+ ['📕','book','kitap','Buch','das','school'],['✏️','pencil','kalem','Stift','der','school'],['🎒','school bag','okul çantası','Schultasche','die','school'],['⏰','clock','saat','Uhr','die','school'],['🪑','chair','sandalye','Stuhl','der','school'],['🚪','door','kapı','Tür','die','school'],['✂️','scissors','makas','Schere','die','school'],
+ ['👕','T-shirt','tişört','T-Shirt','das','clothes'],['👗','dress','elbise','Kleid','das','clothes'],['👟','shoe','ayakkabı','Schuh','der','clothes'],['🎩','hat','şapka','Hut','der','clothes'],['🧦','sock','çorap','Socke','die','clothes'],['🧥','coat','mont','Jacke','die','clothes'],
+ ['☀️','sun','güneş','Sonne','die','nature'],['🌙','moon','ay','Mond','der','nature'],['⭐','star','yıldız','Stern','der','nature'],['🌧️','rain','yağmur','Regen','der','nature'],['❄️','snow','kar','Schnee','der','nature'],['🌳','tree','ağaç','Baum','der','nature'],['🌸','flower','çiçek','Blume','die','nature'],
+ ['🚗','car','araba','Auto','das','transport'],['🚌','bus','otobüs','Bus','der','transport'],['🚆','train','tren','Zug','der','transport'],['✈️','plane','uçak','Flugzeug','das','transport'],['🚢','ship','gemi','Schiff','das','transport'],['🚲','bike','bisiklet','Fahrrad','das','transport']
+].map(([e,en,tr,de,g,c])=>({e,en,tr,de,g,c}));
+const COLORS=[['#e53935','red','kırmızı','rot'],['#1e88e5','blue','mavi','blau'],['#43a047','green','yeşil','grün'],['#fdd835','yellow','sarı','gelb'],['#111111','black','siyah','schwarz'],['#ffffff','white','beyaz','weiß'],['#fb8c00','orange','turuncu','orange'],['#8e24aa','purple','mor','lila'],['#f48fb1','pink','pembe','rosa'],['#6d4c41','brown','kahverengi','braun'],['#9e9e9e','grey','gri','grau']];
+const swatch=c=>`<span style="display:inline-block;width:1.4em;height:1.4em;background:${c};box-shadow:0 0 0 3px #111;vertical-align:middle"></span>`;
+const NUM_EN=['zero','one','two','three','four','five','six','seven','eight','nine','ten','eleven','twelve','thirteen','fourteen','fifteen','sixteen','seventeen','eighteen','nineteen','twenty'];
+const NUM_DE=['null','eins','zwei','drei','vier','fünf','sechs','sieben','acht','neun','zehn','elf','zwölf','dreizehn','vierzehn','fünfzehn','sechzehn','siebzehn','achtzehn','neunzehn','zwanzig'];
+const DAYS_EN=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+const DAYS_DE=['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'];
+const FAM=[['mother','anne','Mutter','die'],['father','baba','Vater','der'],['sister','kız kardeş','Schwester','die'],['brother','erkek kardeş','Bruder','der'],['grandmother','büyükanne','Oma','die'],['grandfather','büyükbaba','Opa','der'],['baby','bebek','Baby','das']];
+
+/* ---------- worlds ---------- */
+const SW=[
+ {id:'sci1',realm:'sci',name:'Living Things',sym:'🐾',top:'grasstop',side:'grass',col:'#43a047',tex:'leaves',mat:'crystal',hp:30,boss:'Swamp Slime',art:'share',d:['Living or not living?','Animal groups','What do animals eat?','Homes and baby animals','Tricky animals']},
+ {id:'sci2',realm:'sci',name:'My Body',sym:'❤',top:'redwool',side:'brick',col:'#c63b3b',tex:'redwool',mat:'crystal',hp:35,boss:'Germ Golem',art:'mine',d:['The five senses','Body parts','Healthy habits','Food groups','Inside the body']},
+ {id:'sci3',realm:'sci',name:'Plants and Weather',sym:'🌱',top:'leaves',side:'log',col:'#2f7420',tex:'leaves',mat:'crystal',hp:40,boss:'Storm Yeti',art:'mult',d:['Parts of a plant','What plants need','Seasons','Solid, liquid, gas','Weather and water']},
+ {id:'sci4',realm:'sci',name:'Space and Forces',sym:'🪐',top:'dark',side:'dark',col:'#22808a',tex:'crystal',mat:'crystal',hp:45,boss:'Comet Dragon',art:'big',d:['Sun, Moon and Earth','The planets','Magnets','Float or sink','Light and day']},
+ {id:'geo1',realm:'geo',name:'Our Planet',sym:'🌍',top:'water',side:'sand',col:'#1e88e5',tex:'water',mat:'stone',hp:30,boss:'Ocean Mimic',art:'stack',d:['Land and water','Continents','Oceans','Hot and cold places','Landforms']},
+ {id:'geo2',realm:'geo',name:'Türkiye',sym:'🇹🇷',top:'redwool',side:'wool',col:'#e30a17',tex:'redwool',mat:'stone',hp:35,boss:'Mountain Knight',art:'twodig',d:['Capital and big cities','Seas around Türkiye','Seven regions','Which region?','Neighbours and records']},
+ {id:'geo3',realm:'geo',name:'World Tour',sym:'✈',top:'cloud',side:'wool',col:'#5d7fae',tex:'cloud',mat:'stone',hp:40,boss:'Passport Bandit',art:'story',d:['Famous countries','Which continent?','Capitals 1','Flags','Capitals 2']},
+ {id:'geo4',realm:'geo',name:'Map Masters',sym:'N',top:'sand',side:'planks',col:'#a67a3f',tex:'sand',mat:'stone',hp:45,boss:'Compass Champion',art:'mean',d:['North, south, east, west','Turning around','Map grid','Map colours','Big and small places']},
+ {id:'lit1',realm:'lit',name:'Fable Forest',sym:'📖',top:'leaves',side:'log',col:'#2f7420',tex:'planks',mat:'wood',hp:30,boss:'Sly Fox',art:'factors',d:['The Tortoise and the Hare','The Lion and the Mouse','The Ant and the Grasshopper','The Crow and the Pitcher','More fables']},
+ {id:'lit2',realm:'lit',name:'Hodja Village',sym:'☺',top:'planks',side:'brick',col:'#a94a35',tex:'planks',mat:'wood',hp:35,boss:'Grumpy Neighbour',art:'story',d:['Eat, my coat!','The pot that had a baby','The donkey ride','The lost key','All Hodja stories']},
+ {id:'lit3',realm:'lit',name:'Story Workshop',sym:'✎',top:'violet',side:'planks',col:'#7a48c4',tex:'violet',mat:'wood',hp:40,boss:'Plot Twister',art:'longdiv',d:['Real or make-believe?','What happened first?','Who, where, when?','Main idea','The lesson of the story']},
+ {id:'lit4',realm:'lit',name:'Rhyme Island',sym:'♪',top:'sand',side:'water',col:'#e64980',tex:'sand',mat:'wood',hp:45,boss:'Rhyme Pirate',art:'stack',d:['Rhyming words','More rhymes','ABC order','Opposites','Poem detective']},
+ {id:'tr1',realm:'tr',name:'Harf Adası',sym:'Ç',top:'redwool',side:'wool',col:'#c63b3b',tex:'redwool',mat:'gold',hp:30,boss:'Harf Canavarı',art:'share',d:['Alfabe sırası','Sesli harfler','Hece sayısı','Alfabetik sıralama','Karışık']},
+ {id:'tr2',realm:'tr',name:'Kelime Ormanı',sym:'↔',top:'leaves',side:'log',col:'#2f7420',tex:'leaves',mat:'gold',hp:35,boss:'Kelime Ejderi',art:'big',d:['Zıt anlamlı','Eş anlamlı','Tekil ve çoğul','Karışık kelimeler','Usta seviye']},
+ {id:'tr3',realm:'tr',name:'Cümle Kalesi',sym:'?!',top:'cobble',side:'brick',col:'#55595f',tex:'cobble',mat:'gold',hp:40,boss:'Noktalama Şövalyesi',art:'twodig',d:['Nokta mı soru işareti mi?','Ünlem işareti','Özel isimler','Büyük harf','Karışık']},
+ {id:'tr4',realm:'tr',name:'Okuma Kulesi',sym:'📚',top:'gold',side:'planks',col:'#d9a514',tex:'gold',mat:'gold',hp:45,boss:'Okuma Profesörü',art:'longdiv',d:['Kısa metinler 1','Kısa metinler 2','Kısa metinler 3','Kim, ne, nerede?','Tüm metinler']},
+ {id:'en1',realm:'en',name:'Word Meadow',sym:'Aa',top:'grasstop',side:'grass',col:'#43a047',tex:'gem',mat:'iron',hp:30,boss:'Word Gobbler',art:'share',d:['Animals','Food','Body and clothes','School and nature','All words']},
+ {id:'en2',realm:'en',name:'Colour and Number Bay',sym:'12',top:'water',side:'sand',col:'#1e88e5',tex:'water',mat:'iron',hp:35,boss:'Number Kraken',art:'mean',d:['Colours','Numbers 1 to 10','Numbers 11 to 20','Number words','Mixed']},
+ {id:'en3',realm:'en',name:'My World Town',sym:'🏠',top:'brick',side:'planks',col:'#a94a35',tex:'brick',mat:'iron',hp:40,boss:'Calendar Knight',art:'twodig',d:['Family','Days of the week','Transport','Listen and choose','All words']},
+ {id:'en4',realm:'en',name:'Grammar Garden',sym:'a/an',top:'leaves',side:'grass',col:'#2f7420',tex:'leaves',mat:'iron',hp:45,boss:'Grammar Thorn',art:'factors',d:['a or an?','One or many?','is, are or am?','Opposites','Tricky plurals']},
+ {id:'de1',realm:'de',name:'Hallo Hafen',sym:'Hi',top:'gold',side:'stone',col:'#d9a514',tex:'gold',mat:'ice',hp:30,boss:'Hafen Kapitän',art:'stack',d:['Hallo und Tschüss','Danke und Bitte','Guten Morgen…','Fragen','Alle Sätze']},
+ {id:'de2',realm:'de',name:'Zahlen und Farben',sym:'7',top:'redwool',side:'gold',col:'#c63b3b',tex:'redwool',mat:'ice',hp:35,boss:'Zahlen Drache',art:'big',d:['Zahlen 1 bis 10','Farben','Zahlen 11 bis 20','Wochentage','Gemischt']},
+ {id:'de3',realm:'de',name:'Tiere und Essen',sym:'🐶',top:'grasstop',side:'dirt',col:'#43a047',tex:'leaves',mat:'ice',hp:40,boss:'Hungriger Bär',art:'mult',d:['Tiere','Essen','Familie','Schule und Natur','Alle Wörter']},
+ {id:'de4',realm:'de',name:'Der, die, das',sym:'der',top:'violet',side:'stone',col:'#7a48c4',tex:'violet',mat:'ice',hp:45,boss:'Artikel Ritter',art:'twodig',d:['der oder die?','das Wörter','Alle Artikel','Tiere mit Artikel','Meister']}
+];
+for(const w of SW){WORLDS.push(w);WMAP[w.id]=w;BOSSES[w.id]={n:w.boss,p:BOSSES[w.art].p}}
+
+/* ---------- SCIENCE ---------- */
+const LIVING=[['🌳','tree',1],['🐶','dog',1],['🌸','flower',1],['🐦','bird',1],['🐟','fish',1],['🍄','mushroom',1],['🦋','butterfly',1],['🧒','child',1],['🌱','plant',1],['🪨','rock',0],['🚗','car',0],['🪑','chair',0],['⚽','ball',0],['📕','book',0],['✏️','pencil',0],['👟','shoe',0],['☁️','cloud',0],['🧸','teddy bear',0],['🤖','robot',0]];
+const GROUPS=[['🐶','dog','mammal',1],['🐄','cow','mammal',1],['🐘','elephant','mammal',1],['🐋','whale','mammal',3],['🦇','bat','mammal',3],['🐬','dolphin','mammal',3],['🦅','eagle','bird',1],['🦉','owl','bird',1],['🐧','penguin','bird',3],['🦜','parrot','bird',1],['🦈','shark','fish',2],['🐠','goldfish','fish',1],['🐍','snake','reptile',2],['🐢','turtle','reptile',2],['🐊','crocodile','reptile',2],['🦎','lizard','reptile',2],['🐸','frog','amphibian',2],['🐝','bee','insect',1],['🐜','ant','insect',1],['🦋','butterfly','insect',1],['🐞','ladybird','insect',1]];
+const GWHY={mammal:'Mammals have hair or fur, breathe air and feed their babies milk.',bird:'Birds have feathers, wings and lay eggs.',fish:'Fish live in water, breathe with gills and have fins.',reptile:'Reptiles have dry, scaly skin and most lay eggs.',amphibian:'Amphibians start life in water and later live on land too.',insect:'Insects have six legs and three body parts.'};
+const DIET=[['🐄','cow','plants'],['🐰','rabbit','plants'],['🐴','horse','plants'],['🐑','sheep','plants'],['🦒','giraffe','plants'],['🦁','lion','meat'],['🦈','shark','meat'],['🦅','eagle','meat'],['🐺','wolf','meat'],['🐊','crocodile','meat'],['🐻','bear','plants and meat'],['🐔','chicken','plants and meat'],['🧒','human','plants and meat']];
+const HOMES=[['🐻‍❄️','polar bear','the icy Arctic'],['🐫','camel','the desert'],['🐒','monkey','the rainforest'],['🐧','penguin','icy Antarctica'],['🐠','clownfish','the ocean'],['🦉','owl','the forest'],['🐪','camel','the desert']];
+const BABY=[['🐱','cat','kitten'],['🐶','dog','puppy'],['🐄','cow','calf'],['🐴','horse','foal'],['🐑','sheep','lamb'],['🐔','hen','chick'],['🐸','frog','tadpole'],['🦋','butterfly','caterpillar']];
+const SENSES=[['👁️','see','eyes'],['👂','hear','ears'],['👃','smell','nose'],['👅','taste','tongue'],['✋','feel','skin']];
+const ORGANS=[['heart','pumps blood around your body','❤️'],['lungs','help you breathe','🫁'],['brain','helps you think and remember','🧠'],['stomach','breaks down your food','🍽️'],['bones','hold your body up','🦴'],['muscles','help you move','💪']];
+const FOODG=[['🍎','apple','fruit'],['🍌','banana','fruit'],['🍇','grapes','fruit'],['🥕','carrot','vegetable'],['🥦','broccoli','vegetable'],['🍅','tomato','vegetable'],['🥛','milk','dairy'],['🧀','cheese','dairy'],['🥣','yogurt','dairy'],['🍞','bread','grains'],['🍚','rice','grains'],['🍗','chicken','protein'],['🥚','egg','protein'],['🐟','fish','protein']];
+const SCI_FACTS=[
+ {w:'sci2',lv:3,prompt:'How many times a day should you brush your teeth?',ans:'Twice',wrong:['Never','Once a week','Ten times'],why:'Brush in the morning and before bed to keep your teeth strong.'},
+ {w:'sci2',lv:3,prompt:'When should you wash your hands?',ans:'Before eating',wrong:['Only on Sundays','Never','Only at night'],why:'Washing hands before eating stops germs getting into your mouth.'},
+ {w:'sci2',lv:3,prompt:'Which is the healthiest snack?',ans:'🍎 An apple',wrong:['🍬 Sweets','🥤 Fizzy drink','🍟 Chips'],why:'Fruit gives you vitamins and energy without lots of sugar.'},
+ {w:'sci2',lv:3,prompt:'About how much sleep does a 7-year-old need each night?',ans:'About 10 hours',wrong:['About 3 hours','About 5 hours','About 20 hours'],why:'Children your age need about 9 to 12 hours of sleep to grow and learn.'},
+ {w:'sci2',lv:3,prompt:'What is the best drink when you are thirsty?',ans:'💧 Water',wrong:['🥤 Fizzy drink','☕ Coffee','🧃 Sweet juice only'],why:'Water is what your body needs most.'},
+ {w:'sci3',lv:1,prompt:'Which part of a plant takes in water from the soil?',ans:'The roots',wrong:['The flower','The leaves','The fruit'],why:'Roots grow under the ground and drink water from the soil.'},
+ {w:'sci3',lv:1,prompt:'Which part of a plant uses sunlight to make food?',ans:'The leaves',wrong:['The roots','The seeds','The soil'],why:'Leaves catch sunlight and use it to make food for the plant.'},
+ {w:'sci3',lv:1,prompt:'Which part of a plant carries water up to the leaves?',ans:'The stem',wrong:['The flower','The seed','The fruit'],why:'The stem is like a straw that carries water up.'},
+ {w:'sci3',lv:1,prompt:'Which part of a plant makes seeds?',ans:'The flower',wrong:['The roots','The stem','The soil'],why:'Flowers make seeds, and seeds grow into new plants.'},
+ {w:'sci3',lv:2,prompt:'What does a plant NOT need to grow?',ans:'🍬 Sweets',wrong:['☀️ Sunlight','💧 Water','🌬️ Air'],why:'Plants need sunlight, water, air and soil. They do not need sweets!'},
+ {w:'sci3',lv:2,prompt:'What grows into a new plant?',ans:'A seed',wrong:['A rock','A leaf of paper','A cloud'],why:'A seed has a tiny baby plant inside it.'},
+ {w:'sci3',lv:4,prompt:'What happens to ice when it gets warm?',ans:'It melts into water',wrong:['It turns into a rock','It gets bigger','Nothing'],why:'Warmth turns solid ice into liquid water. That is melting.'},
+ {w:'sci3',lv:4,prompt:'What happens when water boils?',ans:'It turns into steam',wrong:['It turns into ice','It turns into sand','It disappears forever'],why:'Boiling water becomes steam, which is a gas.'},
+ {w:'sci3',lv:5,prompt:'What do we use to measure how hot or cold it is?',ans:'🌡️ A thermometer',wrong:['📏 A ruler','⏰ A clock','⚖️ A scale'],why:'A thermometer measures temperature.'},
+ {w:'sci3',lv:5,prompt:'What do you need to see a rainbow?',ans:'Sun and rain',wrong:['Only snow','Only the Moon','Wind and night'],why:'Sunlight shining through raindrops splits into colours.'},
+ {w:'sci3',lv:5,prompt:'Rain falls from…',ans:'Clouds',wrong:['Trees','Mountains','The Sun'],why:'Water goes up into the sky, makes clouds, and falls back down as rain.'},
+ {w:'sci4',lv:1,prompt:'What is the Sun?',ans:'A star',wrong:['A planet','A moon','A cloud'],why:'The Sun is a star. It is the closest star to Earth.'},
+ {w:'sci4',lv:1,prompt:'What goes around the Earth?',ans:'The Moon',wrong:['The Sun','Mars','Jupiter'],why:'The Moon travels around the Earth about once a month.'},
+ {w:'sci4',lv:1,prompt:'Why do we have day and night?',ans:'The Earth spins',wrong:['The Sun turns off','Clouds cover the Sun','The Moon is bigger'],why:'As the Earth spins, our side faces the Sun (day) or away from it (night).'},
+ {w:'sci4',lv:1,prompt:'How long does the Earth take to go around the Sun?',ans:'One year',wrong:['One day','One week','One hour'],why:'One trip around the Sun takes about 365 days: one year.'},
+ {w:'sci4',lv:2,prompt:'Which planet do we live on?',ans:'Earth',wrong:['Mars','Venus','Saturn'],why:'We live on planet Earth.'},
+ {w:'sci4',lv:2,prompt:'Which planet is closest to the Sun?',ans:'Mercury',wrong:['Earth','Neptune','Jupiter'],why:'Mercury is the first planet from the Sun.'},
+ {w:'sci4',lv:2,prompt:'Which is the biggest planet?',ans:'Jupiter',wrong:['Earth','Mercury','Mars'],why:'Jupiter is the biggest planet. More than 1,000 Earths could fit inside it.'},
+ {w:'sci4',lv:2,prompt:'Which planet is called the red planet?',ans:'Mars',wrong:['Venus','Neptune','Earth'],why:'Mars looks red because of rusty dust on its ground.'},
+ {w:'sci4',lv:2,prompt:'Which planet has big, bright rings?',ans:'Saturn',wrong:['Mercury','Earth','Mars'],why:'Saturn has huge rings made of ice and rock.'},
+ {w:'sci4',lv:2,prompt:'How many planets go around our Sun?',ans:'8',wrong:['3','12','100'],why:'Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus and Neptune: 8 planets.'},
+ {w:'sci4',lv:5,prompt:'What makes a shadow?',ans:'Something blocking the light',wrong:['Rain falling','Loud music','Cold wind'],why:'When an object blocks light, it leaves a dark shape behind it: a shadow.'},
+ {w:'sci4',lv:5,prompt:'When is your shadow the shortest?',ans:'At midday',wrong:['Early morning','Late evening','At night'],why:'At midday the Sun is high in the sky, so shadows are short.'},
+ {w:'sci4',lv:5,prompt:'What do we need to see things?',ans:'Light',wrong:['Sound','Wind','Smell'],why:'We see things when light bounces off them into our eyes.'},
+ {w:'sci4',lv:5,prompt:'Which one does NOT make its own light?',ans:'🌙 The Moon',wrong:['☀️ The Sun','🕯️ A candle','💡 A lamp'],why:'The Moon only shines because sunlight bounces off it.'},
+ {w:'sci4',lv:5,prompt:'Which one is a light source?',ans:'🔥 A fire',wrong:['🪞 A mirror','🌙 The Moon','🪨 A rock'],why:'A fire makes its own light. Mirrors and the Moon only reflect light.'}
+];
+const PLANETS=['Mercury','Venus','Earth','Mars','Jupiter','Saturn','Uranus','Neptune'];
+const MAGNET=[['📎','paper clip',1],['🔑','iron key',1],['🔩','steel screw',1],['🧲','another magnet',1],['🪵','piece of wood',0],['🧸','teddy bear',0],['🥄','plastic spoon',0],['📄','sheet of paper',0],['🪨','rock',0]];
+const FLOAT=[['🪵','piece of wood',1],['🍂','leaf',1],['🦆','rubber duck',1],['🍎','apple',1],['🧊','ice cube',1],['🪨','rock',0],['🪙','coin',0],['🔑','key',0],['🔩','metal screw',0]];
+const MATTER=[['🧊','ice','solid'],['🪨','rock','solid'],['🪑','chair','solid'],['🥛','milk','liquid'],['💧','water','liquid'],['🧃','juice','liquid'],['♨️','steam','gas'],['🎈','air in a balloon','gas']];
+const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const SEASON=m=>[11,0,1].includes(m)?'winter':m<=4?'spring':m<=7?'summer':'autumn';
+function sciQ(w,l){
+ if(w==='sci1'){
+  if(l===1){const [e,n,lv]=pick(LIVING);return mc({prompt:`Is a ${n} living or non-living?`,show:big(e),ans:lv?'Living':'Non-living',ch:['Living','Non-living'],why:lv?`A ${n} is living: it grows, needs food or water, and can make more of itself.`:`A ${n} is non-living: it does not grow, eat or breathe.`})}
+  if(l===2||l===5){const pool=GROUPS.filter(x=>l===5?x[3]===3:x[3]<3),[e,n,g]=pick(pool);return mc({prompt:`Which animal group is the ${n} in?`,show:big(e),ans:g,wrong:Object.keys(GWHY),why:`The ${n} is ${g==='insect'||g==='amphibian'?'an':'a'} ${g}. ${GWHY[g]}`,tip:l===5?'Watch out: some animals look like another group!':''})}
+  if(l===3){const [e,n,d]=pick(DIET);return mc({prompt:`What does a ${n} eat?`,show:big(e),ans:d,ch:['plants','meat','plants and meat'],why:d==='plants'?`A ${n} eats only plants. Plant eaters are called herbivores.`:d==='meat'?`A ${n} eats meat. Meat eaters are called carnivores.`:`A ${n} eats both plants and meat. That is called an omnivore.`})}
+  if(Math.random()<.5){const [e,n,h]=pick(HOMES);return mc({prompt:`Where does a ${n} live?`,show:big(e),ans:h,wrong:HOMES.map(x=>x[2]),why:`The ${n} lives in ${h}. Its body is made for that home.`})}
+  const [e,n,b]=pick(BABY);return mc({prompt:`What is a baby ${n} called?`,show:big(e),ans:b,wrong:BABY.map(x=>x[2]),why:`A baby ${n} is called a ${b}.`})}
+ if(w==='sci2'){
+  if(l===1){const [e,v,o]=pick(SENSES);return mc({prompt:`Which body part do you use to ${v}?`,show:big(e),ans:o,wrong:SENSES.map(x=>x[2]),why:`You ${v} with your ${o}. We have five senses: see, hear, smell, taste and touch.`})}
+  if(l===2){const x=pick(VOC.filter(v=>v.c==='body'));return mc({prompt:'What is this body part called?',show:big(x.e),ans:x.en,wrong:VOC.filter(v=>v.c==='body').map(v=>v.en),why:`This is your ${x.en}.`})}
+  if(l===4){const [e,n,g]=pick(FOODG);return mc({prompt:`Which food group is ${n} in?`,show:big(e),ans:g,wrong:['fruit','vegetable','dairy','grains','protein'],why:`${n[0].toUpperCase()+n.slice(1)} is in the ${g} group. Eating from every group keeps you healthy.`})}
+  if(l===5){const [o,f,e]=pick(ORGANS);return Math.random()<.5?mc({prompt:`What do your ${o} do?`,show:big(e),ans:f,wrong:ORGANS.map(x=>x[1]),why:`Your ${o} ${f}.`}):mc({prompt:`Which part of your body ${f}?`,ans:`your ${o}`,wrong:ORGANS.map(x=>'your '+x[0]),why:`Your ${o} ${f}.`})}
+  return mc(pick(SCI_FACTS.filter(x=>x.w==='sci2')))}
+ if(w==='sci3'){
+  if(l===3){const m=R(0,11),s=SEASON(m);return mc({prompt:`In Türkiye, which season is ${MONTHS[m]} in?`,ans:s,ch:['winter','spring','summer','autumn'],why:`${MONTHS[m]} is in ${s}. Winter is December to February, spring March to May, summer June to August, autumn September to November.`})}
+  if(l===4&&Math.random()<.6){const [e,n,s]=pick(MATTER);return mc({prompt:`Is ${n} a solid, a liquid or a gas?`,show:big(e),ans:s,ch:['solid','liquid','gas'],why:s==='solid'?'A solid keeps its own shape.':s==='liquid'?'A liquid flows and takes the shape of its cup.':'A gas spreads out to fill all the space.'})}
+  return mc(lvPick(SCI_FACTS.filter(x=>x.w==='sci3'),l))}
+ if(l===2&&Math.random()<.4){const i=R(0,6);return mc({prompt:`Which planet comes after ${PLANETS[i]}?`,ans:PLANETS[i+1],wrong:PLANETS,why:`The order is: ${PLANETS.join(', ')}.`,tip:'Remember: My Very Easy Method Just Speeds Up Naming.'})}
+ if(l===3){const [e,n,y]=pick(MAGNET);return mc({prompt:`Will a magnet pull a ${n}?`,show:big(e),ans:y?'Yes':'No',ch:['Yes','No'],why:y?`Yes. Magnets pull things made of iron or steel, like a ${n}.`:`No. Magnets only pull iron and steel, not a ${n}.`})}
+ if(l===4){const [e,n,y]=pick(FLOAT);return mc({prompt:`If you drop a ${n} in water, will it float or sink?`,show:big(e),ans:y?'Float':'Sink',ch:['Float','Sink'],why:y?`A ${n} floats because it is light for its size.`:`A ${n} sinks because it is heavy for its size.`})}
+ return mc(lvPick(SCI_FACTS.filter(x=>x.w==='sci4'),l));
+}
+
+/* ---------- GEOGRAPHY ---------- */
+const CONT=['Asia','Africa','Europe','North America','South America','Australia','Antarctica'];
+const OCEANS=['Pacific','Atlantic','Indian','Arctic','Southern'];
+const CTRY=[['🇯🇵','Japan','Asia','Tokyo'],['🇨🇳','China','Asia','Beijing'],['🇮🇳','India','Asia','New Delhi'],['🇰🇷','South Korea','Asia','Seoul'],['🇦🇿','Azerbaijan','Asia','Baku'],['🇫🇷','France','Europe','Paris'],['🇩🇪','Germany','Europe','Berlin'],['🇮🇹','Italy','Europe','Rome'],['🇪🇸','Spain','Europe','Madrid'],['🇬🇧','United Kingdom','Europe','London'],['🇬🇷','Greece','Europe','Athens'],['🇳🇱','Netherlands','Europe','Amsterdam'],['🇦🇹','Austria','Europe','Vienna'],['🇳🇴','Norway','Europe','Oslo'],['🇵🇹','Portugal','Europe','Lisbon'],['🇷🇺','Russia','Europe','Moscow'],['🇪🇬','Egypt','Africa','Cairo'],['🇰🇪','Kenya','Africa','Nairobi'],['🇲🇦','Morocco','Africa','Rabat'],['🇧🇷','Brazil','South America','Brasília'],['🇦🇷','Argentina','South America','Buenos Aires'],['🇺🇸','USA','North America','Washington, D.C.'],['🇨🇦','Canada','North America','Ottawa'],['🇲🇽','Mexico','North America','Mexico City'],['🇦🇺','Australia','Australia','Canberra'],['🇹🇷','Türkiye','Asia and Europe','Ankara']];
+const REG=['Marmara','Ege','Akdeniz','İç Anadolu','Karadeniz','Doğu Anadolu','Güneydoğu Anadolu'];
+const CITY=[['İstanbul','Marmara'],['Bursa','Marmara'],['Edirne','Marmara'],['Kocaeli','Marmara'],['İzmir','Ege'],['Aydın','Ege'],['Muğla','Ege'],['Denizli','Ege'],['Antalya','Akdeniz'],['Mersin','Akdeniz'],['Adana','Akdeniz'],['Hatay','Akdeniz'],['Ankara','İç Anadolu'],['Konya','İç Anadolu'],['Kayseri','İç Anadolu'],['Eskişehir','İç Anadolu'],['Trabzon','Karadeniz'],['Samsun','Karadeniz'],['Rize','Karadeniz'],['Zonguldak','Karadeniz'],['Erzurum','Doğu Anadolu'],['Van','Doğu Anadolu'],['Kars','Doğu Anadolu'],['Malatya','Doğu Anadolu'],['Gaziantep','Güneydoğu Anadolu'],['Diyarbakır','Güneydoğu Anadolu'],['Şanlıurfa','Güneydoğu Anadolu'],['Mardin','Güneydoğu Anadolu']];
+const GEO_FACTS=[
+ {w:'geo1',lv:1,prompt:'What shape is the Earth?',ans:'Round, like a ball',wrong:['Flat, like a plate','Square, like a box','Like a triangle'],why:'The Earth is round, like a giant ball spinning in space.'},
+ {w:'geo1',lv:1,prompt:'Is there more land or more water on Earth?',ans:'More water',wrong:['More land','The same','No water'],why:'About 7 out of every 10 parts of the Earth are covered by water.'},
+ {w:'geo1',lv:1,prompt:'What do we call a model of the Earth that is round?',ans:'A globe',wrong:['A ruler','A clock','A compass'],why:'A globe is a round model of the Earth with all the countries and seas on it.'},
+ {w:'geo1',lv:1,prompt:'What colour are the seas on a globe?',ans:'Blue',wrong:['Red','Yellow','Black'],why:'Water is shown in blue on globes and maps.'},
+ {w:'geo1',lv:1,prompt:'What is all around the Earth that we breathe?',ans:'Air',wrong:['Sand','Water','Stone'],why:'A layer of air covers the Earth. We breathe it every second.'},
+ {w:'geo1',lv:1,prompt:'Where do we live?',ans:'On planet Earth',wrong:['On the Moon','On the Sun','On Mars'],why:'We all live on planet Earth.'},
+ {w:'geo1',lv:4,prompt:'Where would you find polar bears?',ans:'Near the North Pole',wrong:['In the desert','At the equator','In a rainforest'],why:'Polar bears live in the cold Arctic, near the North Pole.'},
+ {w:'geo1',lv:4,prompt:'Which place is very hot and has thick forests and lots of rain?',ans:'A rainforest',wrong:['Antarctica','A glacier','The North Pole'],why:'Rainforests are hot and wet, near the equator.'},
+ {w:'geo1',lv:2,prompt:'How many continents are there?',ans:'7',wrong:['3','5','10'],why:'Asia, Africa, Europe, North America, South America, Australia and Antarctica.'},
+ {w:'geo1',lv:2,prompt:'Which is the biggest continent?',ans:'Asia',wrong:['Europe','Australia','Antarctica'],why:'Asia is the biggest continent. Most of Türkiye is in Asia.'},
+ {w:'geo1',lv:2,prompt:'Which continent is covered in ice?',ans:'Antarctica',wrong:['Africa','Europe','South America'],why:'Antarctica is the coldest place on Earth, covered in thick ice.'},
+ {w:'geo1',lv:2,prompt:'Türkiye is on which two continents?',ans:'Asia and Europe',wrong:['Africa and Asia','Europe and Australia','North and South America'],why:'Thrace is in Europe and Anatolia is in Asia. İstanbul has a side on each!'},
+ {w:'geo1',lv:3,prompt:'How many oceans are there?',ans:'5',wrong:['2','7','12'],why:'Pacific, Atlantic, Indian, Arctic and Southern.'},
+ {w:'geo1',lv:3,prompt:'Which is the biggest ocean?',ans:'Pacific',wrong:['Atlantic','Indian','Arctic'],why:'The Pacific is the biggest and deepest ocean.'},
+ {w:'geo1',lv:3,prompt:'Which ocean is the smallest and very cold?',ans:'Arctic',wrong:['Pacific','Indian','Atlantic'],why:'The Arctic Ocean around the North Pole is the smallest.'},
+ {w:'geo1',lv:4,prompt:'Where is it hottest on Earth?',ans:'Near the equator',wrong:['At the North Pole','At the South Pole','On high mountains'],why:'The equator is the middle line of the Earth, where the Sun shines most directly.'},
+ {w:'geo1',lv:4,prompt:'Why are the poles so cold?',ans:'They get the least sunlight',wrong:['They are made of snow','They are near the Moon','They have no air'],why:'Sunlight hits the poles at a low slant, so they stay cold.'},
+ {w:'geo1',lv:5,prompt:'Land with water all around it is called…',ans:'An island',wrong:['A mountain','A valley','A desert'],why:'An island has water on every side.'},
+ {w:'geo1',lv:5,prompt:'A very dry place with little rain is called…',ans:'A desert',wrong:['A lake','A forest','An ocean'],why:'Deserts get very little rain.'},
+ {w:'geo1',lv:5,prompt:'Water with land all around it is called…',ans:'A lake',wrong:['An ocean','An island','A hill'],why:'A lake is water with land all around it, like Lake Van.'},
+ {w:'geo1',lv:5,prompt:'A mountain that can throw out hot lava is called…',ans:'A volcano',wrong:['A valley','A beach','A glacier'],why:'Volcanoes can erupt with hot melted rock called lava.'},
+ {w:'geo2',lv:1,prompt:'What is the capital of Türkiye?',ans:'Ankara',wrong:['İstanbul','İzmir','Antalya'],why:'Ankara is the capital. İstanbul is the biggest city.'},
+ {w:'geo2',lv:1,prompt:'Which is the biggest city in Türkiye?',ans:'İstanbul',wrong:['Ankara','Konya','Trabzon'],why:'İstanbul has the most people of any city in Türkiye.'},
+ {w:'geo2',lv:1,prompt:'What colours are on the flag of Türkiye?',ans:'Red and white',wrong:['Blue and white','Green and red','Black and yellow'],why:'The Turkish flag is red with a white crescent and star.'},
+ {w:'geo2',lv:1,prompt:'Which city is on two continents?',ans:'İstanbul',wrong:['Ankara','Konya','Antalya'],why:'The Bosphorus splits İstanbul between Europe and Asia.'},
+ {w:'geo2',lv:1,prompt:'What is the sea strait in the middle of İstanbul called?',ans:'The Bosphorus',wrong:['The Nile','The Amazon','The Thames'],why:'The Bosphorus (İstanbul Boğazı) joins the Black Sea and the Sea of Marmara.'},
+ {w:'geo2',lv:1,prompt:'How many provinces (il) does Türkiye have?',ans:'81',wrong:['7','50','100'],why:'Türkiye has 81 provinces.'},
+ {w:'geo2',lv:2,prompt:'Which sea is to the north of Türkiye?',ans:'Black Sea',wrong:['Mediterranean Sea','Aegean Sea','Red Sea'],why:'The Black Sea (Karadeniz) is in the north.'},
+ {w:'geo2',lv:2,prompt:'Which sea is to the south of Türkiye, by Antalya?',ans:'Mediterranean Sea',wrong:['Black Sea','Sea of Marmara','North Sea'],why:'Antalya is on the Mediterranean (Akdeniz) coast.'},
+ {w:'geo2',lv:2,prompt:'Which sea is to the west of Türkiye, by İzmir?',ans:'Aegean Sea',wrong:['Black Sea','Mediterranean Sea','Caspian Sea'],why:'The Aegean Sea (Ege) is to the west.'},
+ {w:'geo2',lv:2,prompt:'Which sea is completely inside Türkiye?',ans:'Sea of Marmara',wrong:['Black Sea','Aegean Sea','Mediterranean Sea'],why:'The Sea of Marmara sits between Thrace and Anatolia.'},
+ {w:'geo2',lv:3,prompt:'How many geographical regions does Türkiye have?',ans:'7',wrong:['3','5','81'],why:'Marmara, Ege, Akdeniz, İç Anadolu, Karadeniz, Doğu Anadolu and Güneydoğu Anadolu.'},
+ {w:'geo2',lv:5,prompt:'What is the highest mountain in Türkiye?',ans:'Mount Ağrı',wrong:['Mount Erciyes','Uludağ','Mount Nemrut'],why:'Mount Ağrı (Ararat) is about 5,137 metres high.'},
+ {w:'geo2',lv:5,prompt:'What is the longest river that is only in Türkiye?',ans:'Kızılırmak',wrong:['Nile','Danube','Amazon'],why:'The Kızılırmak flows for about 1,350 km and ends in the Black Sea.'},
+ {w:'geo2',lv:5,prompt:'What is the biggest lake in Türkiye?',ans:'Lake Van',wrong:['Lake Tuz','Lake Eğirdir','Lake Beyşehir'],why:'Lake Van in the east is the biggest lake.'},
+ {w:'geo2',lv:5,prompt:'Which country is a neighbour of Türkiye?',ans:'Greece',wrong:['Spain','France','Japan','Egypt'],why:'Türkiye’s neighbours are Greece, Bulgaria, Georgia, Armenia, Azerbaijan, Iran, Iraq and Syria.'},
+ {w:'geo2',lv:5,prompt:'Which country is a neighbour of Türkiye?',ans:'Georgia',wrong:['Italy','Germany','Morocco','India'],why:'Türkiye’s neighbours are Greece, Bulgaria, Georgia, Armenia, Azerbaijan, Iran, Iraq and Syria.'},
+ {w:'geo2',lv:5,prompt:'Which country is a neighbour of Türkiye?',ans:'Iran',wrong:['China','Portugal','Canada','Norway'],why:'Türkiye’s neighbours are Greece, Bulgaria, Georgia, Armenia, Azerbaijan, Iran, Iraq and Syria.'}
+];
+function geoQ(w,l){
+ if(w==='geo1')return mc(lvPick(GEO_FACTS.filter(x=>x.w==='geo1'),l));
+ if(w==='geo2'){
+  if(l===3&&Math.random()<.5)return mc({prompt:'Which one is a region of Türkiye?',ans:pick(REG),wrong:['Kapadokya Bölgesi','Trakya Denizi','Anadolu Dağı','Boğaz Bölgesi'],why:`The 7 regions are ${REG.join(', ')}.`});
+  if(l===4){const [c,r]=pick(CITY);return mc({prompt:`Which region is ${c} in?`,ans:r,wrong:REG,why:`${c} is in the ${r} region.`})}
+  return mc(lvPick(GEO_FACTS.filter(x=>x.w==='geo2'),l))}
+ if(w==='geo3'){
+  let pool=CTRY.filter(x=>x[1]!=='Türkiye');
+  if(l===4&&!NOFLAGS){const c=pick(pool.slice(0,26));return mc({prompt:'Which country has this flag?',show:big(c[0]),ans:c[1],wrong:pool.map(x=>x[1]),why:`That is the flag of ${c[1]}.`})}
+  if(l===1||l===2||l===4){const c=pick(l===1?pool.filter(x=>['Japan','China','France','Germany','Italy','USA','Brazil','Egypt','Spain','United Kingdom'].includes(x[1])):pool);return mc({prompt:`${c[1]} is in which continent?`,show:NOFLAGS?'':big(c[0]),ans:c[2],wrong:CONT,why:`${c[1]} is in ${c[2]}.`})}
+  const c=pick(l===3?pool.slice(0,14):pool);return mc({prompt:`What is the capital city of ${c[1]}?`,show:NOFLAGS?'':big(c[0]),ans:c[3],wrong:pool.map(x=>x[3]),why:`The capital of ${c[1]} is ${c[3]}.`})}
+ // geo4: maps
+ const DIRS=['North','East','South','West'];
+ if(l===1){const r=pick([['Where does the Sun rise?','East','The Sun rises in the East and sets in the West.'],['Where does the Sun set?','West','The Sun rises in the East and sets in the West.'],['What is the opposite of North?','South','North and South are opposites. East and West are opposites.'],['What is the opposite of East?','West','East and West are opposites.'],['On most maps, which direction is at the top?','North','Maps usually put North at the top.']]);return mc({prompt:r[0],ans:r[1],ch:DIRS,why:r[2],tip:'Never Eat Soggy Waffles: North, East, South, West, going clockwise.'})}
+ if(l===2){const f=R(0,3),t=pick([['right',1],['left',-1],['around',2]]),a=DIRS[(f+t[1]+4)%4];return mc({prompt:`You face ${DIRS[f]}. You turn ${t[0]}${t[0]==='around'?'':' once'}. Which way do you face now?`,ans:a,ch:DIRS,why:`Facing ${DIRS[f]} and turning ${t[0]} means you face ${a}. Clockwise order is North, East, South, West.`})}
+ if(l===3){const icons=shuf(['🏠','🌳','🏫','⛲','🏪','🐄','🚗','🌻']).slice(0,9),g=Array(9).fill('');const pos=shuf([0,1,2,3,4,5,6,7,8]).slice(0,5);pos.forEach((p,i)=>g[p]=icons[i]);
+  let a,b,d;for(let k=0;k<40;k++){const p=pick(pos),moves=[[-3,'North'],[3,'South'],[1,'East'],[-1,'West']].filter(([m])=>{const q=p+m;return q>=0&&q<9&&g[q]&&!(m===1&&p%3===2)&&!(m===-1&&p%3===0)});if(moves.length){const [m,dn]=pick(moves);a=g[p];b=g[p+m];d=dn;break}}
+  if(!a)return geoQ('geo4',1);
+  const grid=`<div style="display:grid;grid-template-columns:repeat(3,56px);gap:4px;font-size:34px;text-align:center">${g.map(x=>`<span style="background:#cfe8a9;height:56px;display:grid;place-items:center;box-shadow:0 0 0 2px #111">${x}</span>`).join('')}</div><div style="font:800 18px Lexend">⬆ N</div>`;
+  return mc({prompt:`Which thing is ${d} of the ${a}?`,vis:grid,ans:b,wrong:g.filter(Boolean),key:'grid'+g.join('')+a+d,why:`${b} is right next to ${a} on the ${d} side. North is up, South is down, East is right, West is left.`})}
+ if(l===4){const r=pick([['On a map, what does blue usually show?','Water','Blue shows seas, lakes and rivers.'],['On a map, what does green usually show?','Low land and forests','Green shows low, flat land and forests.'],['On a map, what does brown usually show?','Mountains','Brown shows high land and mountains.'],['What is a map key (legend) for?','It explains the symbols','The key tells you what each colour and symbol means.']]);return mc({prompt:r[0],ans:r[1],wrong:['Water','Low land and forests','Mountains','Roads only','It explains the symbols','Cities only'],why:r[2]})}
+ const ORDER=['house','street','city','country','continent','planet Earth'],i=R(0,3),c=shuf(ORDER.slice(i,i+3));return mc({prompt:'Which one is the biggest?',ans:c.reduce((a,b)=>ORDER.indexOf(a)>ORDER.indexOf(b)?a:b),ch:c,why:'From small to big: house, street, city, country, continent, planet Earth.'});
+}
+
+/* ---------- READING ---------- */
+const STORIES=[
+ {w:'lit1',lv:1,t:'The Tortoise and the Hare',x:'A fast hare laughed at a slow tortoise. "Let\'s have a race!" said the tortoise. The hare ran far ahead, then lay down under a tree for a nap. The tortoise kept walking, slowly but steadily. When the hare woke up, the tortoise was already crossing the finish line.',q:[['Who won the race?','The tortoise',['The hare','Nobody','The tree']],['Who laughed at the tortoise?','The hare',['The tree','The fox','A bird']],['Where did the hare take a nap?','Under a tree',['In a cave','In the river','On a bus']],['How did the tortoise walk?','Slowly but steadily',['Very fast','Backwards','He did not walk']],['Why did the hare lose?','He took a nap',['He was too slow','He got lost','He hurt his leg']],['What is the lesson of this story?','Keep going and don\'t give up',['Always be the fastest','Never race anyone','Sleep is bad']]]},
+ {w:'lit1',lv:2,t:'The Lion and the Mouse',x:'A little mouse woke up a big lion. The lion caught the mouse, but when the mouse said sorry, the lion let it go. A few days later the lion was trapped in a hunter\'s net. The mouse heard him roar and chewed the ropes until the lion was free.',q:[['How did the mouse help the lion?','It chewed the ropes',['It roared loudly','It called the hunter','It brought food']],['Who caught the lion in a net?','A hunter',['The mouse','A bird','A bear']],['How did the mouse know the lion was in trouble?','It heard him roar',['It saw a sign','A bird told it','It smelled smoke']],['Why did the lion let the mouse go?','The mouse said sorry',['The mouse was too big','The lion was asleep','The hunter came']],['What is the lesson?','Even small friends can be a big help',['Big animals are always right','Mice are scary','Never say sorry']]]},
+ {w:'lit1',lv:3,t:'The Ant and the Grasshopper',x:'All summer the ant carried food to her home. The grasshopper sang and played. "Why work so hard?" he asked. When winter came, the ant had plenty of food, but the grasshopper was cold and hungry.',q:[['What did the grasshopper do in summer?','Sang and played',['Collected food','Built a house','Slept all day']],['What did the ant carry all summer?','Food',['Toys','Water','Snow']],['How did the grasshopper feel in winter?','Cold and hungry',['Warm and full','Happy and rich','Sleepy and full']],['Who had food in winter?','The ant',['The grasshopper','Both of them','Nobody']],['What is the lesson?','Work first and get ready for later',['Singing is bad','Winter is fun','Ants are lazy']]]},
+ {w:'lit1',lv:4,t:'The Crow and the Pitcher',x:'A thirsty crow found a pitcher with a little water at the bottom. Her beak could not reach it. She dropped pebbles into the pitcher one by one. The water rose higher and higher until she could drink.',q:[['What did the crow drop into the pitcher?','Pebbles',['Leaves','Bread','Feathers']],['Why couldn\'t the crow drink at first?','The water was too low',['The water was too hot','The pitcher was closed','She was not thirsty']],['How did the crow feel at the start?','Thirsty',['Hungry','Sleepy','Angry']],['Why did the water rise?','The pebbles took up space',['It started raining','The crow cried','The pitcher grew']],['What is the lesson?','Think hard and you can solve a problem',['Crows love water','Give up when it is hard','Pitchers are dangerous']]]},
+ {w:'lit1',lv:5,t:'The Boy Who Cried Wolf',x:'A shepherd boy was bored watching sheep. He shouted, "Wolf! Wolf!" The villagers ran to help, but there was no wolf. He did it again, and again they ran. Then a real wolf came. The boy shouted, but nobody came, because they did not believe him.',q:[['Why did nobody come the last time?','They did not believe him',['They were asleep','They were scared','They did not hear him']],['What is the lesson?','Always tell the truth',['Wolves are friendly','Shout louder','Sheep are boring']]]},
+ {w:'lit1',lv:5,t:'The Fox and the Grapes',x:'A hungry fox saw sweet grapes hanging high on a vine. He jumped and jumped but could not reach them. At last he walked away and said, "Those grapes are probably sour anyway."',q:[['Why did the fox say the grapes were sour?','Because he could not get them',['He tasted them','A bird told him','They were green']],['What is the lesson?','Don\'t pretend you didn\'t want something you couldn\'t get',['Grapes are always sour','Foxes can fly','Never eat fruit']]]},
+ {w:'lit2',lv:1,t:'Eat, My Coat!',x:'Nasreddin Hodja went to a dinner party in his old clothes. Nobody talked to him. He went home, put on a fancy fur coat and came back. Now everyone smiled and gave him the best food. Hodja dipped his sleeve into the soup and said, "Eat, my coat, eat! They are welcoming you, not me."',q:[['Why did nobody talk to Hodja at first?','He wore old clothes',['He was rude','He was late','He was sleeping']],['What did Hodja put on when he came back?','A fancy fur coat',['A hat','His pyjamas','A raincoat']],['Where did Hodja dip his sleeve?','Into the soup',['Into the tea','Into a river','Into the bread']],['Why did Hodja tell his coat to eat?','People were kind only to the coat',['The coat was hungry','He did not like soup','He was cold']],['What is the lesson?','Don\'t judge people by their clothes',['Always wear a coat','Soup is for coats','Parties are boring']]]},
+ {w:'lit2',lv:2,t:'The Pot That Had a Baby',x:'Hodja borrowed a big pot from his neighbour. When he gave it back, there was a small pot inside. "Your pot had a baby!" he said. The neighbour happily took both. Later Hodja borrowed the pot again but did not bring it back. "Sorry, your pot died," he said. "Pots can\'t die!" shouted the neighbour. Hodja smiled: "You believed it could have a baby!"',q:[['What did Hodja give back the first time?','The pot and a small pot',['Nothing','Only a spoon','Two big pots']],['What did Hodja borrow?','A big pot',['A donkey','A coat','A key']],['What did Hodja say happened to the pot the second time?','It died',['It flew away','It broke','It got lost']],['How did the neighbour feel the first time?','Happy',['Angry','Scared','Sad']],['Why couldn\'t the neighbour complain at the end?','He believed the pot had a baby',['The pot was broken','He was asleep','Hodja paid him']]]},
+ {w:'lit2',lv:3,t:'The Donkey Ride',x:'Hodja and his son walked with their donkey. People said, "Silly! Nobody is riding." So the son rode. People said, "Rude boy, his father walks!" So Hodja rode. People said, "Poor child has to walk!" So both rode. People said, "Poor donkey!" Hodja laughed: "You can never make everyone happy."',q:[['Who rode the donkey first?','The son',['Hodja','Both','Nobody']],['What did people say when both rode?','Poor donkey!',['Silly! Nobody is riding','Rude boy!','Well done!']],['What did people say when nobody rode?','Silly! Nobody is riding',['Poor donkey!','Rude boy!','Poor child!']],['What did Hodja learn?','You can never make everyone happy',['Donkeys are slow','Always walk','Never listen to anyone']]]},
+ {w:'lit2',lv:4,t:'The Lost Key',x:'One night Hodja was looking for something under a street lamp. A neighbour asked, "What did you lose?" "My key," said Hodja. "Where did you drop it?" "In my house." "Then why are you looking here?" "Because it is dark inside, and there is light here!"',q:[['Where did Hodja lose the key?','In his house',['Under the lamp','At the market','In the garden']],['What did Hodja lose?','His key',['His coat','His donkey','His hat']],['When was Hodja looking?','At night',['In the morning','At lunch','In summer']],['Why was he looking under the lamp?','There was light there',['He saw the key there','The neighbour told him','It was raining']],['Why is the story funny?','He looks where it is easy, not where the key is',['The key can talk','The lamp is broken','The neighbour is a cat']]]}
+];
+const REALFAKE=[['A dog wears a crown and talks to the king.','Make-believe'],['A girl rides her bike to school.','Real'],['The moon eats a sandwich.','Make-believe'],['A cat sleeps on the sofa.','Real'],['A tree sings a song and dances.','Make-believe'],['Dad cooks soup for dinner.','Real'],['A pencil flies to the moon by itself.','Make-believe'],['It rains and we take an umbrella.','Real'],['A fish climbs a tree to bake a cake.','Make-believe'],['Children play football in the park.','Real']];
+const SEQ=[['The tortoise and the hare agreed to race.','The hare took a nap.','The tortoise crossed the finish line.'],['The lion caught the mouse.','The lion was trapped in a net.','The mouse chewed the ropes.'],['The ant carried food all summer.','Winter came.','The grasshopper was hungry.'],['Ali woke up.','Ali ate breakfast.','Ali walked to school.'],['We planted a seed.','We watered it every day.','A flower grew.'],['Hodja borrowed a pot.','He gave back two pots.','He said the pot died.']];
+const SETTING=[['Every morning, Mia walks her dog in the park before school.','Where does Mia walk her dog?','In the park',['At school','At the beach','In the kitchen']],['Last winter, Leo built a snowman in his garden.','When did Leo build a snowman?','Last winter',['Last summer','Yesterday at school','Tonight']],['At the zoo, Ada fed a giraffe some leaves.','Who fed the giraffe?','Ada',['The giraffe','The zookeeper','Leo']],['On Saturday, Kerem and his grandma baked cookies in the kitchen.','Who baked with Kerem?','His grandma',['His teacher','His dog','His brother']]];
+const MAINIDEA=[['Cats sleep a lot. They nap in the sun, on beds and even in boxes. A cat can sleep for 15 hours a day!','Cats sleep a lot',['Boxes are fun','The sun is hot','Beds are soft']],['Trees give us shade, fruit and wood. They also clean the air we breathe. Birds build nests in them.','Trees help us in many ways',['Birds can fly','Wood is brown','Fruit is sweet']],['Before crossing the road, stop, look left and right, and listen. Cross only when it is safe.','How to cross the road safely',['Cars are fast','Roads are long','Walking is fun']],['Bees fly from flower to flower. They collect nectar and make honey. Bees also help plants grow fruit.','Bees are busy, helpful insects',['Flowers are pretty','Honey is sweet','Bees sting people']],['Penguins cannot fly, but they swim very fast. They use their wings like flippers to zoom through the water.','Penguins are great swimmers',['Penguins love snow','All birds fly','Water is cold']],['We recycle paper, glass and plastic. Recycling turns old things into new things and keeps our planet clean.','Recycling helps our planet',['Glass is heavy','Plastic is colourful','Paper is white']]];
+const RHY=[['cat','hat'],['dog','log'],['sun','fun'],['bee','tree'],['star','car'],['cake','lake'],['fish','dish'],['house','mouse'],['bed','red'],['ring','king'],['moon','spoon'],['boat','coat'],['night','light'],['bug','rug'],['book','cook'],['pen','hen'],['ball','tall'],['frog','fog']];
+const OPP=[['big','small'],['hot','cold'],['happy','sad'],['fast','slow'],['tall','short'],['old','new'],['open','closed'],['day','night'],['up','down'],['full','empty'],['wet','dry'],['loud','quiet'],['heavy','light'],['in','out'],['early','late']];
+function litQ(w,l){
+ if(w==='lit1'||w==='lit2'){
+  const pool=STORIES.filter(s=>s.w===w),cur=pool.filter(x=>x.lv===l),s=l===5||!cur.length||Math.random()<.3?pick(pool.filter(x=>x.lv<=l)):pick(cur),[qq,a,wr]=pick(s.q);
+  return mc({prompt:qq,vis:passage(`<b>${s.t}</b><br>${s.x}`),long:1,txt:1,ans:a,wrong:wr,key:s.t+qq,say:s.t+'. '+s.x+' '+qq,why:`In the story: ${s.x.split('. ').slice(-2).join('. ')}`})}
+ if(w==='lit3'){
+  if(l===1){const [t,a]=pick(REALFAKE);return mc({prompt:'Could this really happen, or is it make-believe?',vis:passage(t),txt:1,ans:a,ch:['Real','Make-believe'],key:t,say:t+' Real or make-believe?',why:a==='Real'?'This could really happen in everyday life.':'This could only happen in a story. Real animals and things can\'t do that.'})}
+  if(l===2){const s=pick(SEQ);return mc({prompt:'What happened FIRST?',ch:shuf(s.slice()),ans:s[0],txt:1,key:s.join(),why:`The order is: ${s.join(' Then ')}`})}
+  if(l===3){const [t,qq,a,wr]=pick(SETTING);return mc({prompt:qq,vis:passage(t),txt:1,ans:a,wrong:wr,key:t,say:t+' '+qq,why:`The sentence says: ${t}`})}
+  if(l===4){const [t,a,wr]=pick(MAINIDEA);return mc({prompt:'What is this mostly about?',vis:passage(t),txt:1,long:1,ans:a,wrong:wr,key:t,say:t+' What is this mostly about?',why:'The main idea is what the whole text is about, not just one detail.'})}
+  const s=pick(STORIES),[qq,a,wr]=s.q[s.q.length-1];return mc({prompt:`${s.t}: ${qq}`,ans:a,wrong:wr,txt:1,key:s.t+'lesson',why:`Think about what the characters learned in ${s.t}.`})}
+ if(l<=2){const [a,b]=pick(RHY);return mc({prompt:`Which word rhymes with "${a}"?`,ans:b,wrong:RHY.filter(x=>x[0]!==a).map(x=>pick(x)),why:`${a} and ${b} rhyme because they end with the same sound: -${a.slice(-2)}.`})}
+ if(l===3){const ws=shuf(RHY.flat().filter((x,i,arr)=>arr.findIndex(y=>y[0]===x[0])===i)).slice(0,4),f=ws.slice().sort()[0];return mc({prompt:'Which word comes first in ABC order?',ch:ws,ans:f,why:`Look at the first letter: ${ws.map(x=>x[0]).sort().join(', ')}. "${f}" comes first.`})}
+ if(l===4){const [a,b]=pick(OPP),r=Math.random()<.5;return mc({prompt:`What is the opposite of "${r?a:b}"?`,ans:r?b:a,wrong:OPP.map(x=>pick(x)),why:`${a} and ${b} are opposites.`})}
+ const poem=pick([['Twinkle, twinkle, little star','The night is dark, the moon is bright','The cat sat on a mat'],['I like to run, I like to play','In the sun all day']]);const [a,b]=pick(RHY);return mc({prompt:`Finish the rhyme: "I saw a little ${a}, it was next to a ___"`,ans:b,wrong:RHY.filter(x=>x[0]!==a).map(x=>x[1]),key:'poem'+a,why:`"${a}" and "${b}" rhyme, so the line sounds like a poem.`});
+}
+
+/* ---------- TÜRKÇE ---------- */
+const TR_ABC='abcçdefgğhıijklmnoöprsştuüvyz'.split('');
+const TR_VOW='aeıioöuü';
+const TR_WORDS=['ev','su','göz','okul','kalem','masa','çanta','kitap','çiçek','yıldız','karpuz','araba','kelebek','domates','portakal','öğretmen','dondurma','merdiven','uçurtma','salıncak','ayakkabı','bilgisayar','televizyon','zürafa','gökkuşağı','penguen','kaplumbağa'];
+const heceSay=w=>[...w].filter(c=>TR_VOW.includes(c)).length;
+const TR_ZIT=[['büyük','küçük'],['uzun','kısa'],['sıcak','soğuk'],['açık','kapalı'],['gece','gündüz'],['hızlı','yavaş'],['eski','yeni'],['dolu','boş'],['iyi','kötü'],['ağır','hafif'],['ıslak','kuru'],['aşağı','yukarı'],['güzel','çirkin'],['geniş','dar'],['ön','arka'],['sabah','akşam'],['kalın','ince'],['gelmek','gitmek'],['ağlamak','gülmek']];
+const TR_ES=[['siyah','kara'],['beyaz','ak'],['kırmızı','al'],['cevap','yanıt'],['okul','mektep'],['doktor','hekim'],['armağan','hediye'],['yıl','sene'],['ad','isim'],['öykü','hikâye'],['sınav','imtihan'],['misafir','konuk'],['ırmak','nehir'],['kelime','sözcük'],['yaşlı','ihtiyar'],['kalp','yürek']];
+const TR_COGUL=['kitap','ev','kalem','okul','çiçek','kuş','göz','top','gül','masa','kedi','ağaç','balık','köpek','elma','bebek','uçak','oyuncak'];
+const cogul=w=>{const v=[...w].reverse().find(c=>TR_VOW.includes(c));return w+('aıou'.includes(v)?'lar':'ler')};
+const TR_NOKTA=[['Bugün hava çok güzel','.'],['Okula ne zaman gideceksin','?'],['Eyvah, yağmur başladı','!'],['Adın ne','?'],['Ne kadar güzel bir çiçek','!'],['Ben ikinci sınıfa gidiyorum','.'],['Bu kalem senin mi','?'],['Kardeşim parkta oynuyor','.'],['Yaşasın, tatil başladı','!'],['Saat kaç','?'],['Annem bana kek yaptı','.'],['Dikkat et, düşeceksin','!']];
+const TR_OZEL=['Ankara','İstanbul','Ayşe','Mehmet','Türkiye','Antalya','Elif','Karadeniz','Atatürk','Pamuk'],TR_CINS=['şehir','kalem','kedi','deniz','okul','çocuk','ağaç','araba','kitap','masa'];
+const TR_METIN=[
+ {x:'Ali sabah erkenden uyandı. Dişlerini fırçaladı ve kahvaltısını yaptı. Annesiyle birlikte okula yürüdü. Okulda arkadaşı Elif ile resim yaptılar.',q:[['Ali okula kiminle gitti?','Annesiyle',['Babasıyla','Tek başına','Elif ile']],['Ali okulda ne yaptı?','Resim yaptı',['Top oynadı','Uyudu','Şarkı söyledi']],['Ali’nin arkadaşının adı ne?','Elif',['Ayşe','Zeynep','Mert']]]},
+ {x:'Zeynep’in küçük bir kedisi var. Kedinin adı Pamuk. Pamuk beyaz ve çok tatlı. Pamuk süt içmeyi ve top ile oynamayı sever.',q:[['Kedinin adı ne?','Pamuk',['Zeynep','Tekir','Boncuk']],['Pamuk ne renk?','Beyaz',['Siyah','Sarı','Gri']],['Pamuk ne ile oynamayı sever?','Top',['İp','Kalem','Bebek']]]},
+ {x:'Kış geldi. Her yer bembeyaz karla kaplandı. Çocuklar parkta kardan adam yaptılar. Kardan adamın burnuna bir havuç taktılar.',q:[['Hangi mevsim gelmiş?','Kış',['Yaz','İlkbahar','Sonbahar']],['Çocuklar parkta ne yaptı?','Kardan adam',['Kumdan kale','Uçurtma','Salıncak']],['Kardan adamın burnuna ne taktılar?','Havuç',['Elma','Düğme','Taş']]]},
+ {x:'Mert dedesiyle bahçeye domates ekti. Her gün fidelere su verdi. Bir ay sonra kırmızı domatesler olgunlaştı. Mert çok mutlu oldu.',q:[['Mert kiminle domates ekti?','Dedesiyle',['Annesiyle','Öğretmeniyle','Arkadaşıyla']],['Mert her gün ne yaptı?','Fidelere su verdi',['Domates yedi','Bahçeyi boyadı','Uyudu']],['Domatesler ne renkti?','Kırmızı',['Mavi','Mor','Siyah']]]},
+ {x:'Ayşe doğum gününde arkadaşlarını evine çağırdı. Annesi çikolatalı bir pasta yaptı. Pastanın üstünde yedi mum vardı. Ayşe mumları üfledi ve dilek tuttu.',q:[['Annesi nasıl bir pasta yaptı?','Çikolatalı',['Çilekli','Muzlu','Limonlu']],['Pastada kaç mum vardı?','Yedi',['Beş','Sekiz','On']],['Ayşe mumları üfleyince ne yaptı?','Dilek tuttu',['Ağladı','Uyudu','Dans etti']]]},
+ {x:'Deniz ile babası pazar günü balığa gittiler. Sabah çok erken kalktılar. Deniz ilk kez büyük bir balık tuttu. Akşam balığı annesiyle birlikte pişirdiler.',q:[['Deniz kiminle balığa gitti?','Babasıyla',['Dedesiyle','Ablasıyla','Öğretmeniyle']],['Hangi gün balığa gittiler?','Pazar',['Pazartesi','Cuma','Salı']],['Akşam balığı kiminle pişirdiler?','Annesiyle',['Komşusuyla','Babaannesiyle','Tek başına']]]}
+];
+function trQ(w,l){
+ const T=o=>mc(Object.assign({lang:'tr-TR'},o));
+ if(w==='tr1'){
+  if(l===1||(l===5&&Math.random()<.25)){const i=R(0,27),c=TR_ABC[i];return T({prompt:`Alfabede "${c.toLocaleUpperCase('tr')}" harfinden sonra hangi harf gelir?`,ans:TR_ABC[i+1].toLocaleUpperCase('tr'),wrong:TR_ABC.map(x=>x.toLocaleUpperCase('tr')),why:`Alfabemiz: ${TR_ABC.join(' ').toLocaleUpperCase('tr')}. "${c.toLocaleUpperCase('tr')}" harfinden sonra "${TR_ABC[i+1].toLocaleUpperCase('tr')}" gelir.`})}
+  if(l===2){const v=pick([...TR_VOW]);return T({prompt:'Hangisi sesli (ünlü) harftir?',ans:v.toLocaleUpperCase('tr'),wrong:'bcçdfgğhjklmnprsştvyz'.split('').map(x=>x.toLocaleUpperCase('tr')),why:'Sesli harfler sekiz tanedir: A, E, I, İ, O, Ö, U, Ü.'})}
+  if(l===3||(l===5&&Math.random()<.5)){const wd=pick(TR_WORDS),n=heceSay(wd);return T({prompt:`"${wd}" kelimesi kaç hecelidir?`,show:`<span style="font-size:.7em">${wd}</span>`,ans:String(n),ch:shuf([...new Set([n,n+1,Math.max(1,n-1),n+2].map(String))]).slice(0,4).concat(n===1?[]:[]).filter((x,i,a)=>a.indexOf(x)===i),why:`Her sesli harf bir hece yapar. "${wd}" kelimesinde ${n} sesli harf var, yani ${n} hece.`})}
+  const ws=shuf(TR_WORDS.slice()).filter((x,i,a)=>a.findIndex(y=>y[0]===x[0])===i).slice(0,4),f=ws.slice().sort((a,b)=>a.localeCompare(b,'tr'))[0];
+  return T({prompt:'Alfabetik sıraya göre hangisi en önce gelir?',ch:ws,ans:f,why:`İlk harflere bakarız: ${ws.map(x=>x[0]).sort((a,b)=>a.localeCompare(b,'tr')).join(', ')}. "${f}" en önce gelir.`})}
+ if(w==='tr2'){
+  if(l===1||(l>=4&&Math.random()<.35)){const [a,b]=pick(TR_ZIT),r=Math.random()<.5;return T({prompt:`"${r?a:b}" kelimesinin zıt anlamlısı hangisidir?`,ans:r?b:a,wrong:TR_ZIT.map(x=>pick(x)),why:`"${a}" ile "${b}" zıt anlamlıdır.`})}
+  if(l===2||(l>=4&&Math.random()<.5)){const [a,b]=pick(TR_ES),r=Math.random()<.5;return T({prompt:`"${r?a:b}" kelimesinin eş anlamlısı hangisidir?`,ans:r?b:a,wrong:TR_ES.map(x=>pick(x)),why:`"${a}" ile "${b}" aynı anlamdadır. Bunlara eş anlamlı kelimeler denir.`})}
+  const wd=pick(TR_COGUL),c=cogul(wd),wrong=c.endsWith('lar')?wd+'ler':wd+'lar';return T({prompt:`"${wd}" kelimesinin çoğulu hangisidir?`,ans:c,ch:shuf([c,wrong,wd]),why:`Son sesli harf ${[...wd].reverse().find(x=>TR_VOW.includes(x))}. Kalın ünlüden (a, ı, o, u) sonra -lar, ince ünlüden (e, i, ö, ü) sonra -ler gelir. Doğrusu "${c}".`})}
+ if(w==='tr3'){
+  if(l<=2||l===5&&Math.random()<.5){const [t,p]=pick(l===2?TR_NOKTA.filter(x=>x[1]==='!').concat(TR_NOKTA):TR_NOKTA);return T({prompt:'Cümlenin sonuna hangi işaret gelir?',vis:passage(t+' ___'),ans:p,ch:['.','?','!'],key:t,say:t+'. Cümlenin sonuna hangi işaret gelir?',why:p==='?'?'Bu bir soru cümlesi, sonuna soru işareti (?) gelir.':p==='!'?'Bu cümlede sevinç, korku ya da şaşırma var. Sonuna ünlem (!) gelir.':'Bu bir haber cümlesi, sonuna nokta (.) gelir.'})}
+  const o=pick(TR_OZEL);return T({prompt:'Hangisi her zaman büyük harfle başlar?',ans:o,ch:shuf([o,...others(TR_CINS,'',3)]),why:`"${o}" bir özel isimdir. Kişi, şehir, ülke ve hayvan adları gibi özel isimler büyük harfle başlar.`})}
+ const m=l===5?pick(TR_METIN):TR_METIN[(l-1+R(0,1)*3)%TR_METIN.length],[qq,a,wr]=pick(m.q);
+ return T({prompt:qq,vis:passage(m.x),txt:1,long:1,ans:a,wrong:wr,key:m.x.slice(0,20)+qq,say:m.x+' '+qq,why:`Metinde şöyle yazıyor: ${m.x}`});
+}
+
+/* ---------- ENGLISH ---------- */
+const AAN=[['apple','an'],['egg','an'],['elephant','an'],['orange','an'],['umbrella','an'],['owl','an'],['ant','an'],['ice cream','an'],['dog','a'],['cat','a'],['book','a'],['banana','a'],['car','a'],['pencil','a'],['house','a'],['tree','a'],['lion','a'],['bus','a']];
+const PLUR=[['cat','cats',1],['dog','dogs',1],['book','books',1],['apple','apples',1],['bus','buses',2],['box','boxes',2],['glass','glasses',2],['baby','babies',2],['story','stories',2],['man','men',5],['child','children',5],['mouse','mice',5],['foot','feet',5],['tooth','teeth',5],['sheep','sheep',5],['fish','fish',5],['woman','women',5]];
+function enQ(w,l){
+ const E=o=>mc(Object.assign({lang:'en-US'},o));
+ const vocab=(pool)=>{const x=pick(pool),m=R(0,2);
+  if(m===0)return E({prompt:'What is this in English?',show:big(x.e),ans:x.en,wrong:VOC.map(v=>v.en),key:'pic'+x.en,why:`${x.e} is "${x.en}" in English. In Turkish it is "${x.tr}".`,sayParts:[['What is this in English?','en-US']]});
+  if(m===1)return E({prompt:`Which picture is "${x.en}"?`,ans:x.e,wrong:pool.map(v=>v.e).concat(VOC.map(v=>v.e)),key:'word'+x.en,why:`"${x.en}" is ${x.e}. In Turkish: "${x.tr}".`});
+  return E({prompt:`What is "${x.tr}" in English?`,ans:x.en,wrong:VOC.map(v=>v.en),key:'tr'+x.en,why:`"${x.tr}" is "${x.en}" in English.`,sayParts:[['What is','en-US'],[x.tr,'tr-TR'],['in English?','en-US']]})};
+ if(w==='en1'){const cats={1:['animals'],2:['food'],3:['body','clothes'],4:['school','nature','transport'],5:null}[l];return vocab(cats?VOC.filter(v=>cats.includes(v.c)):VOC)}
+ if(w==='en2'){
+  if(l===1||(l===5&&Math.random()<.3)){const c=pick(COLORS);return E({prompt:'What colour is this?',show:swatch(c[0]),ans:c[1],wrong:COLORS.map(x=>x[1]),key:'col'+c[1],why:`This colour is "${c[1]}". In Turkish: "${c[2]}".`})}
+  const n=l===2?R(1,10):l===3?R(11,20):R(1,20);
+  if(l===4||Math.random()<.5)return E({prompt:`How do you write ${n} in English?`,show:String(n),ans:NUM_EN[n],wrong:NUM_EN.slice(1),key:'nw'+n,why:`${n} is "${NUM_EN[n]}".${n>12&&n<20?' Teen numbers end in -teen.':''}`});
+  return E({prompt:`Which number is "${NUM_EN[n]}"?`,ans:String(n),wrong:[n+1,n-1,n+10,n-10,n+2].filter(x=>x>0&&x<=20).map(String),key:'wn'+n,why:`"${NUM_EN[n]}" is ${n}.`})}
+ if(w==='en3'){
+  if(l===1||(l===5&&Math.random()<.3)){const f=pick(FAM);return E({prompt:`What is "${f[1]}" in English?`,ans:f[0],wrong:FAM.map(x=>x[0]),key:'fam'+f[0],why:`"${f[1]}" is "${f[0]}".`,sayParts:[['What is','en-US'],[f[1],'tr-TR'],['in English?','en-US']]})}
+  if(l===2){const i=R(0,6),a=Math.random()<.5;return E({prompt:a?`Which day comes after ${DAYS_EN[i]}?`:`Which day comes before ${DAYS_EN[i]}?`,ans:DAYS_EN[(i+(a?1:6))%7],wrong:DAYS_EN,key:'day'+i+a,why:`The days are: ${DAYS_EN.join(', ')}.`})}
+  if(l===3)return vocab(VOC.filter(v=>v.c==='transport'));
+  const x=pick(l===5?VOC:VOC.filter(v=>['animals','food','school'].includes(v.c)));return E({prompt:'Listen and choose the picture.',ans:x.e,wrong:VOC.map(v=>v.e),key:'listen'+x.en,say:x.en,sayParts:[['Listen and choose the picture.','en-US'],[x.en,'en-US']],why:`You heard "${x.en}". That is ${x.e}.`})}
+ if(l===1){const [wd,a]=pick(AAN);return E({prompt:`Choose: ___ ${wd}`,ans:a,ch:['a','an'],key:'aan'+wd,why:a==='an'?`"${wd}" starts with a vowel sound (a, e, i, o, u), so we say "an ${wd}".`:`"${wd}" starts with a consonant sound, so we say "a ${wd}".`})}
+ if(l===2||l===5){const [s,p,lv]=pick(PLUR.filter(x=>l===5?x[2]===5:x[2]<5));const wrong=[s+'s',s+'es',s.replace(/y$/,'ies'),p+'s'].filter(x=>x!==p);return E({prompt:`One ${s}, two ___`,ans:p,ch:shuf([p,...others(wrong,p,2)]),key:'pl'+s,why:lv===5?`"${s}" is a special word: one ${s}, two ${p}.`:lv===2?`Words ending in s, x, sh, ch get -es, and y becomes -ies. So: ${p}.`:`Most words just add -s: ${p}.`})}
+ if(l===3){const r=pick([['The dog','is'],['The cats','are'],['I','am'],['My mother','is'],['We','are'],['You','are'],['The bird','is'],['The apples','are'],['He','is'],['They','are']]);return E({prompt:`${r[0]} ___ happy.`,ans:r[1],ch:['am','is','are'],key:'be'+r[0],why:'Use "am" with I, "is" with one person or thing, and "are" with you, we, they or many things.'})}
+ const [a,b]=pick(OPP),r=Math.random()<.5;return E({prompt:`What is the opposite of "${r?a:b}"?`,ans:r?b:a,wrong:OPP.map(x=>pick(x)),key:'opp'+a+r,why:`"${a}" and "${b}" are opposites.`});
+}
+
+/* ---------- DEUTSCH ---------- */
+const DE_PHR=[['Hallo','Hello',1],['Tschüss','Bye',1],['Danke','Thank you',2],['Bitte','Please',2],['Ja','Yes',2],['Nein','No',2],['Guten Morgen','Good morning',3],['Guten Tag','Good day',3],['Guten Abend','Good evening',3],['Gute Nacht','Good night',3],['Wie heißt du?','What is your name?',4],['Ich heiße Recep.','My name is Recep.',4],['Wie geht’s?','How are you?',4],['Mir geht’s gut.','I am fine.',4],['Entschuldigung','Sorry',4],['Ich bin sieben Jahre alt.','I am seven years old.',5],['Woher kommst du?','Where are you from?',5],['Ich komme aus der Türkei.','I am from Türkiye.',5]];
+function deQ(w,l){
+ const D=o=>mc(Object.assign({lang:'en-US'},o));
+ if(w==='de1'){const pool=DE_PHR.filter(x=>l===5?true:x[2]===l||x[2]===l-1),[g,e]=pick(pool.length?pool:DE_PHR);
+  return Math.random()<.6?D({prompt:`What does "${g}" mean?`,ans:e,wrong:DE_PHR.map(x=>x[1]),txt:1,key:'de'+g,sayParts:[['What does','en-US'],[g,'de-DE'],['mean?','en-US']],why:`"${g}" means "${e}". Say it: ${g}!`,tipLang:'de-DE',tipWord:g})
+   :D({prompt:`How do you say "${e}" in German?`,ans:g,wrong:DE_PHR.map(x=>x[0]),txt:1,key:'en'+g,why:`"${e}" in German is "${g}".`,tipLang:'de-DE',tipWord:g})}
+ if(w==='de2'){
+  if(l===2||(l===5&&Math.random()<.3)){const c=pick(COLORS);return D({prompt:'Welche Farbe? Which colour is this in German?',show:swatch(c[0]),ans:c[3],wrong:COLORS.map(x=>x[3]),key:'dcol'+c[3],why:`This colour is "${c[3]}" in German and "${c[1]}" in English.`,tipLang:'de-DE',tipWord:c[3]})}
+  if(l===4){const i=R(0,6);return D({prompt:`Which day is "${DAYS_DE[i]}"?`,ans:DAYS_EN[i],wrong:DAYS_EN,key:'dday'+i,sayParts:[['Which day is','en-US'],[DAYS_DE[i],'de-DE']],why:`"${DAYS_DE[i]}" is ${DAYS_EN[i]}. Most German days end in -tag, which means "day".`,tipLang:'de-DE',tipWord:DAYS_DE[i]})}
+  const n=l===1?R(1,10):l===3?R(11,20):R(1,20);
+  return Math.random()<.5?D({prompt:`Which number is "${NUM_DE[n]}"?`,ans:String(n),wrong:[n+1,n-1,n+2,n-2,n+10].filter(x=>x>0&&x<=20).map(String),key:'dn'+n,sayParts:[['Which number is','en-US'],[NUM_DE[n],'de-DE']],why:`"${NUM_DE[n]}" is ${n}.`,tipLang:'de-DE',tipWord:NUM_DE[n]})
+   :D({prompt:`How do you say ${n} in German?`,show:String(n),ans:NUM_DE[n],wrong:NUM_DE.slice(1),key:'dw'+n,why:`${n} is "${NUM_DE[n]}" in German.${n>12&&n<20?' Teen numbers end in -zehn, which means ten.':''}`,tipLang:'de-DE',tipWord:NUM_DE[n]})}
+ if(w==='de3'){
+  if(l===3||(l===5&&Math.random()<.25)){const f=pick(FAM);return D({prompt:`What is "${f[0]}" in German?`,ans:f[2],wrong:FAM.map(x=>x[2]),key:'dfam'+f[2],why:`"${f[0]}" is "${f[3]} ${f[2]}" in German.`,tipLang:'de-DE',tipWord:f[3]+' '+f[2]})}
+  const cats={1:['animals'],2:['food'],4:['school','nature','transport'],5:null}[l]||null,pool=cats?VOC.filter(v=>cats.includes(v.c)):VOC,x=pick(pool);
+  return Math.random()<.5?D({prompt:'What is this in German?',show:big(x.e),ans:x.de,wrong:VOC.map(v=>v.de),key:'dpic'+x.de,why:`${x.e} is "${x.g} ${x.de}" in German. In English: "${x.en}".`,tipLang:'de-DE',tipWord:x.g+' '+x.de})
+   :D({prompt:`Which picture is "${x.de}"?`,ans:x.e,wrong:pool.map(v=>v.e).concat(VOC.map(v=>v.e)),key:'dword'+x.de,sayParts:[['Which picture is','en-US'],[x.de,'de-DE']],why:`"${x.de}" means ${x.en} ${x.e}.`,tipLang:'de-DE',tipWord:x.g+' '+x.de})}
+ const pool=VOC.filter(v=>l===1?v.g!=='das':l===2?v.g==='das'||Math.random()<.3:l===4?v.c==='animals':true),x=pick(pool);
+ return D({prompt:`der, die or das? ___ ${x.de}`,show:big(x.e),ans:x.g,ch:['der','die','das'],key:'art'+x.de,sayParts:[['der, die or das?','en-US'],[x.de,'de-DE']],why:`It is "${x.g} ${x.de}". German nouns have an article you learn with the word.`,tip:x.de.endsWith('e')&&x.g==='die'?'Many words that end in -e use "die", like die Katze and die Blume.':'Learn the article together with the word, like a team: '+x.g+' '+x.de+'.',tipLang:'de-DE',tipWord:x.g+' '+x.de});
+}
+
+for(const w of SW){const f=w.realm==='sci'?sciQ:w.realm==='geo'?geoQ:w.realm==='lit'?litQ:w.realm==='tr'?trQ:w.realm==='en'?enQ:deQ;G[w.id]=(l)=>f(w.id,l)}
+
+/* learn-it video for subject questions */
+function learnScenes(q){
+ const tr=q.lang==='tr-TR',L=tr?'tr-TR':'en-US';
+ const head=q.show?vRow(vHero('wow'),`<div class="veq pop">${q.show}</div>`):vRow(vHero('wow'),vEq(esc(q.prompt.length>60?q.prompt.slice(0,57)+'…':q.prompt),0,'sm'));
+ const sc=[{cap:(tr?'Hadi öğrenelim! ':'Let\'s learn it! ')+q.prompt,art:head,lang:L},
+  {cap:(tr?'Doğru cevap: ':'The answer is: ')+q.ans,art:vRow(vHero('happy'),vStamp(esc(q.ans))),lang:L},
+  {cap:q.why||'',art:vRow(`<div class="veq sm pop" style="max-width:90%">${esc(q.why||'')}</div>`),lang:L}];
+ if(q.tipWord)sc.push({cap:q.tipWord,art:vRow(vHero('happy'),vEq('🔊 '+esc(q.tipWord))),lang:q.tipLang||L});
+ if(q.tip)sc.push({cap:q.tip,art:vRow(vHero('happy'),`<div class="veq sm pop">${esc(q.tip)}</div>`),lang:L});
+ sc.push({cap:tr?'Şimdi sen de biliyorsun. Hadi devam!':'Now you know it. Let\'s keep going!',art:vRow(vHero('happy'),`<div class="vbox gold pop" style="animation-delay:.3s">${tr?'SÜPER!':'SUPER!'}</div>`),lang:L});
+ return sc.filter(x=>x.cap);
+}
+const subjectStats=()=>Object.fromEntries(SUBJ.filter(s=>s.id!=='math').map(s=>{let q=0,c=0;for(const w of SW.filter(x=>x.realm===s.id)){const st=S.stats[w.id];if(st){q+=st.q;c+=st.c}}return [s.id,{q,pct:q?Math.round(c/q*100):null}]}));
+
 /* ---------- sound & speech ---------- */
 let ac=null,primed=false;
 function unlock(){try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();if(ac.state==='suspended')ac.resume()}catch(e){}
@@ -755,9 +1099,12 @@ document.addEventListener('pointerdown',unlock,{passive:true});
 function tone(f,d=.1,type='square',when=0,vol=.06){if(!S.sound||!ac)return;try{const o=ac.createOscillator(),g=ac.createGain(),t0=ac.currentTime+when;o.type=type;o.frequency.value=f;g.gain.setValueAtTime(vol,t0);g.gain.exponentialRampToValueAtTime(.0008,t0+d);o.connect(g).connect(ac.destination);o.start(t0);o.stop(t0+d+.02)}catch(e){}}
 const sfx={ok(){[660,880,1320].forEach((f,i)=>tone(f,.09,'square',i*.07))},no(){tone(160,.25,'sawtooth',0,.07)},tap(){tone(520,.04)},gem(){tone(1200,.06,'square',0,.05);tone(1600,.16,'square',.06,.05)},win(){[523,659,784,1047,784,1047].forEach((f,i)=>tone(f,.13,'square',i*.1))},place(){tone(220,.05,'triangle',0,.12)},hit(){tone(120,.12,'sawtooth',0,.1);tone(90,.15,'square',.05,.08)},brk(){[300,200,140].forEach((f,i)=>tone(f,.07,'square',i*.05,.08))}};
 const spoken=t=>t.replace(/÷/g,' divided by ').replace(/×/g,' times ').replace(/−/g,' minus ').replace(/→/g,' then ').replace(/✔/g,'').replace(/(\d+)\/(\d+)/g,'$1 over $2');
-function say(txt,onend){
+function say(txt,onend,lang){
  if(!txt||!('speechSynthesis' in window)){onend&&onend(false);return}
- try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(spoken(txt));u.lang='en-US';u.rate=.95;const v=speechSynthesis.getVoices().find(v=>/^en/i.test(v.lang));if(v)u.voice=v;if(onend){u.onend=()=>onend(true);u.onerror=()=>onend(false)}speechSynthesis.speak(u)}catch(e){onend&&onend(false)}
+ try{speechSynthesis.cancel();const parts=Array.isArray(txt)?txt:[[txt,lang||'en-US']],voices=speechSynthesis.getVoices();let i=0;
+  const next=()=>{if(i>=parts.length){onend&&onend(true);return}const [t,lg]=parts[i++];const u=new SpeechSynthesisUtterance(lg==='en-US'?spoken(t):t);u.lang=lg;u.rate=lg==='en-US'?.95:.88;
+   const v=voices.find(x=>x.lang&&x.lang.replace('_','-').toLowerCase()===lg.toLowerCase())||voices.find(x=>x.lang&&x.lang.toLowerCase().startsWith(lg.slice(0,2).toLowerCase()));if(v)u.voice=v;
+   u.onend=next;u.onerror=()=>{onend&&onend(false)};speechSynthesis.speak(u)};next()}catch(e){onend&&onend(false)}
 }
 function toast(m){const e=$('#toast');e.textContent=m;e.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove('on'),2400)}
 function floatText(txt,el){const r=el?el.getBoundingClientRect():{left:innerWidth/2,top:innerHeight/3,width:0};const d=document.createElement('div');d.className='dmg';d.textContent=txt;d.style.left=(r.left+r.width/2-30)+'px';d.style.top=(r.top+10)+'px';document.body.appendChild(d);setTimeout(()=>d.remove(),1100)}
@@ -913,6 +1260,7 @@ function explain(q){
   case 'tens':{const {a,m}=e;sc=[intro(`${a} × ${m} = ?`,`Times ${m}? Easy!`),{cap:`Times ${m} moves every digit ${m===10?'one place':'two places'} to the left. Add ${m===10?'one zero':'two zeros'}!`,art:vEq(`${a}<em>${m===10?'0':'00'}</em>`)},checkSc(`${a} × ${m} = ${a*m}`,`${a} × ${m} = ${a*m}.`),outroSc];break}
   case 'split2':{const {a,b}=e,tn=Math.floor(a/10)*10,on=a-tn;sc=[intro(`${a} × ${b} = ?`,`Big times? Split the big number into tens and ones!`),{cap:`${a} is ${tn} and ${on}.`,art:vEq(`${a} = <em>${tn}</em> + <em>${on}</em>`)},{cap:`${tn} × ${b} = ${tn*b}. ${on} × ${b} = ${on*b}.`,art:vRow(`<div class="vbox pop">${tn}×${b} = ${tn*b}</div>`,`<div class="vbox pop" style="animation-delay:1s">${on}×${b} = ${on*b}</div>`)},{cap:`Add them up: ${tn*b} + ${on*b} = ${a*b}.`,art:vEq(`${tn*b} + ${on*b} = <em>${a*b}</em>`)},outroSc];break}
   case 'mul3':{const {a,b,c}=e,pairs=[[a,b,c],[a,c,b],[b,c,a]],best=pairs.find(p=>p[0]*p[1]===10)||pairs.find(p=>(p[0]*p[1])%10===0)||pairs[0];sc=[intro(`${a} × ${b} × ${c} = ?`,`Three numbers? Pros pick the friendliest pair first. Order doesn't matter!`),{cap:`Multiply ${best[0]} × ${best[1]} first. That's ${best[0]*best[1]}.`,art:vEq(`${best[0]} × ${best[1]} = <em>${best[0]*best[1]}</em>`)},{cap:`Then ${best[0]*best[1]} × ${best[2]} = ${a*b*c}.`,art:vEq(`${best[0]*best[1]} × ${best[2]} = <em>${a*b*c}</em>`)},outroSc];break}
+  case 'learn':sc=learnScenes(q);break;
   default:sc=[{cap:`The answer is ${q.ans}. Let's look at it again.`,art:vEq(esc(q.prompt),0,'sm')},outroSc];
  }
  return sc;
@@ -939,7 +1287,7 @@ function showScene(i){
  if(!V.playing)return;
  const next=()=>{if(my!==V.tok||!V.playing||!V.on)return;if(V.i<V.scenes.length-1)showScene(V.i+1);else finishVideo()};
  const words=sc.cap.split(/\s+/).length,ms=Math.max(3500,words*360+2200);
- if(S.narrate){let ended=false;V.t=setTimeout(next,ms+4000);say(sc.cap.replace(/\{name\}/g,first()),okk=>{if(ended)return;ended=true;clearTimeout(V.t);V.t=setTimeout(next,okk?900:Math.max(800,ms-1500))})}
+ if(S.narrate){let ended=false;V.t=setTimeout(next,ms+4000);say(sc.cap.replace(/\{name\}/g,first()),okk=>{if(ended)return;ended=true;clearTimeout(V.t);V.t=setTimeout(next,okk?900:Math.max(800,ms-1500))},sc.lang)}
  else V.t=setTimeout(next,ms);
 }
 function finishVideo(){V.playing=false;clearTimeout(V.t);$('#vPlay').textContent='Play';
@@ -987,15 +1335,18 @@ function renderHome(){
   <h1>Hi, ${esc(S.name)}!</h1>${SESSION?`<p class="note" style="margin:4px 0 0">${esc(SESSION.cls||SESSION.code)} · <button class="btn sm" id="switchMe" style="min-height:36px;font-size:15px">Not ${esc(S.name.split(' ')[0])}? Switch</button> <button class="btn sm green" id="boardBtn" style="min-height:36px;font-size:15px">🏆 Class leaderboard</button></p>`:''}<p>Clear biomes, beat bosses, dig the mine and craft gear. Every right answer pays.</p>
   <div class="xp"><span>Daily quest</span><div class="xpbar"><b style="width:${Math.min(100,td/GOAL*100)}%"></b></div><span>${Math.min(td,GOAL)}/${GOAL}</span>${S.streak>1&&S.lastDay===dayStr()?`<span class="tag">${S.streak}-day streak</span>`:''}</div>
   ${canStore?'':'<p class="note">This browser can’t save progress, so it resets when the page closes.</p>'}</div></section>
- <section class="strip bevel">${S.realm===2?`<div class="pieces">${STORY.filter(c=>c.realm===2).map(c=>gearIco(S.bosses[c.w]?'':'no')).join('')}</div><p>Sky gears: ${gears}/6. ${gears<6?'Beat the guardians to fix the Sky Engine!':'The Sky Realm is saved!'}</p>`:`<div class="pieces">${STORY.filter(c=>!c.realm).map(c=>pieceIco(S.bosses[c.w]?'':'no')).join('')}</div><p>Crystal pieces: ${got}/7. ${got<7?'Beat the bosses to win them back!':'You saved Block World!'}</p>`}<button class="btn green" id="goQuest">Story quest</button></section>
- <div class="realms"><button class="btn ${S.realm===1?'green':''}" data-realm="1">Overworld · Level 1</button><button class="btn ${S.realm===2?'green':'wood'}" data-realm="2">Sky Realm · Level 2${S.realm===2?'':skyOpen()?' NEW':` 🔒 ${skyCount()}/5`}</button></div>
- ${lastCheck()?(ensurePath(),`<section class="strip bevel"><p>Today’s path: ${S.path.m.filter(x=>x.done).length}/${S.path.m.length} missions done. Your level: ${rankName(avgScore(S.skill))}.</p><button class="btn green" id="goPath">Open my path</button></section>`):`<section class="strip bevel"><p>${S.realm===2?'New realm, new Skill Check! 20 questions find your Sky level and build your Level 2 path.':'Find your miner level! The Skill Check takes about 10 minutes and builds a training path just for you.'}</p><button class="btn green" id="goCheck">Start Skill Check</button></section>`}
- <section class="map">${WORLDS.filter(w=>(w.realm||1)===S.realm).map(w=>`<button class="biome bevel" data-w="${w.id}">${bossOpen(w.id)&&!S.bosses[w.id]?`<span class="bb">${bossSvg(w.id)}</span>`:''}<span class="sym">${w.sym}</span>${cube(w.top,w.side)}<h3>${w.name}</h3><small><span>${S.bosses[w.id]?'Boss beaten ✔':bossOpen(w.id)?'Boss ready!':w.d[0]}</span><span class="stars" style="font-size:16px">★${wStars(w.id)}/15</span></small></button>`).join('')}
- ${S.realm===1?`<button class="biome bevel" data-race="1"><span class="sym">60s</span>${cube('lamp','gold')}<h3>Speed Run</h3><small><span>Division facts in 60 seconds</span><span>Best ${S.best}</span></small></button>`:''}</section>${ground()}`;
+ <section class="strip bevel" data-math>${S.realm===2?`<div class="pieces">${STORY.filter(c=>c.realm===2).map(c=>gearIco(S.bosses[c.w]?'':'no')).join('')}</div><p>Sky gears: ${gears}/6. ${gears<6?'Beat the guardians to fix the Sky Engine!':'The Sky Realm is saved!'}</p>`:`<div class="pieces">${STORY.filter(c=>!c.realm).map(c=>pieceIco(S.bosses[c.w]?'':'no')).join('')}</div><p>Crystal pieces: ${got}/7. ${got<7?'Beat the bosses to win them back!':'You saved Block World!'}</p>`}<button class="btn green" id="goQuest">Story quest</button></section>
+ <div class="subjects">${SUBJ.map(x=>`<button class="subj ${S.subject===x.id?'on':''}" data-subj="${x.id}">${tsvg(x.t)}<span>${x.n}</span></button>`).join('')}</div>
+ <div class="realms" data-math><button class="btn ${S.realm===1?'green':''}" data-realm="1">Overworld · Level 1</button><button class="btn ${S.realm===2?'green':'wood'}" data-realm="2">Sky Realm · Level 2${S.realm===2?'':skyOpen()?' NEW':` 🔒 ${skyCount()}/5`}</button></div>
+ ${lastCheck()?(ensurePath(),`<section class="strip bevel"><p>Today’s path: ${S.path.m.filter(x=>x.done).length}/${S.path.m.length} missions done. Your level: ${rankName(avgScore(S.skill))}.</p><button class="btn green" id="goPath">Open my path</button></section>`.replace('<section class="strip bevel">','<section class="strip bevel" data-math>')):`<section class="strip bevel" data-math><p>${S.realm===2?'New realm, new Skill Check! 20 questions find your Sky level and build your Level 2 path.':'Find your miner level! The Skill Check takes about 10 minutes and builds a training path just for you.'}</p><button class="btn green" id="goCheck">Start Skill Check</button></section>`}
+ <section class="map">${WORLDS.filter(w=>S.subject==='math'?typeof w.realm!=='string'&&(w.realm||1)===S.realm:w.realm===S.subject).map(w=>`<button class="biome bevel" data-w="${w.id}">${bossOpen(w.id)&&!S.bosses[w.id]?`<span class="bb">${bossSvg(w.id)}</span>`:''}<span class="sym">${w.sym}</span>${cube(w.top,w.side)}<h3>${w.name}</h3><small><span>${S.bosses[w.id]?'Boss beaten ✔':bossOpen(w.id)?'Boss ready!':w.d[0]}</span><span class="stars" style="font-size:16px">★${wStars(w.id)}/15</span></small></button>`).join('')}
+ ${S.subject==='math'&&S.realm===1?`<button class="biome bevel" data-race="1"><span class="sym">60s</span>${cube('lamp','gold')}<h3>Speed Run</h3><small><span>Division facts in 60 seconds</span><span>Best ${S.best}</span></small></button>`:''}</section>${ground()}`;
  app.querySelectorAll('[data-w]').forEach(b=>b.onclick=()=>{sfx.tap();openWorld(b.dataset.w)});
  if(app.querySelector('[data-race]'))app.querySelector('[data-race]').onclick=()=>{sfx.tap();startRace()};
  $('#goQuest').onclick=()=>nav('quest');
  app.querySelectorAll('[data-realm]').forEach(b=>b.onclick=()=>setRealm(+b.dataset.realm));
+ if(S.subject!=='math')app.querySelectorAll('[data-math]').forEach(e=>e.remove());
+ app.querySelectorAll('[data-subj]').forEach(b=>b.onclick=()=>{S.subject=b.dataset.subj;save();sfx.tap();renderHome()});
  if($('#switchMe'))$('#switchMe').onclick=()=>logout();if($('#boardBtn'))$('#boardBtn').onclick=showBoard;
  if($('#goPath'))$('#goPath').onclick=()=>nav('path');if($('#goCheck'))$('#goCheck').onclick=startCheck;
 }
@@ -1022,12 +1373,12 @@ function askQ(el,q,o){
  const canHint=o.hint!==false&&q.hint;
  el.innerHTML=`<div class="qcard bevel"><div class="qtools"><div class="buddy" id="bud">${hero('happy')}<span class="say bevel">${o.say||pick(CHEER)}</span></div><div class="qbtns"><button class="btn sm wood" id="spk" aria-label="Read aloud">🔊</button>${canHint?'<button class="btn sm wood" id="hnt">💡 Hint</button>':''}</div></div>
   <p class="prompt">${esc(q.prompt)}</p>${q.show?`<div class="expr">${q.show}</div>`:''}<div class="vis" id="vis">${q.vis||''}</div>
-  <div class="answers">${q.ch.map(v=>`<button class="ans" data-v="${esc(v)}">${esc(v)}</button>`).join('')}</div><div class="after" id="after"></div></div>`;
- const readTxt=q.say||q.prompt;
- el.querySelector('#spk').onclick=()=>say(readTxt);
+  <div class="answers ${q.txt?'txt':''}">${q.ch.map(v=>`<button class="ans" data-v="${esc(v)}">${esc(v)}</button>`).join('')}</div><div class="after" id="after"></div></div>`;
+ const readTxt=q.sayParts||q.say||q.prompt,rtxt=Array.isArray(readTxt)?readTxt.map(x=>x[0]).join(' '):readTxt;
+ el.querySelector('#spk').onclick=()=>say(readTxt,null,q.lang);
  if(el.querySelector('#hnt'))el.querySelector('#hnt').onclick=e=>{el.querySelector('#vis').innerHTML=q.hint;q.hinted=true;e.target.remove()};
- if(S.speech&&!o.race)setTimeout(()=>{if(!V.on)say(readTxt)},250);
- const t0=performance.now(),pz0=PZMS,allow=S.speech&&!o.race?readTxt.split(/\s+/).length*330:0;
+ if(S.speech&&!o.race)setTimeout(()=>{if(!V.on)say(readTxt,null,q.lang)},250);
+ const t0=performance.now(),pz0=PZMS,allow=S.speech&&!o.race?rtxt.split(/\s+/).length*(q.lang&&q.lang!=='en-US'?380:330):0;
  let locked=false;
  el.querySelectorAll('.ans').forEach(btn=>btn.onclick=()=>{
   if(locked||S.breakPending||S.pausedAt)return;locked=true;
@@ -1052,7 +1403,8 @@ function askQ(el,q,o){
 /* ---------- levels, camp, race ---------- */
 const Game={};
 function fill10(make){const seen=new Set(),qs=[];let g=0;while(qs.length<10&&g++<400){const q=make();if(!seen.has(q.key)||g>300){seen.add(q.key);qs.push(q)}}return qs}
-function startLevel(w,l){TOK++;Object.assign(Game,{mode:'level',w,l,qs:fill10(()=>gen(w,l)),i:0,res:[],missed:[]});view='play';renderTabs();playStep()}
+function fillLevel(w,l){const seen=new Set(),qs=[];const add=lv=>{for(let g=0;g<160&&qs.length<10;g++){const q=gen(w,lv);if(!seen.has(q.key)){seen.add(q.key);qs.push(q)}}};add(l);for(let lv=l-1;lv>=1&&qs.length<10;lv--)add(lv);for(let lv=l+1;lv<=5&&qs.length<10;lv++)add(lv);while(qs.length<10)qs.push(gen(w,l));return shuf(qs)}
+function startLevel(w,l){TOK++;Object.assign(Game,{mode:'level',w,l,qs:fillLevel(w,l),i:0,res:[],missed:[]});view='play';renderTabs();playStep()}
 function startCamp(){
  TOK++;const weak=weakFacts().slice(0,10),qs=[];
  for(let i=0;i<10;i++){if(weak.length){const [n,d]=weak[i%weak.length].split('÷').map(Number);qs.push(Object.assign(factQ(n,d,'gem'),{w:'mine',key:'c'+i+n+'÷'+d}))}else qs.push(gen('mine',5))}
@@ -1262,7 +1614,7 @@ function progressData(){
  const med=a=>{const b=a.slice().sort((p,q)=>p-q);return b.length?Math.round(b[Math.floor(b.length/2)]):null};
  return {app:'Block Math Quest',format:1,exported:new Date().toISOString(),player:S.name,
   summary:{currentRealm:S.realm,level1:{level:rankName(avgScore(S.skill,1),1),overall:avgScore(S.skill,1)},level2:lastCheck(2)?{level:rankName(avgScore(S.skill,2),2),overall:avgScore(S.skill,2)}:'no Sky Skill Check yet',skills:Object.fromEntries([...SK1,...SK2].map(x=>[x.n,S.skill[x.id]??null])),medianMsCorrectBySkill:Object.fromEntries(Object.entries(bySk).map(([k,v])=>[k,med(v)])),totalAnswered:S.total,streak:S.streak,minutesByDay:Object.fromEntries(Object.entries(S.sessions).map(([d,sec])=>[d,Math.round(sec/60)])),bossesBeaten:Object.keys(S.bosses),deepestMine:S.mine?S.mine.best:0,crafted:Object.keys(S.crafted)},
-  skillChecks:S.checks,todayPath:S.path,otherPaths:S.paths,pathHistory:S.pathHist,reviewQueue:S.sr,hiddenPace:{medianSecondsBySkill:Object.fromEntries(Object.entries(S.pace||{}).map(([k,v])=>[k,+(median(v)/1000).toFixed(1)])),comfortLevelByWorld:S.flow||{},slowFacts:slowFacts(),factPace:S.factPace||{}},factAccuracy:facts,biomes:stats,mostMissed:Object.entries(S.missed).sort((a,b)=>b[1]-a[1]).slice(0,40),answerLog:S.log,state:Object.assign({},S,{log:[]})};
+  skillChecks:S.checks,todayPath:S.path,otherPaths:S.paths,pathHistory:S.pathHist,reviewQueue:S.sr,subjects:subjectStats(),hiddenPace:{medianSecondsBySkill:Object.fromEntries(Object.entries(S.pace||{}).map(([k,v])=>[k,+(median(v)/1000).toFixed(1)])),comfortLevelByWorld:S.flow||{},slowFacts:slowFacts(),factPace:S.factPace||{}},factAccuracy:facts,biomes:stats,mostMissed:Object.entries(S.missed).sort((a,b)=>b[1]-a[1]).slice(0,40),answerLog:S.log,state:Object.assign({},S,{log:[]})};
 }
 let DL=null;
 if(window.claude&&typeof window.claude.use==='function')window.claude.use('downloads').then(d=>{DL=d}).catch(()=>{});
@@ -1406,6 +1758,7 @@ function renderParents(){
  <div class="scroll"><table><thead><tr><th>Biome</th><th class="n">Questions</th><th class="n">Right</th><th class="n">Stars</th><th class="n">Boss</th></tr></thead><tbody>
  ${WORLDS.map(w=>{const s=S.stats[w.id]||{q:0,c:0};return `<tr><td>${w.name}</td><td class="n">${s.q}</td><td class="n">${s.q?Math.round(s.c/s.q*100)+'%':'–'}</td><td class="n">${wStars(w.id)}/15</td><td class="n">${S.bosses[w.id]?'✔':'–'}</td></tr>`}).join('')}
  </tbody></table></div>
+ <h3>School subjects</h3><div class="scroll"><table><thead><tr><th>Subject</th><th class="n">Questions</th><th class="n">Right</th><th class="n">Levels passed</th></tr></thead><tbody>${SUBJ.filter(x=>x.id!=='math').map(x=>{const st=subjectStats()[x.id],pw=SW.filter(w=>w.realm===x.id);return `<tr><td>${x.n}</td><td class="n">${st.q}</td><td class="n">${st.pct==null?'–':st.pct+'%'}</td><td class="n">${pw.reduce((a,w)=>a+[1,2,3,4,5].filter(l=>passed(w.id,l)).length,0)}/${pw.length*5}</td></tr>`}).join('')}</tbody></table></div>
  <h3>Speed and hidden level</h3><p class="note">The child never sees this. Every answer is timed (reading-aloud time and pauses are taken out). Fast right answers push that world’s questions up to one level harder, mistakes and slow answers bring them down, and slow facts come back more often.</p>
  <div class="scroll"><table><thead><tr><th>Skill</th><th class="n">Typical time (right answers)</th></tr></thead><tbody>${[...SK1,...SK2].filter(x=>S.pace&&S.pace[x.id]&&S.pace[x.id].length).map(x=>`<tr><td>${x.n}</td><td class="n">${(median(S.pace[x.id])/1000).toFixed(1)} s</td></tr>`).join('')||'<tr><td colspan="2">Not enough answers yet</td></tr>'}</tbody></table></div>
  <div class="scroll" style="margin-top:10px"><table><thead><tr><th>World</th><th class="n">Hidden level now</th></tr></thead><tbody>${WORLDS.filter(w=>S.flow&&S.flow[w.id]!=null).map(w=>`<tr><td>${w.name}</td><td class="n">${S.flow[w.id].toFixed(1)} / 5</td></tr>`).join('')||'<tr><td colspan="2">Not enough answers yet</td></tr>'}</tbody></table></div>
@@ -1492,7 +1845,7 @@ function makeSummary(){
  const wk=Date.now()-7*864e5,L=S.log.filter(x=>x.t>wk),days=Object.entries(S.sessions).filter(([d])=>new Date(d)>=new Date(wk-864e5));
  return {stars:totStars(),gems:S.gems,total:S.total,week:L.length,weekRight:L.filter(x=>x.ok).length,streak:S.streak,bosses:Object.keys(S.bosses).length,
   lvl1:lastCheck(1)?avgScore(S.skill,1):null,lvl2:lastCheck(2)?avgScore(S.skill,2):null,rank:rankName(avgScore(S.skill,S.realm),S.realm),realm:S.realm,
-  skills:Object.fromEntries([...SK1,...SK2].filter(x=>S.skill[x.id]!=null).map(x=>[x.id,S.skill[x.id]])),passed:Object.keys(S.best||{}).filter(k=>S.best[k]*10>=S.passMark).length,weak:weakFacts().slice(0,8),slow:slowFacts().slice(0,8),pace:Object.fromEntries(Object.entries(S.pace||{}).map(([k,v])=>[k,+(median(v)/1000).toFixed(1)])),minutesWeek:Math.round(days.reduce((a,[,v])=>a+v,0)/60)};
+  skills:Object.fromEntries([...SK1,...SK2].filter(x=>S.skill[x.id]!=null).map(x=>[x.id,S.skill[x.id]])),subjects:Object.fromEntries(Object.entries(subjectStats()).map(([k,v])=>[k,v.pct])),passed:Object.keys(S.best||{}).filter(k=>S.best[k]*10>=S.passMark).length,weak:weakFacts().slice(0,8),slow:slowFacts().slice(0,8),pace:Object.fromEntries(Object.entries(S.pace||{}).map(([k,v])=>[k,+(median(v)/1000).toFixed(1)])),minutesWeek:Math.round(days.reduce((a,[,v])=>a+v,0)/60)};
 }
 const slimState=()=>Object.assign({},S,{log:S.log.slice(-800)});
 async function syncNow(manual){

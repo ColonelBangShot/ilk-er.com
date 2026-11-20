@@ -43,7 +43,7 @@ td.n,th.n{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
 <body>
 <main class="wrap">
  <h1 style="font-size:clamp(26px,4vw,36px);margin-bottom:6px">Block Math Quest · Teacher and parent page</h1>
- <p class="note" style="margin-bottom:16px">See how each child is doing. Only first names and class numbers are stored.</p>
+ <p class="note" style="margin-bottom:16px">See how each child is doing in math, science, geography, reading, Türkçe, English and German. Only first names and class numbers are stored.</p>
 
  <section class="card bevel" id="loginCard">
   <h2 style="margin-bottom:10px">Sign in</h2>
@@ -101,8 +101,8 @@ async function loadDash(code){
  $('#dash').hidden=false;
  $('#dash').innerHTML=`<section class="card bevel"><div class="row" style="margin:0 0 10px;justify-content:space-between"><h2>${esc(r.name)} <span class="note">(${esc(r.code)})</span></h2><button class="btn" id="rf">Refresh</button></div>
  <p class="note">${played.length} of ${rows.length} children have played. Right answers this week, whole class: ${week}. Weak facts are division facts a child gets wrong most. Slow facts are right but take over 6.5 seconds. The game quietly gives each child more of both, and moves each world one level up or down based on speed and accuracy.</p>
- <div class="scroll"><table><thead><tr><th>#</th><th>Name</th><th>Last played</th><th class="n">Right / tried (7 days)</th><th class="n">Minutes (7 days)</th><th class="n">Levels passed</th><th class="n">Stars</th><th class="n">Bosses</th><th class="n">Level 1</th><th class="n">Level 2</th><th>Weak facts</th><th>Slow facts</th><th></th></tr></thead><tbody>
- ${rows.map(x=>{const s=x.summary;return `<tr><td>${esc(x.id)}</td><td><b>${esc(x.name)}</b></td><td>${s?ago(s.at):'not yet'}</td><td class="n">${s?`${s.weekRight} / ${s.week}`:'–'}</td><td class="n">${s?s.minutesWeek:'–'}</td><td class="n">${s?(s.passed??'–'):'–'}</td><td class="n">${s?s.stars:'–'}</td><td class="n">${s?s.bosses:'–'}</td><td class="n">${s?pct(s.lvl1):'–'}</td><td class="n">${s?pct(s.lvl2):'–'}</td><td class="weak">${s&&s.weak.length?s.weak.slice(0,5).map(w=>`<span>${esc(w)}</span>`).join(''):''}</td><td class="weak">${s&&s.slow&&s.slow.length?s.slow.slice(0,5).map(w=>`<span style="background:#fff3c4;color:#6b4a00">${esc(w)}</span>`).join(''):''}</td>
+ <div class="scroll"><table><thead><tr><th>#</th><th>Name</th><th>Last played</th><th class="n">Right / tried (7 days)</th><th class="n">Minutes (7 days)</th><th class="n">Levels passed</th><th class="n">Stars</th><th class="n">Bosses</th><th class="n">Level 1</th><th class="n">Level 2</th><th>Subjects (right %)</th><th>Weak facts</th><th>Slow facts</th><th></th></tr></thead><tbody>
+ ${rows.map(x=>{const s=x.summary;return `<tr><td>${esc(x.id)}</td><td><b>${esc(x.name)}</b></td><td>${s?ago(s.at):'not yet'}</td><td class="n">${s?`${s.weekRight} / ${s.week}`:'–'}</td><td class="n">${s?s.minutesWeek:'–'}</td><td class="n">${s?(s.passed??'–'):'–'}</td><td class="n">${s?s.stars:'–'}</td><td class="n">${s?s.bosses:'–'}</td><td class="n">${s?pct(s.lvl1):'–'}</td><td class="n">${s?pct(s.lvl2):'–'}</td><td style="font-size:13px">${s&&s.subjects?Object.entries({sci:'Sci',geo:'Geo',lit:'Read',tr:'TR',en:'EN',de:'DE'}).filter(([k])=>s.subjects[k]!=null).map(([k,n])=>`${n} ${pct(s.subjects[k])}`).join(' '):''}</td><td class="weak">${s&&s.weak.length?s.weak.slice(0,5).map(w=>`<span>${esc(w)}</span>`).join(''):''}</td><td class="weak">${s&&s.slow&&s.slow.length?s.slow.slice(0,5).map(w=>`<span style="background:#fff3c4;color:#6b4a00">${esc(w)}</span>`).join(''):''}</td>
  <td><div class="row" style="margin:0;flex-wrap:nowrap">${s?`<button class="btn" data-d="${esc(x.id)}">Skills</button>`:''}<button class="btn red" data-r="${esc(x.id)}" title="Child forgot the pictures">Reset pictures</button></div></td></tr>`}).join('')}
  </tbody></table></div></section>`;
  $('#rf').onclick=()=>loadDash(code);
