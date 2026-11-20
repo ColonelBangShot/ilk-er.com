@@ -179,7 +179,7 @@ export async function POST(req) {
           stars: +s.stars || 0, gems: +s.gems || 0, total: +s.total || 0, week: +s.week || 0, weekRight: +s.weekRight || 0,
           streak: +s.streak || 0, bosses: +s.bosses || 0, lvl1: s.lvl1 ?? null, lvl2: s.lvl2 ?? null, rank: cleanName(s.rank),
           skills: s.skills && typeof s.skills === 'object' ? s.skills : {}, weak: Array.isArray(s.weak) ? s.weak.slice(0, 8).map(String) : [],
-          minutesWeek: +s.minutesWeek || 0, realm: +s.realm || 1,
+          minutesWeek: +s.minutesWeek || 0, realm: +s.realm || 1, passed: +s.passed || 0,
           slow: Array.isArray(s.slow) ? s.slow.slice(0, 8).map(String) : [], pace: s.pace && typeof s.pace === 'object' ? s.pace : {},
         };
         await Promise.all([

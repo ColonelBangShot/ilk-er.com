@@ -396,6 +396,9 @@ try{S=Object.assign(def(),JSON.parse(localStorage.getItem(KEY)||'{}'))}catch(e){
 function normalizeS(){
  S.mats=Object.assign(def().mats,S.mats||{});
  if(!S.v2){S.speech=true;S.narrate=true;S.v2=1}
+ if(!S.v3){S.v3=1;S.best=S.best||{};S.legacy=S.legacy||{};for(const k in (S.stars||{}))if(S.stars[k]>0){const i=k.lastIndexOf('-'),w=k.slice(0,i),l=+k.slice(i+1);S.legacy[w+'-'+(l+1)]=true;if(l===3)S.legacy[w+'-boss']=true}
+  if(S.realm===2||Object.keys(S.stars||{}).some(k=>/^(stack|longdiv|twodig|factors|mean|frac2)-/.test(k))||(S.checks||[]).some(c=>c.r===2))S.skyUnlocked=true}
+ if(!S.best)S.best={};if(!S.legacy)S.legacy={};if(!S.passMark)S.passMark=80;
  if(S.realm!==2)S.realm=1;if(!S.paths||typeof S.paths!=='object')S.paths={};
  for(const k of ['skill','sr','sessions','stars','stats','facts','missed','crafted','bosses','seen'])if(!S[k]||typeof S[k]!=='object')S[k]={};for(const k of ['checks','log','pathHist'])if(!Array.isArray(S[k]))S[k]=[];
  if(SESSION)S.name=SESSION.name;
@@ -764,7 +767,13 @@ const starsOf=(w,l)=>S.stars[w+'-'+l]||0;
 const wStars=w=>[1,2,3,4,5].reduce((s,l)=>s+starsOf(w,l),0);
 const totStars=()=>WORLDS.reduce((s,w)=>s+wStars(w.id),0);
 const starStr=n=>'★'.repeat(n)+'<s>'+'★'.repeat(3-n)+'</s>';
-const bossOpen=w=>starsOf(w,3)>0;
+const bestOf=(w,l)=>S.best[w+'-'+l]||0;
+const passed=(w,l)=>bestOf(w,l)*10>=S.passMark;
+const passNeed=()=>Math.ceil(S.passMark/10);
+const levelOpen=(w,l)=>l===1||passed(w,l-1)||!!S.legacy[w+'-'+l];
+const bossOpen=w=>passed(w,3)||!!S.legacy[w+'-boss']||!!S.bosses[w];
+const skyCount=()=>WORLDS.filter(x=>(x.realm||1)===1&&passed(x.id,3)).length;
+const skyOpen=()=>!!S.skyUnlocked||skyCount()>=5;
 function bar(){$('#gems').textContent=S.gems;$('#starsTot').textContent=totStars();$('#logo').innerHTML=hero()+'<span>Block Math Quest</span>';updBrk()}
 function weakFacts(){return Object.entries(S.facts).filter(([k,v])=>v.a>v.c).sort((a,b)=>a[1].c/a[1].a-b[1].c/b[1].a||b[1].a-a[1].a).map(e=>e[0])}
 function addMat(k,n=1,el){S.mats[k]=(S.mats[k]||0)+n;floatText(`+${n} ${MATS[k].n}`,el)}
@@ -979,7 +988,7 @@ function renderHome(){
   <div class="xp"><span>Daily quest</span><div class="xpbar"><b style="width:${Math.min(100,td/GOAL*100)}%"></b></div><span>${Math.min(td,GOAL)}/${GOAL}</span>${S.streak>1&&S.lastDay===dayStr()?`<span class="tag">${S.streak}-day streak</span>`:''}</div>
   ${canStore?'':'<p class="note">This browser can’t save progress, so it resets when the page closes.</p>'}</div></section>
  <section class="strip bevel">${S.realm===2?`<div class="pieces">${STORY.filter(c=>c.realm===2).map(c=>gearIco(S.bosses[c.w]?'':'no')).join('')}</div><p>Sky gears: ${gears}/6. ${gears<6?'Beat the guardians to fix the Sky Engine!':'The Sky Realm is saved!'}</p>`:`<div class="pieces">${STORY.filter(c=>!c.realm).map(c=>pieceIco(S.bosses[c.w]?'':'no')).join('')}</div><p>Crystal pieces: ${got}/7. ${got<7?'Beat the bosses to win them back!':'You saved Block World!'}</p>`}<button class="btn green" id="goQuest">Story quest</button></section>
- <div class="realms"><button class="btn ${S.realm===1?'green':''}" data-realm="1">Overworld · Level 1</button><button class="btn ${S.realm===2?'green':'wood'}" data-realm="2">Sky Realm · Level 2${S.realm===2?'':' NEW'}</button></div>
+ <div class="realms"><button class="btn ${S.realm===1?'green':''}" data-realm="1">Overworld · Level 1</button><button class="btn ${S.realm===2?'green':'wood'}" data-realm="2">Sky Realm · Level 2${S.realm===2?'':skyOpen()?' NEW':` 🔒 ${skyCount()}/5`}</button></div>
  ${lastCheck()?(ensurePath(),`<section class="strip bevel"><p>Today’s path: ${S.path.m.filter(x=>x.done).length}/${S.path.m.length} missions done. Your level: ${rankName(avgScore(S.skill))}.</p><button class="btn green" id="goPath">Open my path</button></section>`):`<section class="strip bevel"><p>${S.realm===2?'New realm, new Skill Check! 20 questions find your Sky level and build your Level 2 path.':'Find your miner level! The Skill Check takes about 10 minutes and builds a training path just for you.'}</p><button class="btn green" id="goCheck">Start Skill Check</button></section>`}
  <section class="map">${WORLDS.filter(w=>(w.realm||1)===S.realm).map(w=>`<button class="biome bevel" data-w="${w.id}">${bossOpen(w.id)&&!S.bosses[w.id]?`<span class="bb">${bossSvg(w.id)}</span>`:''}<span class="sym">${w.sym}</span>${cube(w.top,w.side)}<h3>${w.name}</h3><small><span>${S.bosses[w.id]?'Boss beaten ✔':bossOpen(w.id)?'Boss ready!':w.d[0]}</span><span class="stars" style="font-size:16px">★${wStars(w.id)}/15</span></small></button>`).join('')}
  ${S.realm===1?`<button class="biome bevel" data-race="1"><span class="sym">60s</span>${cube('lamp','gold')}<h3>Speed Run</h3><small><span>Division facts in 60 seconds</span><span>Best ${S.best}</span></small></button>`:''}</section>${ground()}`;
@@ -993,9 +1002,9 @@ function renderHome(){
 function openWorld(id){
  const w=WMAP[id],m=$('#modal'),bo=bossOpen(id);
  m.innerHTML=`<div style="display:flex;align-items:center;gap:14px"><div style="width:76px">${cube(w.top,w.side)}</div><h2>${w.name}</h2></div>
- <div class="levels">${[1,2,3,4,5].map(l=>{const open=l===1||starsOf(id,l-1)>0;return `<button class="lv" data-l="${l}" ${open?'':'disabled'}><b style="background:${w.col}">${open?l:'✖'}</b><span>Level ${l}<br><small>${w.d[l-1]}</small></span><span class="stars">${starStr(starsOf(id,l))}</span></button>`}).join('')}
- <button class="lv boss" id="bossBtn" ${bo?'':'disabled'}><b style="background:#2a1c3a">${bossSvg(id)}</b><span>BOSS: ${BOSSES[id].n}<br><small>${S.bosses[id]?'Beaten! Fight again for gems.':bo?`${w.hp} HP. Every right answer hits it!`:'Get a star in Level 3 to unlock'}</small></span><span>${S.bosses[id]?'✔':''}</span></button></div>
- <p class="note">Each right answer here gives +1 ${MATS[w.mat].n} for crafting.</p>
+ <div class="levels">${[1,2,3,4,5].map(l=>{const open=levelOpen(id,l),bs=bestOf(id,l);return `<button class="lv" data-l="${l}" ${open?'':'disabled'}><b style="background:${w.col}">${open?l:'✖'}</b><span>Level ${l}${passed(id,l)?' ✔':''}<br><small>${open?w.d[l-1]+(bs?` · best ${bs}/10`:''):`Score ${passNeed()} of 10 in Level ${l-1} to open`}</small></span><span class="stars">${starStr(starsOf(id,l))}</span></button>`}).join('')}
+ <button class="lv boss" id="bossBtn" ${bo?'':'disabled'}><b style="background:#2a1c3a">${bossSvg(id)}</b><span>BOSS: ${BOSSES[id].n}<br><small>${S.bosses[id]?'Beaten! Fight again for gems.':bo?`${w.hp} HP. Every right answer hits it!`:`Score ${passNeed()} of 10 in Level 3 to unlock`}</small></span><span>${S.bosses[id]?'✔':''}</span></button></div>
+ <p class="note">You need ${passNeed()} out of 10 (${S.passMark}%) in a level to open the next one. Each right answer here gives +1 ${MATS[w.mat].n} for crafting.</p>
  <button class="btn" id="mClose" style="width:100%;margin-top:8px">Close</button>`;
  $('#veil').classList.add('on');
  m.querySelectorAll('.lv[data-l]:not([disabled])').forEach(b=>b.onclick=()=>{sfx.tap();closeModal();startLevel(id,+b.dataset.l)});
@@ -1061,19 +1070,19 @@ function endLevel(){
  if(Game.mode==='mission')return endMission();
  const c=Game.res.filter(Boolean).length,st=c>=9?3:c>=7?2:c>=5?1:0;let gain;
  if(Game.mode==='camp')gain=c*4;
- else{const key=Game.w+'-'+Game.l,prev=S.stars[key]||0;S.stars[key]=Math.max(prev,st);gain=c*2+Math.max(0,st-prev)*5}
+ else{const key=Game.w+'-'+Game.l,prev=S.stars[key]||0,wasPassed=passed(Game.w,Game.l);S.stars[key]=Math.max(prev,st);S.best[key]=Math.max(S.best[key]||0,c);gain=c*2+Math.max(0,st-prev)*5;Game.newPass=!wasPassed&&passed(Game.w,Game.l)}
  S.gems+=gain;save();bar();
- const canNext=Game.mode==='level'&&Game.l<5&&starsOf(Game.w,Game.l)>0,bossNow=Game.mode==='level'&&Game.l===3&&st>0&&!S.bosses[Game.w];
- app.innerHTML=`<section class="result bevel" id="res"><svg viewBox="0 0 12 15" style="width:96px;height:120px" aria-hidden="true"><use href="#p-hero-${st?'happy':'wow'}" width="12" height="15"/></svg><h2>${Game.mode==='camp'?'Training done!':st?'Level complete!':'Almost!'}</h2><div class="stars">${starStr(st)}</div><p>${c} out of 10 right</p><p style="display:flex;justify-content:center;align-items:center;gap:6px"><span style="width:24px;display:inline-block">${gemIco}</span>+${gain} gems</p>
+ const ok80=Game.mode==='level'&&c*10>=S.passMark,canNext=Game.mode==='level'&&Game.l<5&&levelOpen(Game.w,Game.l+1),bossNow=Game.mode==='level'&&Game.l===3&&ok80&&!S.bosses[Game.w];
+ app.innerHTML=`<section class="result bevel" id="res"><svg viewBox="0 0 12 15" style="width:96px;height:120px" aria-hidden="true"><use href="#p-hero-${st?'happy':'wow'}" width="12" height="15"/></svg><h2>${Game.mode==='camp'?'Training done!':Game.mode==='level'?(ok80?'Level passed!':'Almost!'):'Level complete!'}</h2><div class="stars">${starStr(st)}</div><p>${c} out of 10 right</p><p style="display:flex;justify-content:center;align-items:center;gap:6px"><span style="width:24px;display:inline-block">${gemIco}</span>+${gain} gems</p>
  ${bossNow?`<p style="color:var(--warm)">The ${BOSSES[Game.w].n} has appeared!</p>`:''}
- ${st===0?'<p class="note">Watch the trick video, then try again. You need 5 right to unlock the next level.</p>':''}
+ ${Game.mode==='level'?(ok80?(Game.newPass&&Game.l<5?`<p style="color:var(--good)">Passed! Level ${Game.l+1} is open.</p>`:''):`<p class="note">You need ${passNeed()} out of 10 to pass this level. You got ${c}. ${canNext?'The next level is already open, but try to beat '+passNeed()+' here too!':'Watch the trick video, then try again!'}</p>`):''}
  <div class="row"><button class="btn" id="rMap">Map</button><button class="btn wood" id="rAgain">Play again</button>${bossNow?'<button class="btn red" id="rBoss">Fight the boss!</button>':canNext?'<button class="btn green" id="rNext">Next level →</button>':''}</div></section>`;
  if(st){sfx.win();confetti($('#res'))}
  $('#rMap').onclick=()=>nav('home');
  $('#rAgain').onclick=()=>Game.mode==='camp'?startCamp():startLevel(Game.w,Game.l);
  if($('#rNext'))$('#rNext').onclick=()=>startLevel(Game.w,Game.l+1);
  if($('#rBoss'))$('#rBoss').onclick=()=>startBoss(Game.w);
- if(st===0&&Game.missed.length)setTimeout(()=>{if(!V.on)playTrick(Game.missed[0])},900);
+ if(Game.mode==='level'&&!ok80&&Game.missed.length)setTimeout(()=>{if(!V.on)playTrick(Game.missed[0])},900);
 }
 function startRace(){
  TOK++;Object.assign(Game,{mode:'race',left:60,res:[],missed:[],i:0});view='play';renderTabs();raceStep();
@@ -1136,7 +1145,7 @@ function bossLose(){
 }
 
 /* ---------- realms ---------- */
-function setRealm(r){if(r===S.realm)return;S.paths[S.realm]=S.path;S.realm=r;S.path=S.paths[r]||null;save();sfx.tap();if(view==='home')renderHome()}
+function setRealm(r){if(r===S.realm)return;if(r===2&&!skyOpen()){toast(`Pass Level 3 in ${5-skyCount()} more Overworld world${5-skyCount()===1?'':'s'} (${passNeed()} of 10) to open the Sky Realm!`);sfx.no();return}S.paths[S.realm]=S.path;S.realm=r;S.path=S.paths[r]||null;save();sfx.tap();if(view==='home')renderHome()}
 
 /* ---------- skill check ---------- */
 function startCheck(){
@@ -1282,9 +1291,9 @@ function renderQuest(){
  const got=STORY.filter(c=>!c.realm&&S.bosses[c.w]).length,gears=STORY.filter(c=>c.realm===2&&S.bosses[c.w]).length;
  const head=r=>r===2?`<div class="minehead" style="margin-top:28px"><h2>Book 2: The Sky Engine</h2><div class="pieces">${STORY.filter(c=>c.realm===2).map(c=>gearIco(S.bosses[c.w]?'':'no')).join('')}</div></div><p class="note">Win back the 6 Sky Gears. ${gears}/6 found.</p>`
   :`<div class="minehead"><h2>Book 1: The Number Crystal</h2><div class="pieces">${STORY.filter(c=>!c.realm).map(c=>pieceIco(S.bosses[c.w]?'':'no')).join('')}</div></div><p class="note">Win back the 7 pieces of the Number Crystal. ${got}/7 found.</p>`;
- app.innerHTML=`${STORY.map((c,i)=>{const un=chapUnlocked(i),w=WMAP[c.w],l3=starsOf(c.w,3)>0,beat=!!S.bosses[c.w];
+ app.innerHTML=`${STORY.map((c,i)=>{const un=chapUnlocked(i),w=WMAP[c.w],l3=bossOpen(c.w),beat=!!S.bosses[c.w];
   return `${i===0||(c.realm||1)!==(STORY[i-1].realm||1)?head(c.realm||1):''}<section class="chap bevel ${un?'':'lock'}">${bossSvg(c.w)}<div><h3>Chapter ${i+1}: ${c.t}</h3>
-  ${un?`<ul><li class="${l3?'ok':''}">${l3?'✔':'☐'} Get a star in ${w.name} Level 3</li><li class="${beat?'ok':''}">${beat?'✔':'☐'} Defeat the ${BOSSES[c.w].n}</li></ul>
+  ${un?`<ul><li class="${l3?'ok':''}">${l3?'✔':'☐'} Score ${passNeed()} of 10 in ${w.name} Level 3</li><li class="${beat?'ok':''}">${beat?'✔':'☐'} Defeat the ${BOSSES[c.w].n}</li></ul>
   <div class="btns"><button class="btn sm wood" data-story="${i}">▶ Story</button>${beat?`<button class="btn sm" data-out="${i}">▶ Ending</button>`:l3?`<button class="btn sm red" data-boss="${c.w}">Fight boss</button>`:`<button class="btn sm green" data-open="${c.w}">Go to ${w.name}</button>`}</div>`:'<p class="note">Beat the previous boss to unlock.</p>'}</div></section>`}).join('')}`;
  app.querySelectorAll('[data-story]').forEach(b=>b.onclick=()=>{const i=+b.dataset.story;S.seen[STORY[i].w+'-in']=1;save();playVideo(`Chapter ${i+1}: ${STORY[i].t}`,storyScenes(STORY[i],'intro'))});
  app.querySelectorAll('[data-out]').forEach(b=>b.onclick=()=>{const i=+b.dataset.out;playVideo(`Chapter ${i+1} ending`,storyScenes(STORY[i],'outro'))});
@@ -1383,6 +1392,8 @@ function renderParents(){
  app.innerHTML=`<section class="panel bevel"><h2>Parent settings</h2>
  <div class="set"><label for="pName">Child’s name</label><input type="text" id="pName" maxlength="24" value="${esc(S.name)}"></div>
  <div class="set"><label for="pEvery">Movement break every</label><select id="pEvery">${[30,45,60,90].map(n=>`<option value="${n}" ${S.breakEvery===n?'selected':''}>${n} minutes</option>`).join('')}</select></div>
+ <div class="set"><label for="pPass">Score needed to open the next level</label><select id="pPass">${[70,80,90].map(n=>`<option value="${n}" ${S.passMark===n?'selected':''}>${n}% (${n/10} of 10)</option>`).join('')}</select></div>
+ <div class="set"><label for="pSky">Open the Sky Realm now (skip the 5-world rule)</label><input type="checkbox" class="sw" id="pSky" ${S.skyUnlocked?'checked':''}></div>
  <div class="set"><label for="pLen">Break length</label><select id="pLen">${[3,5,10,15].map(n=>`<option value="${n}" ${S.breakLen===n?'selected':''}>${n} minutes</option>`).join('')}</select></div>
  ${sw('pAuto','Play the trick video automatically after a wrong answer',S.autoVideo)}${sw('pNar','Narrate trick and story videos',S.narrate)}${sw('pSp','Read every question aloud',S.speech)}${sw('pSo','Sound effects',S.sound)}
  <div class="row" style="justify-content:flex-start"><button class="btn sm wood" id="pBreak">Start a movement break now</button></div>
@@ -1406,8 +1417,8 @@ function renderParents(){
  <h3>Put it on the home screen</h3><ol class="howto"><li>iPhone or iPad: open this page in Safari, tap Share, then Add to Home Screen.</li><li>Android: open it in Chrome, tap the ⋮ menu, then Add to Home screen.</li><li>Windows: open it in Edge or Chrome, then use the menu to install it or pin the tab.</li></ol>
  <p class="note">Progress is saved in the browser on each device separately.</p>
  <div class="row" style="justify-content:flex-start;margin-top:22px"><button class="btn sm red" id="pReset">Reset all progress</button></div></section>`;
- const upd=()=>{S.name=$('#pName').value.trim()||'Recep Ateş';S.breakEvery=+$('#pEvery').value;S.breakLen=+$('#pLen').value;S.autoVideo=$('#pAuto').checked;S.narrate=$('#pNar').checked;S.speech=$('#pSp').checked;S.sound=$('#pSo').checked;save();bar()};
- $('#pName').oninput=upd;['pEvery','pLen','pAuto','pNar','pSp','pSo'].forEach(id=>$('#'+id).onchange=()=>{upd();toast('Saved')});
+ const upd=()=>{S.name=$('#pName').value.trim()||'Recep Ateş';S.breakEvery=+$('#pEvery').value;S.breakLen=+$('#pLen').value;S.passMark=+$('#pPass').value;S.skyUnlocked=$('#pSky').checked;S.autoVideo=$('#pAuto').checked;S.narrate=$('#pNar').checked;S.speech=$('#pSp').checked;S.sound=$('#pSo').checked;save();bar()};
+ $('#pName').oninput=upd;['pEvery','pLen','pPass','pSky','pAuto','pNar','pSp','pSo'].forEach(id=>$('#'+id).onchange=()=>{upd();toast('Saved')});
  $('#pBreak').onclick=startBreak;if($('#pSync'))$('#pSync').onclick=()=>syncNow(true);if($('#pOut'))$('#pOut').onclick=()=>logout();$('#pExport').onclick=exportProgress;$('#pImport').onchange=e=>{if(e.target.files[0])importProgress(e.target.files[0])};$('#pCheck').onclick=startCheck;
  let armed=false;$('#pReset').onclick=e=>{if(!armed){armed=true;e.target.textContent='Sure? Tap again';return}const keep={name:S.name,breakEvery:S.breakEvery,breakLen:S.breakLen};S=Object.assign(def(),keep);S.base=null;save();location.reload()};
 }
@@ -1481,7 +1492,7 @@ function makeSummary(){
  const wk=Date.now()-7*864e5,L=S.log.filter(x=>x.t>wk),days=Object.entries(S.sessions).filter(([d])=>new Date(d)>=new Date(wk-864e5));
  return {stars:totStars(),gems:S.gems,total:S.total,week:L.length,weekRight:L.filter(x=>x.ok).length,streak:S.streak,bosses:Object.keys(S.bosses).length,
   lvl1:lastCheck(1)?avgScore(S.skill,1):null,lvl2:lastCheck(2)?avgScore(S.skill,2):null,rank:rankName(avgScore(S.skill,S.realm),S.realm),realm:S.realm,
-  skills:Object.fromEntries([...SK1,...SK2].filter(x=>S.skill[x.id]!=null).map(x=>[x.id,S.skill[x.id]])),weak:weakFacts().slice(0,8),slow:slowFacts().slice(0,8),pace:Object.fromEntries(Object.entries(S.pace||{}).map(([k,v])=>[k,+(median(v)/1000).toFixed(1)])),minutesWeek:Math.round(days.reduce((a,[,v])=>a+v,0)/60)};
+  skills:Object.fromEntries([...SK1,...SK2].filter(x=>S.skill[x.id]!=null).map(x=>[x.id,S.skill[x.id]])),passed:Object.keys(S.best||{}).filter(k=>S.best[k]*10>=S.passMark).length,weak:weakFacts().slice(0,8),slow:slowFacts().slice(0,8),pace:Object.fromEntries(Object.entries(S.pace||{}).map(([k,v])=>[k,+(median(v)/1000).toFixed(1)])),minutesWeek:Math.round(days.reduce((a,[,v])=>a+v,0)/60)};
 }
 const slimState=()=>Object.assign({},S,{log:S.log.slice(-800)});
 async function syncNow(manual){
