@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Block Math Quest · Teacher</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:light;--ui:#c6c6c6;--hi:#fff;--lo:#555;--ink:#1a1a1a;--mute:#3f3f3f;--slot:#8b8b8b;--good:#4caf3a;--bad:#d9412b}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:linear-gradient(180deg,#86ccff,#d4efff 75%) fixed;color:var(--ink);font:500 16px/1.5 Lexend,system-ui,sans-serif}
+h1,h2,h3{margin:0;line-height:1.15}
+.wrap{max-width:1180px;margin:0 auto;padding:20px max(3vw,12px) 40px}
+.bevel{background:var(--ui);box-shadow:inset 3px 3px 0 var(--hi),inset -3px -3px 0 var(--lo),0 0 0 3px #111}
+.card{padding:18px;margin-bottom:18px}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:4px 14px;font:700 16px Lexend,sans-serif;color:#fff;cursor:pointer;border:0;background:#7d7d7d;box-shadow:inset 3px 3px 0 #b3b3b3,inset -3px -3px 0 #444,0 0 0 2px #111}
+.btn.green{background:#4caf3a;box-shadow:inset 3px 3px 0 #82df63,inset -3px -3px 0 #2a6b1e,0 0 0 2px #111}
+.btn.red{background:#c0392b;box-shadow:inset 3px 3px 0 #ea6a5a,inset -3px -3px 0 #6d1a12,0 0 0 2px #111}
+.btn:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid #ffde3b;outline-offset:2px}
+input,textarea,select{font:500 16px Lexend,sans-serif;min-height:44px;padding:6px 10px;border:0;background:#e9e9e9;color:var(--ink);box-shadow:inset 2px 2px 0 var(--lo),inset -2px -2px 0 var(--hi)}
+textarea{width:100%;min-height:220px;font-family:ui-monospace,monospace}
+label{display:grid;gap:4px;font-weight:700}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:12px;align-items:end}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:12px}
+.note{color:var(--mute);font-size:14px;margin:6px 0}
+.scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:15px}
+th,td{padding:8px 6px;border-bottom:2px solid var(--lo);text-align:left;vertical-align:top}
+th{font-weight:800;white-space:nowrap}
+td.n,th.n{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+.pill{display:inline-block;padding:1px 8px;font-weight:800;font-size:13px;box-shadow:0 0 0 1px #111;white-space:nowrap}
+.weak span{display:inline-block;background:#ffd6cf;color:#7d1f10;padding:0 6px;margin:2px;font-weight:700;font-size:13px}
+.sk{display:grid;grid-template-columns:minmax(0,1fr) 40% 60px;gap:10px;align-items:center;padding:4px 0;border-bottom:1px solid var(--lo)}
+.skb{height:14px;background:var(--slot);box-shadow:0 0 0 1px #111}.skb b{display:block;height:100%}
+.veil{position:fixed;inset:0;background:rgba(5,10,25,.55);display:none;place-items:center;padding:14px;z-index:9}
+.veil.on{display:grid}.modal{width:min(640px,100%);max-height:88vh;overflow:auto;padding:20px}
+.msg{font-weight:700}.err{color:var(--bad)}
+@media(max-width:600px){.sk{grid-template-columns:minmax(0,1fr) 60px}.skb{grid-column:1/-1;grid-row:2}}
+</style>
+</head>
+<body>
+<main class="wrap">
+ <h1 style="font-size:clamp(26px,4vw,36px);margin-bottom:6px">Block Math Quest · Teacher and parent page</h1>
+ <p class="note" style="margin-bottom:16px">See how each child is doing. Only first names and class numbers are stored.</p>
+
+ <section class="card bevel" id="loginCard">
+  <h2 style="margin-bottom:10px">Sign in</h2>
+  <form id="lf" class="grid">
+   <label>Class code<input id="lc" autocomplete="off" style="text-transform:uppercase" placeholder="2A-LARA"></label>
+   <label>Teacher PIN<input id="lp" type="password" autocomplete="off" inputmode="numeric"></label>
+   <label>Admin key (optional)<input id="la" type="password" autocomplete="off"></label>
+   <button class="btn green">Open</button>
+  </form>
+  <p class="note">Teachers use the class code and teacher PIN. The admin key also lets you create classes and edit class lists.</p>
+  <p class="msg err" id="lm"></p>
+ </section>
+
+ <section id="dash" hidden></section>
+
+ <section class="card bevel" id="admin" hidden>
+  <h2 style="margin-bottom:10px">Classes (admin)</h2>
+  <p class="note" id="clist"></p>
+  <div class="grid">
+   <label>Class code<input id="ac" placeholder="2A-LARA" style="text-transform:uppercase"></label>
+   <label>Class name<input id="an" placeholder="2-A Bahçeşehir Lara"></label>
+   <label>Teacher PIN (leave empty to keep)<input id="ap" inputmode="numeric" autocomplete="off"></label>
+   <button class="btn" id="aLoad" type="button">Load class</button>
+  </div>
+  <label style="margin-top:12px">Class list: one child per line, number then first name
+   <textarea id="ar" placeholder="1 Ada&#10;2 Kerem&#10;7 Recep"></textarea></label>
+  <div class="row"><button class="btn green" id="aSave" type="button">Save class</button><span class="msg" id="am"></span></div>
+ </section>
+</main>
+<div class="veil" id="veil"><div class="modal bevel" id="modal"></div></div>
+<script>
+{
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const SKN={d1:'÷2, ÷5, ÷10 facts',d2:'÷3, ÷4 facts',d3:'÷6, ÷7 facts',d4:'÷8, ÷9 facts',d5:'÷11, ÷12 facts',meaning:'Sharing and grouping',family:'Fact families',rem:'Remainders',story:'Word problems',bigdiv:'Dividing big numbers',frac:'Fractions of numbers',mult:'Multiplication',stack:'Stack math (L2)',longdiv:'Long division (L2)',twodig:'Two-digit divisors (L2)',factors:'Factors and primes (L2)',mean:'Averages (L2)',frac2:'Fractions 2 (L2)'};
+const band=v=>v>=90?'#4caf3a':v>=70?'#9fcf2a':v>=40?'#f6c935':'#d9412b';
+let AUTH={};
+async function api(b){const r=await fetch('/api/mq',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(Object.assign({},AUTH,b))});const d=await r.json().catch(()=>({}));if(!r.ok)throw new Error(d.error||'HTTP '+r.status);return d}
+const ago=t=>{if(!t)return 'never';const m=Math.round((Date.now()-t)/60000);return m<60?m+' min ago':m<1440?Math.round(m/60)+' h ago':Math.round(m/1440)+' days ago'};
+const pct=v=>v==null?'–':`<span class="pill" style="background:${band(v)}">${v}%</span>`;
+
+$('#lf').onsubmit=async e=>{e.preventDefault();
+ const code=$('#lc').value.toUpperCase().trim(),pin=$('#lp').value.trim(),admin=$('#la').value.trim();
+ AUTH={pin:pin||undefined,admin:admin||undefined};$('#lm').textContent='';
+ try{
+  if(admin){const r=await api({action:'classes'});$('#admin').hidden=false;$('#clist').innerHTML=r.classes.length?'Your classes: '+r.classes.map(c=>`<b>${esc(c.code)}</b> (${esc(c.name)})`).join(', '):'No classes yet. Create the first one below.'}
+  if(code){await loadDash(code)}else if(!admin){$('#lm').textContent='Enter a class code.'}
+  $('#loginCard').hidden=true;
+ }catch(err){$('#lm').textContent=err.message}
+};
+async function loadDash(code){
+ const r=await api({action:'dash',code});AUTH.code=code;
+ const rows=r.roster;
+ const played=rows.filter(x=>x.summary),week=rows.reduce((a,x)=>a+(x.summary?x.summary.weekRight:0),0);
+ $('#dash').hidden=false;
+ $('#dash').innerHTML=`<section class="card bevel"><div class="row" style="margin:0 0 10px;justify-content:space-between"><h2>${esc(r.name)} <span class="note">(${esc(r.code)})</span></h2><button class="btn" id="rf">Refresh</button></div>
+ <p class="note">${played.length} of ${rows.length} children have played. Right answers this week, whole class: ${week}. Weak facts are the division facts each child gets wrong most.</p>
+ <div class="scroll"><table><thead><tr><th>#</th><th>Name</th><th>Last played</th><th class="n">Right / tried (7 days)</th><th class="n">Minutes (7 days)</th><th class="n">Stars</th><th class="n">Bosses</th><th class="n">Level 1</th><th class="n">Level 2</th><th>Weak facts</th><th></th></tr></thead><tbody>
+ ${rows.map(x=>{const s=x.summary;return `<tr><td>${esc(x.id)}</td><td><b>${esc(x.name)}</b></td><td>${s?ago(s.at):'not yet'}</td><td class="n">${s?`${s.weekRight} / ${s.week}`:'–'}</td><td class="n">${s?s.minutesWeek:'–'}</td><td class="n">${s?s.stars:'–'}</td><td class="n">${s?s.bosses:'–'}</td><td class="n">${s?pct(s.lvl1):'–'}</td><td class="n">${s?pct(s.lvl2):'–'}</td><td class="weak">${s&&s.weak.length?s.weak.slice(0,5).map(w=>`<span>${esc(w)}</span>`).join(''):''}</td>
+ <td><div class="row" style="margin:0;flex-wrap:nowrap">${s?`<button class="btn" data-d="${esc(x.id)}">Skills</button>`:''}<button class="btn red" data-r="${esc(x.id)}" title="Child forgot the pictures">Reset pictures</button></div></td></tr>`}).join('')}
+ </tbody></table></div></section>`;
+ $('#rf').onclick=()=>loadDash(code);
+ document.querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{const x=rows.find(y=>y.id===b.dataset.d),s=x.summary;
+  $('#modal').innerHTML=`<h2>${esc(x.name)}</h2><p class="note">${esc(s.rank||'')} · streak ${s.streak} days · ${s.total} questions answered in total</p>
+  ${Object.keys(SKN).filter(k=>s.skills[k]!=null).map(k=>`<div class="sk"><span>${SKN[k]}</span><div class="skb"><b style="width:${Math.max(3,s.skills[k])}%;background:${band(s.skills[k])}"></b></div><span class="n" style="text-align:right;font-weight:800">${s.skills[k]}%</span></div>`).join('')||'<p>No Skill Check yet.</p>'}
+  <p class="weak" style="margin-top:12px">${s.weak.map(w=>`<span>${esc(w)}</span>`).join('')}</p><div class="row"><button class="btn" id="mc">Close</button></div>`;
+  $('#veil').classList.add('on');$('#mc').onclick=()=>$('#veil').classList.remove('on')});
+ document.querySelectorAll('[data-r]').forEach(b=>b.onclick=async()=>{const x=rows.find(y=>y.id===b.dataset.r);
+  if(b.dataset.armed!=='1'){b.dataset.armed='1';b.textContent='Sure? Tap again';return}
+  try{await api({action:'resetPics',code,id:x.id});b.textContent='Reset done';b.disabled=true}catch(err){b.textContent=err.message}});
+}
+$('#veil').onclick=e=>{if(e.target.id==='veil')$('#veil').classList.remove('on')};
+$('#aLoad').onclick=async()=>{const code=$('#ac').value.toUpperCase().trim();$('#am').textContent='';
+ try{const r=await api({action:'getClass',code});$('#an').value=r.name;$('#ar').value=r.roster.map(x=>x.id+' '+x.name).join('\n');$('#am').textContent=`Loaded ${r.roster.length} children.${r.hasTeacherPin?' A teacher PIN is set.':' No teacher PIN yet.'}`}
+ catch(err){$('#am').textContent=err.message}};
+$('#aSave').onclick=async()=>{const code=$('#ac').value.toUpperCase().trim();
+ const roster=$('#ar').value.split(/\n+/).map(l=>l.trim()).filter(Boolean).map(l=>{const m=l.match(/^(\d{1,3})[\s.,;:-]+(.+)$/);return m?{id:String(+m[1]),name:m[2].trim()}:null}).filter(Boolean);
+ $('#am').textContent='Saving…';
+ try{const r=await api({action:'saveClass',code,name:$('#an').value,teacherPin:$('#ap').value.trim()||undefined,roster});
+  $('#am').textContent=`Saved ${r.count} children.${r.hasTeacherPin?'':' Add a teacher PIN so the teacher can open this page.'} Children log in at ilk-er.com/mathquest with the code ${code}.`;
+  const c=await api({action:'classes'});$('#clist').innerHTML='Your classes: '+c.classes.map(x=>`<b>${esc(x.code)}</b> (${esc(x.name)})`).join(', ')}
+ catch(err){$('#am').textContent=err.message}};
+}
+</script>
+</body>
+</html>
