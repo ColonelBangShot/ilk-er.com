@@ -333,6 +333,10 @@ td.n,th.n{text-align:right;white-space:nowrap}
 .lgpad{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;max-width:420px;margin:0 auto}
 .lgpad .slot{min-height:100px}
 .lgpad svg{width:56px;height:56px}
+/* pause */
+.brk.pz{background:linear-gradient(180deg,#1b2550,#0d1433)}
+.pz .brkin .me{animation:none}
+#pauseBtn{cursor:pointer;color:var(--ink)}
 /* break */
 .brk{position:fixed;inset:0;z-index:90;display:none;overflow:auto;padding:max(16px,env(safe-area-inset-top)) 16px 24px;background:linear-gradient(180deg,#5cb135,#3d8a22)}
 .brk.on{display:block}
@@ -360,12 +364,14 @@ td.n,th.n{text-align:right;white-space:nowrap}
  <div class="pill bevel" title="Gems"><svg viewBox="0 0 7 7"><use href="#p-gem" width="7" height="7"/></svg><span id="gems">0</span></div>
  <div class="pill bevel" title="Stars"><span style="color:#ffd21f;text-shadow:1px 1px 0 #111">★</span><span id="starsTot">0</span></div>
  <div class="pill bevel" title="Time until movement break">⏱ <span id="brkLeft">60m</span></div>
+ <button class="pill bevel" id="pauseBtn" title="Pause the game and rest"><b style="letter-spacing:-2px">||</b> Pause</button>
 </header>
 <main class="wrap" id="app"></main>
 <nav class="tabs" id="tabs"></nav>
 <div class="veil" id="veil"><div class="modal bevel" id="modal"></div></div>
 <div class="theater" id="th"></div>
 <section class="brk" id="brk" aria-live="polite"></section>
+<section class="brk pz" id="pz" aria-live="polite"></section>
 <section class="login" id="login" aria-live="polite"></section>
 <div class="toast bevel" id="toast"></div>
 
@@ -992,7 +998,7 @@ function askQ(el,q,o){
  const t0=performance.now(),allow=S.speech&&!o.race?readTxt.split(/\s+/).length*330:0;
  let locked=false;
  el.querySelectorAll('.ans').forEach(btn=>btn.onclick=()=>{
-  if(locked||S.breakPending)return;locked=true;
+  if(locked||S.breakPending||S.pausedAt)return;locked=true;
   const ok=String(q.ans)===btn.dataset.v,ms=Math.max(0,performance.now()-t0-allow);q.ms=ms;record(q,ok,ms);
   el.querySelectorAll('.ans').forEach(b=>b.disabled=true);
   const bud=el.querySelector('#bud'),qb=el.querySelector('.expr .q');
@@ -1049,7 +1055,7 @@ function endLevel(){
 function startRace(){
  TOK++;Object.assign(Game,{mode:'race',left:60,res:[],missed:[],i:0});view='play';renderTabs();raceStep();
  clearInterval(Game.timer);const tok=TOK;
- Game.timer=setInterval(()=>{if(tok!==TOK){clearInterval(Game.timer);return}if(S.breakPending||V.on)return;Game.left--;const e=$('#tm');if(e)e.textContent=Game.left;if(Game.left<=5&&Game.left>0)tone(880,.05);if(Game.left<=0){clearInterval(Game.timer);endRace()}},1000);
+ Game.timer=setInterval(()=>{if(tok!==TOK){clearInterval(Game.timer);return}if(S.breakPending||V.on||S.pausedAt)return;Game.left--;const e=$('#tm');if(e)e.textContent=Game.left;if(Game.left<=5&&Game.left>0)tone(880,.05);if(Game.left<=0){clearInterval(Game.timer);endRace()}},1000);
 }
 function raceStep(){
  const q=Math.random()<.75?gen('mine',5):gen('family',4);
@@ -1362,7 +1368,7 @@ function renderParents(){
  <div class="legend"><span><i style="background:#4caf3a"></i>90%+</span><span><i style="background:#b5d334"></i>70–89%</span><span><i style="background:#f6c935"></i>50–69%</span><span><i style="background:#d9412b"></i>under 50%</span></div>
  ${[1,2].map(r=>{const L=S.checks.filter(c=>(c.r||1)===r);return `<h3>Skill profile, Level ${r}${r===2?' (Sky Realm)':''}</h3>${L.length?`<p class="note">Level now: ${rankName(avgScore(S.skill,r),r)} (${avgScore(S.skill,r)}%). First check: ${L[0].d}, ${L[0].o}%. Checks taken: ${L.map(c=>c.d+' '+c.o+'%').join(' · ')}</p>${skillBars(S.skill,L[0].s,r)}<p class="note">Arrows compare today’s skill levels with his first check.</p>`:'<p class="note">No Skill Check for this level yet.</p>'}`}).join('')}
  <div class="row" style="justify-content:flex-start"><button class="btn sm green" id="pCheck">Start a Skill Check (current level)</button></div>
- <h3>Progress</h3><p class="note">Answered today: ${td} · Total: ${S.total} · Streak: ${S.streak} day${S.streak===1?'':'s'} · Bosses beaten: ${Object.keys(S.bosses).length}/7 · Deepest mine: ${S.mine?S.mine.best:0}m</p>
+ <h3>Progress</h3><p class="note">Answered today: ${td} · Total: ${S.total} · Streak: ${S.streak} day${S.streak===1?'':'s'} · Bosses beaten: ${Object.keys(S.bosses).length}/7 · Deepest mine: ${S.mine?S.mine.best:0}m · Rest pauses today: ${(S.rests&&S.rests[dayStr()])?S.rests[dayStr()].n+' ('+S.rests[dayStr()].min+' min)':0}</p>
  <div class="scroll"><table><thead><tr><th>Biome</th><th class="n">Questions</th><th class="n">Right</th><th class="n">Stars</th><th class="n">Boss</th></tr></thead><tbody>
  ${WORLDS.map(w=>{const s=S.stats[w.id]||{q:0,c:0};return `<tr><td>${w.name}</td><td class="n">${s.q}</td><td class="n">${s.q?Math.round(s.c/s.q*100)+'%':'–'}</td><td class="n">${wStars(w.id)}/15</td><td class="n">${S.bosses[w.id]?'✔':'–'}</td></tr>`}).join('')}
  </tbody></table></div>
@@ -1378,6 +1384,35 @@ function renderParents(){
  $('#pBreak').onclick=startBreak;if($('#pSync'))$('#pSync').onclick=()=>syncNow(true);if($('#pOut'))$('#pOut').onclick=()=>logout();$('#pExport').onclick=exportProgress;$('#pImport').onchange=e=>{if(e.target.files[0])importProgress(e.target.files[0])};$('#pCheck').onclick=startCheck;
  let armed=false;$('#pReset').onclick=e=>{if(!armed){armed=true;e.target.textContent='Sure? Tap again';return}const keep={name:S.name,breakEvery:S.breakEvery,breakLen:S.breakLen};S=Object.assign(def(),keep);S.base=null;save();location.reload()};
 }
+
+/* ---------- pause (unplanned rest) ---------- */
+let pzTick=null;
+function pauseGame(){
+ if(S.breakPending||S.pausedAt)return;
+ S.pausedAt=Date.now();save();showPause();
+}
+function showPause(){
+ stopVideo();try{speechSynthesis.cancel()}catch(e){}closeModal();
+ const el=$('#pz');el.classList.add('on');
+ el.innerHTML=`<div class="brkin bevel"><svg class="me" viewBox="0 0 12 15" aria-hidden="true"><use href="#p-hero-happy" width="12" height="15"/></svg>
+ <h2>Paused</h2><p style="font-weight:700;font-size:19px">Take a rest, ${esc(first())}. Your progress is saved and nothing counts while the game is paused.</p>
+ <div class="clock" id="pzClk">0:00</div><p class="note">Resting time</p>
+ <div class="ex"><div><b>Drink some water</b><span>A full glass helps your brain.</span></div><div><b>Stretch</b><span>Reach up high, then touch your toes.</span></div><div><b>Rest your eyes</b><span>Look at something far away.</span></div></div>
+ <button class="btn green" id="pzGo">▶ Resume the game</button>
+ <p class="note" style="margin-top:10px">Rest ${S.breakLen} minutes or more and it counts as your movement break.</p></div>`;
+ const tick=()=>{const t=Math.max(0,Date.now()-(S.pausedAt||Date.now())),m=Math.floor(t/60000),sx=Math.floor(t%60000/1000);const c=$('#pzClk');if(c)c.textContent=m+':'+String(sx).padStart(2,'0')};
+ clearInterval(pzTick);pzTick=setInterval(tick,500);tick();
+ $('#pzGo').onclick=resumeGame;
+}
+function resumeGame(){
+ if(!S.pausedAt)return;
+ const dur=Date.now()-S.pausedAt,d=dayStr();S.pausedAt=0;
+ S.rests=S.rests||{};const r=S.rests[d]||(S.rests[d]={n:0,min:0});r.n++;r.min+=Math.round(dur/60000);
+ const longRest=dur>=S.breakLen*60000;if(longRest)S.playSec=0;
+ save();clearInterval(pzTick);$('#pz').classList.remove('on');updBrk();sfx.tap();
+ toast(longRest?'Welcome back! That rest counted as your movement break.':'Welcome back! Let’s keep going.');
+}
+$('#pauseBtn').onclick=pauseGame;
 
 /* ---------- movement breaks ---------- */
 const MOVES=[['Jump rope','50 skips'],['Jumping jacks','20 jumps'],['Squats','12 squats'],['Light dumbbell curls','10 with each arm. Ask a grown-up which weight to use.'],['High knees','Run on the spot for 30 seconds'],['Wall push-ups','10 push-ups against the wall'],['Plank','Hold for 20 seconds'],['Frog jumps','10 big jumps'],['Star stretch','Reach for the sky for 10 seconds, 3 times']];
@@ -1401,7 +1436,7 @@ function showBreak(){
 }
 function updBrk(){const left=Math.max(0,S.breakEvery*60-S.playSec);$('#brkLeft').textContent=left>=60?Math.ceil(left/60)+'m':left+'s'}
 setInterval(()=>{
- if(document.hidden||S.breakPending)return;
+ if(document.hidden||S.breakPending||S.pausedAt)return;
  S.playSec++;const lim=S.breakEvery*60;const dd=dayStr();S.sessions[dd]=(S.sessions[dd]||0)+1;
  if(S.playSec===lim-300)toast('5 more minutes, then a movement break!');
  if(S.playSec>=lim){startBreak();return}
@@ -1495,7 +1530,7 @@ function loginDone(r){
  const srv=r.state;S=Object.assign(def(),(srv&&(!local||(srv.savedAt||0)>=(local.savedAt||0)))?srv:(local||{}));
  normalizeS();ensureBase();save();$('#login').classList.remove('on');boot();if(!srv){dirty=true;syncNow()}
 }
-function boot(){normalizeS();ensureBase();bar();renderTabs();view='home';renderHome();if(S.breakPending)showBreak()}
+function boot(){normalizeS();ensureBase();bar();renderTabs();view='home';renderHome();if(S.breakPending)showBreak();else if(S.pausedAt)showPause()}
 if(API&&!SESSION&&!localStorage.getItem('bmq_offline'))showLogin();
 else{boot();if(SESSION&&API)pullServer()}
 }
