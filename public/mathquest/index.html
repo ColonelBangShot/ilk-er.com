@@ -678,7 +678,30 @@ Object.assign(G,{
 });
 function fracQ(dens,unit){const den=pick(dens),num=unit||den===2?1:R(2,den-1),q=R(2,12),n=den*q;
  return {w:'big',key:`${num}/${den} of ${n}`,ex:{k:'frac',num,den,n},prompt:`What is ${num}/${den} of ${n}?`,show:'',ans:num*q,vis:'',hint:think(`${n} ÷ ${den} = ${q}${num>1?`, then × ${num}`:''}`),say:`What is ${num} over ${den} of ${n}?`}}
-function gen(w,l){const t=WMAP[w].tex,q=G[w](l,t);q.w=w;q.sk=skillOf(q);return q}
+function genBase(w,l){const t=WMAP[w].tex,q=G[w](l,t);q.w=w;q.sk=skillOf(q);q.lv=l;return q}
+/* hidden adaptive engine: per-world comfort level ("flow") moves with speed and accuracy */
+function gen(w,l){
+ const on=['play','boss','mine'].includes(view)&&!['check','race'].includes(Game.mode);
+ if(!on||!S.flow)return genBase(w,l);
+ if(S.flow[w]==null)S.flow[w]=l;
+ const bias=Math.max(-1,Math.min(1,Math.round(S.flow[w]-l))),eff=Math.max(1,Math.min(5,l+bias));
+ if(['mine','family','share'].includes(w)&&Math.random()<.25){const pool=[...slowFacts(),...weakFacts()].filter(k=>{const d=+k.split('÷')[1];return d>=2&&d<=12});
+  if(pool.length){const [n,d]=pick(pool.slice(0,12)).split('÷').map(Number);return Object.assign(factQ(n,d,WMAP[w].tex),{w,sk:dsk(d),lv:l,adapt:'focus'})}}
+ const q=genBase(w,eff);q.adapt=eff-l;q.lvBase=l;return q;
+}
+const median=a=>{if(!a||!a.length)return null;const b=a.slice().sort((x,y)=>x-y);return b[Math.floor(b.length/2)]};
+function slowFacts(){return Object.entries(S.factPace||{}).filter(([k,v])=>v.length>=2&&median(v)>6500).sort((a,b)=>median(b[1])-median(a[1])).map(e=>e[0])}
+function updatePace(q,ok,ms,inBounds){
+ if(Game.mode==='check')return;
+ S.flow=S.flow||{};S.pace=S.pace||{};S.factPace=S.factPace||{};
+ const sk=q.sk||skillOf(q),limit=fastMs(q),fast=inBounds&&ms<limit*.6,slow=!inBounds||ms>limit;
+ if(q.w&&q.lv!=null){const f=S.flow[q.w]??(q.lvBase||q.lv);let d=0;
+  if(!ok)d=-.35;else if(q.hinted)d=0;else if(fast)d=.2;else if(slow)d=-.03;else d=.08;
+  S.flow[q.w]=Math.max(1,Math.min(5,Math.round((f+d)*100)/100))}
+ if(ok&&inBounds&&sk){(S.pace[sk]=S.pace[sk]||[]).push(Math.round(ms));if(S.pace[sk].length>20)S.pace[sk].shift()}
+ if(q.ex&&q.ex.k==='div'&&q.ex.d<=12){const k=q.ex.n+'÷'+q.ex.d;
+  if(ok&&inBounds&&!q.hinted){(S.factPace[k]=S.factPace[k]||[]).push(Math.round(ms));if(S.factPace[k].length>5)S.factPace[k].shift()}}
+}
 /* ---------- skills ---------- */
 const SK1=[{id:'d1',n:'÷2, ÷5 and ÷10 facts',w:'mine'},{id:'d2',n:'÷3 and ÷4 facts',w:'mine'},{id:'d3',n:'÷6 and ÷7 facts',w:'mine'},{id:'d4',n:'÷8 and ÷9 facts',w:'mine'},{id:'d5',n:'÷11 and ÷12 facts',w:'mine'},
  {id:'meaning',n:'Sharing and grouping',w:'share'},{id:'family',n:'Fact families',w:'family'},{id:'rem',n:'Remainders',w:'rem'},{id:'story',n:'Word problems',w:'story'},{id:'bigdiv',n:'Dividing big numbers',w:'big'},{id:'frac',n:'Fractions of numbers',w:'big'},{id:'mult',n:'Multiplication',w:'mult'}];
@@ -944,7 +967,7 @@ let view='home';
 const TABS=[['home','Map','grasstop'],['path','Path','gem'],['quest','Quest','planks'],['mine','Mine','ironore'],['craft','Craft','log'],['base','Base','brick'],['par','Parents','lamp']];
 function renderTabs(){$('#tabs').innerHTML=TABS.map(([k,n,t])=>`<button class="tab" data-v="${k}" aria-current="${view===k}">${tsvg(t)}<span>${n}</span></button>`).join('');$('#tabs').querySelectorAll('.tab').forEach(b=>b.onclick=()=>{sfx.tap();nav(b.dataset.v)})}
 function nav(v){
- view=v;TOK++;clearInterval(Game.timer);stopVideo();closeModal();window.scrollTo(0,0);bar();renderTabs();
+ view=v;TOK++;Game.mode='';clearInterval(Game.timer);stopVideo();closeModal();window.scrollTo(0,0);bar();renderTabs();
  ({home:renderHome,path:renderPath,quest:renderQuest,mine:renderMine,craft:renderCraft,base:renderBase,par:renderGate})[v]();
 }
 const ground=()=>`<div class="ground" aria-hidden="true">${tsvg('grass').repeat(30)}</div>`;
@@ -993,13 +1016,13 @@ function askQ(el,q,o){
   <div class="answers">${q.ch.map(v=>`<button class="ans" data-v="${esc(v)}">${esc(v)}</button>`).join('')}</div><div class="after" id="after"></div></div>`;
  const readTxt=q.say||q.prompt;
  el.querySelector('#spk').onclick=()=>say(readTxt);
- if(el.querySelector('#hnt'))el.querySelector('#hnt').onclick=e=>{el.querySelector('#vis').innerHTML=q.hint;e.target.remove()};
+ if(el.querySelector('#hnt'))el.querySelector('#hnt').onclick=e=>{el.querySelector('#vis').innerHTML=q.hint;q.hinted=true;e.target.remove()};
  if(S.speech&&!o.race)setTimeout(()=>{if(!V.on)say(readTxt)},250);
- const t0=performance.now(),allow=S.speech&&!o.race?readTxt.split(/\s+/).length*330:0;
+ const t0=performance.now(),pz0=PZMS,allow=S.speech&&!o.race?readTxt.split(/\s+/).length*330:0;
  let locked=false;
  el.querySelectorAll('.ans').forEach(btn=>btn.onclick=()=>{
   if(locked||S.breakPending||S.pausedAt)return;locked=true;
-  const ok=String(q.ans)===btn.dataset.v,ms=Math.max(0,performance.now()-t0-allow);q.ms=ms;record(q,ok,ms);
+  const ok=String(q.ans)===btn.dataset.v,ms=Math.max(0,performance.now()-t0-allow-(PZMS-pz0)),inB=ms<90000;q.ms=ms;record(q,ok,inB?ms:null);updatePace(q,ok,ms,inB);
   el.querySelectorAll('.ans').forEach(b=>b.disabled=true);
   const bud=el.querySelector('#bud'),qb=el.querySelector('.expr .q');
   if(qb){qb.textContent=q.ans;qb.classList.add('fill')}
@@ -1075,7 +1098,7 @@ function endRace(){
 /* ---------- boss battles ---------- */
 const B={};
 function startBoss(w){
- TOK++;const wd=WMAP[w];Object.assign(B,{w,hp:wd.hp,max:wd.hp,hearts:maxHearts(),maxH:maxHearts(),missed:[],hits:0});view='boss';renderTabs();
+ TOK++;Game.mode='boss';const wd=WMAP[w];Object.assign(B,{w,hp:wd.hp,max:wd.hp,hearts:maxHearts(),maxH:maxHearts(),missed:[],hits:0});view='boss';renderTabs();
  const ch=STORY.findIndex(c=>c.w===w);
  const go=()=>bossStep();
  if(ch>=0&&chapUnlocked(ch)&&!S.seen[w+'-in']){S.seen[w+'-in']=1;save();playVideo(`Chapter ${ch+1}: ${STORY[ch].t}`,storyScenes(STORY[ch],'intro'),{onEnd:go});bossFrame()}
@@ -1230,7 +1253,7 @@ function progressData(){
  const med=a=>{const b=a.slice().sort((p,q)=>p-q);return b.length?Math.round(b[Math.floor(b.length/2)]):null};
  return {app:'Block Math Quest',format:1,exported:new Date().toISOString(),player:S.name,
   summary:{currentRealm:S.realm,level1:{level:rankName(avgScore(S.skill,1),1),overall:avgScore(S.skill,1)},level2:lastCheck(2)?{level:rankName(avgScore(S.skill,2),2),overall:avgScore(S.skill,2)}:'no Sky Skill Check yet',skills:Object.fromEntries([...SK1,...SK2].map(x=>[x.n,S.skill[x.id]??null])),medianMsCorrectBySkill:Object.fromEntries(Object.entries(bySk).map(([k,v])=>[k,med(v)])),totalAnswered:S.total,streak:S.streak,minutesByDay:Object.fromEntries(Object.entries(S.sessions).map(([d,sec])=>[d,Math.round(sec/60)])),bossesBeaten:Object.keys(S.bosses),deepestMine:S.mine?S.mine.best:0,crafted:Object.keys(S.crafted)},
-  skillChecks:S.checks,todayPath:S.path,otherPaths:S.paths,pathHistory:S.pathHist,reviewQueue:S.sr,factAccuracy:facts,biomes:stats,mostMissed:Object.entries(S.missed).sort((a,b)=>b[1]-a[1]).slice(0,40),answerLog:S.log,state:Object.assign({},S,{log:[]})};
+  skillChecks:S.checks,todayPath:S.path,otherPaths:S.paths,pathHistory:S.pathHist,reviewQueue:S.sr,hiddenPace:{medianSecondsBySkill:Object.fromEntries(Object.entries(S.pace||{}).map(([k,v])=>[k,+(median(v)/1000).toFixed(1)])),comfortLevelByWorld:S.flow||{},slowFacts:slowFacts(),factPace:S.factPace||{}},factAccuracy:facts,biomes:stats,mostMissed:Object.entries(S.missed).sort((a,b)=>b[1]-a[1]).slice(0,40),answerLog:S.log,state:Object.assign({},S,{log:[]})};
 }
 let DL=null;
 if(window.claude&&typeof window.claude.use==='function')window.claude.use('downloads').then(d=>{DL=d}).catch(()=>{});
@@ -1372,6 +1395,10 @@ function renderParents(){
  <div class="scroll"><table><thead><tr><th>Biome</th><th class="n">Questions</th><th class="n">Right</th><th class="n">Stars</th><th class="n">Boss</th></tr></thead><tbody>
  ${WORLDS.map(w=>{const s=S.stats[w.id]||{q:0,c:0};return `<tr><td>${w.name}</td><td class="n">${s.q}</td><td class="n">${s.q?Math.round(s.c/s.q*100)+'%':'–'}</td><td class="n">${wStars(w.id)}/15</td><td class="n">${S.bosses[w.id]?'✔':'–'}</td></tr>`}).join('')}
  </tbody></table></div>
+ <h3>Speed and hidden level</h3><p class="note">The child never sees this. Every answer is timed (reading-aloud time and pauses are taken out). Fast right answers push that world’s questions up to one level harder, mistakes and slow answers bring them down, and slow facts come back more often.</p>
+ <div class="scroll"><table><thead><tr><th>Skill</th><th class="n">Typical time (right answers)</th></tr></thead><tbody>${[...SK1,...SK2].filter(x=>S.pace&&S.pace[x.id]&&S.pace[x.id].length).map(x=>`<tr><td>${x.n}</td><td class="n">${(median(S.pace[x.id])/1000).toFixed(1)} s</td></tr>`).join('')||'<tr><td colspan="2">Not enough answers yet</td></tr>'}</tbody></table></div>
+ <div class="scroll" style="margin-top:10px"><table><thead><tr><th>World</th><th class="n">Hidden level now</th></tr></thead><tbody>${WORLDS.filter(w=>S.flow&&S.flow[w.id]!=null).map(w=>`<tr><td>${w.name}</td><td class="n">${S.flow[w.id].toFixed(1)} / 5</td></tr>`).join('')||'<tr><td colspan="2">Not enough answers yet</td></tr>'}</tbody></table></div>
+ <p class="note">Slow facts (right, but over 6.5 seconds): ${slowFacts().slice(0,12).join(', ')||'none'}</p>
  <h3>Most-missed questions</h3><div class="miss">${missed.length?missed.map(([k,n])=>`<span>${esc(k)} ×${n}</span>`).join(''):'<p class="note">None yet</p>'}</div>
  ${SESSION?`<h3>Class account</h3><p class="note">Signed in as ${esc(S.name)} (number ${esc(SESSION.id)}) in class ${esc(SESSION.cls||SESSION.code)}. Progress saves to ilk-er.com automatically, so it follows the child to any device.${lastSync?' Last saved: '+new Date(lastSync).toLocaleTimeString():''}</p><div class="row" style="justify-content:flex-start"><button class="btn sm green" id="pSync">Save now</button><button class="btn sm" id="pOut">Sign out</button></div>`:''}
  <h3>Progress file for Claude</h3><p class="note">When he finishes his missions, save the progress file and upload it to Claude. It holds his skill scores, every Skill Check, which facts he misses and how fast he answers, so the next level can be built for him. You can also load it on another device to carry his progress over.</p>
@@ -1386,7 +1413,7 @@ function renderParents(){
 }
 
 /* ---------- pause (unplanned rest) ---------- */
-let pzTick=null;
+let pzTick=null,PZMS=0;
 function pauseGame(){
  if(S.breakPending||S.pausedAt)return;
  S.pausedAt=Date.now();save();showPause();
@@ -1406,7 +1433,7 @@ function showPause(){
 }
 function resumeGame(){
  if(!S.pausedAt)return;
- const dur=Date.now()-S.pausedAt,d=dayStr();S.pausedAt=0;
+ const dur=Date.now()-S.pausedAt,d=dayStr();S.pausedAt=0;PZMS+=dur;
  S.rests=S.rests||{};const r=S.rests[d]||(S.rests[d]={n:0,min:0});r.n++;r.min+=Math.round(dur/60000);
  const longRest=dur>=S.breakLen*60000;if(longRest)S.playSec=0;
  save();clearInterval(pzTick);$('#pz').classList.remove('on');updBrk();sfx.tap();
@@ -1454,7 +1481,7 @@ function makeSummary(){
  const wk=Date.now()-7*864e5,L=S.log.filter(x=>x.t>wk),days=Object.entries(S.sessions).filter(([d])=>new Date(d)>=new Date(wk-864e5));
  return {stars:totStars(),gems:S.gems,total:S.total,week:L.length,weekRight:L.filter(x=>x.ok).length,streak:S.streak,bosses:Object.keys(S.bosses).length,
   lvl1:lastCheck(1)?avgScore(S.skill,1):null,lvl2:lastCheck(2)?avgScore(S.skill,2):null,rank:rankName(avgScore(S.skill,S.realm),S.realm),realm:S.realm,
-  skills:Object.fromEntries([...SK1,...SK2].filter(x=>S.skill[x.id]!=null).map(x=>[x.id,S.skill[x.id]])),weak:weakFacts().slice(0,8),minutesWeek:Math.round(days.reduce((a,[,v])=>a+v,0)/60)};
+  skills:Object.fromEntries([...SK1,...SK2].filter(x=>S.skill[x.id]!=null).map(x=>[x.id,S.skill[x.id]])),weak:weakFacts().slice(0,8),slow:slowFacts().slice(0,8),pace:Object.fromEntries(Object.entries(S.pace||{}).map(([k,v])=>[k,+(median(v)/1000).toFixed(1)])),minutesWeek:Math.round(days.reduce((a,[,v])=>a+v,0)/60)};
 }
 const slimState=()=>Object.assign({},S,{log:S.log.slice(-800)});
 async function syncNow(manual){
