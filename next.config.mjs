@@ -6,6 +6,8 @@ const nextConfig = {
     return [
       { source: '/mathquest', destination: '/mathquest/index.html' },
       { source: '/mathquest/teacher', destination: '/mathquest/teacher.html' },
+      { source: '/ratesden', destination: '/mathquest/index.html' },
+      { source: '/ratesden/teacher', destination: '/mathquest/teacher.html' },
     ];
   },
 };
