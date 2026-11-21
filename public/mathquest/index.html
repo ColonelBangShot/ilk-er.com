@@ -416,7 +416,7 @@ const dayStr=(d=new Date())=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart
 
 /* ---------- state ---------- */
 const MATK=['wood','stone','iron','gold','crystal','ice','shard','sky'];
-const def=()=>({name:'Recep Ateş',speech:true,sound:true,narrate:true,v2:1,autoVideo:true,gems:0,stars:{},stats:{},facts:{},missed:{},base:null,best:0,total:0,streak:0,lastDay:'',today:{d:'',n:0,claimed:false},playSec:0,breakEvery:60,breakLen:5,breakUntil:0,breakPending:false,mats:Object.fromEntries(MATK.map(k=>[k,0])),crafted:{},bosses:{},seen:{},mine:null,skill:{},checks:[],sr:{},path:null,log:[],pathHist:[],sessions:{},realm:1,paths:{}});
+const def=()=>({name:'Ateş',speech:true,sound:true,narrate:true,v2:1,autoVideo:true,gems:0,stars:{},stats:{},facts:{},missed:{},base:null,best:0,total:0,streak:0,lastDay:'',today:{d:'',n:0,claimed:false},playSec:0,breakEvery:60,breakLen:5,breakUntil:0,breakPending:false,mats:Object.fromEntries(MATK.map(k=>[k,0])),crafted:{},bosses:{},seen:{},mine:null,skill:{},checks:[],sr:{},path:null,log:[],pathHist:[],sessions:{},realm:1,paths:{}});
 let canStore=true,S;
 try{S=Object.assign(def(),JSON.parse(localStorage.getItem(KEY)||'{}'))}catch(e){canStore=false;S=def()}
 function normalizeS(){
@@ -424,7 +424,7 @@ function normalizeS(){
  if(!S.v2){S.speech=true;S.narrate=true;S.v2=1}
  if(!S.v3){S.v3=1;S.best=S.best||{};S.legacy=S.legacy||{};for(const k in (S.stars||{}))if(S.stars[k]>0){const i=k.lastIndexOf('-'),w=k.slice(0,i),l=+k.slice(i+1);S.legacy[w+'-'+(l+1)]=true;if(l===3)S.legacy[w+'-boss']=true}
   if(S.realm===2||Object.keys(S.stars||{}).some(k=>/^(stack|longdiv|twodig|factors|mean|frac2)-/.test(k))||(S.checks||[]).some(c=>c.r===2))S.skyUnlocked=true}
- if(!S.best)S.best={};if(!S.legacy)S.legacy={};if(!S.passMark)S.passMark=80;if(!S.subject)S.subject='math';
+ if(!S.best)S.best={};if(!S.legacy)S.legacy={};if(!S.passMark)S.passMark=80;if(!S.v4){S.v4=1;if(/^\s*recep(\s+ate[sş])?\s*$/i.test(S.name||''))S.name='Ateş'}if(!S.subject)S.subject='math';
  if(S.realm!==2)S.realm=1;if(!S.paths||typeof S.paths!=='object')S.paths={};
  for(const k of ['skill','sr','sessions','stars','stats','facts','missed','crafted','bosses','seen'])if(!S[k]||typeof S[k]!=='object')S[k]={};for(const k of ['checks','log','pathHist'])if(!Array.isArray(S[k]))S[k]=[];
  if(SESSION)S.name=SESSION.name;
@@ -910,10 +910,10 @@ const SW=[
  {id:'en2',realm:'en',name:'Colour and Number Bay',sym:'12',top:'water',side:'sand',col:'#1e88e5',tex:'water',mat:'iron',hp:35,boss:'Number Kraken',art:'mean',d:['Colours','Numbers 1 to 10','Numbers 11 to 20','Number words','Mixed']},
  {id:'en3',realm:'en',name:'My World Town',sym:'🏠',top:'brick',side:'planks',col:'#a94a35',tex:'brick',mat:'iron',hp:40,boss:'Calendar Knight',art:'twodig',d:['Family','Days of the week','Transport','Listen and choose','All words']},
  {id:'en4',realm:'en',name:'Grammar Garden',sym:'a/an',top:'leaves',side:'grass',col:'#2f7420',tex:'leaves',mat:'iron',hp:45,boss:'Grammar Thorn',art:'factors',d:['a or an?','One or many?','is, are or am?','Opposites','Tricky plurals']},
- {id:'de1',realm:'de',name:'Hallo Hafen',sym:'Hi',top:'gold',side:'stone',col:'#d9a514',tex:'gold',mat:'ice',hp:30,boss:'Hafen Kapitän',art:'stack',d:['Hallo und Tschüss','Danke und Bitte','Guten Morgen…','Fragen','Alle Sätze']},
+ {id:'de1',realm:'de',name:'Hallo Hafen',sym:'Hi',top:'gold',side:'stone',col:'#d9a514',tex:'gold',mat:'ice',hp:30,boss:'Hafen Kapitän',art:'stack',d:['Hallo und Tschüss','Danke, Bitte, Ja, Nein','Guten Morgen, Gute Nacht','Fragen und Antworten','Alle Sätze']},
  {id:'de2',realm:'de',name:'Zahlen und Farben',sym:'7',top:'redwool',side:'gold',col:'#c63b3b',tex:'redwool',mat:'ice',hp:35,boss:'Zahlen Drache',art:'big',d:['Zahlen 1 bis 10','Farben','Zahlen 11 bis 20','Wochentage','Gemischt']},
  {id:'de3',realm:'de',name:'Tiere und Essen',sym:'🐶',top:'grasstop',side:'dirt',col:'#43a047',tex:'leaves',mat:'ice',hp:40,boss:'Hungriger Bär',art:'mult',d:['Tiere','Essen','Familie','Schule und Natur','Alle Wörter']},
- {id:'de4',realm:'de',name:'Der, die, das',sym:'der',top:'violet',side:'stone',col:'#7a48c4',tex:'violet',mat:'ice',hp:45,boss:'Artikel Ritter',art:'twodig',d:['der oder die?','das Wörter','Alle Artikel','Tiere mit Artikel','Meister']}
+ {id:'de4',realm:'de',name:'Der, die, das',sym:'der',top:'violet',side:'stone',col:'#7a48c4',tex:'violet',mat:'ice',hp:45,boss:'Artikel Ritter',art:'twodig',d:['der oder die?','das-Wörter','Alle Artikel','Tiere mit Artikel','Meister']}
 ];
 for(const w of SW){WORLDS.push(w);WMAP[w.id]=w;BOSSES[w.id]={n:w.boss,p:BOSSES[w.art].p}}
 
@@ -1160,40 +1160,59 @@ function enQ(w,l){
  const [a,b]=pick(OPP),r=Math.random()<.5;return E({prompt:`What is the opposite of "${r?a:b}"?`,ans:r?b:a,wrong:OPP.map(x=>pick(x)),key:'opp'+a+r,why:`"${a}" and "${b}" are opposites.`});
 }
 
-/* ---------- DEUTSCH ---------- */
-const DE_PHR=[['Hallo','Hello',1],['Tschüss','Bye',1],['Danke','Thank you',2],['Bitte','Please',2],['Ja','Yes',2],['Nein','No',2],['Guten Morgen','Good morning',3],['Guten Tag','Good day',3],['Guten Abend','Good evening',3],['Gute Nacht','Good night',3],['Wie heißt du?','What is your name?',4],['Ich heiße Recep.','My name is Recep.',4],['Wie geht’s?','How are you?',4],['Mir geht’s gut.','I am fine.',4],['Entschuldigung','Sorry',4],['Ich bin sieben Jahre alt.','I am seven years old.',5],['Woher kommst du?','Where are you from?',5],['Ich komme aus der Türkei.','I am from Türkiye.',5]];
+/* ---------- DEUTSCH (alles auf Deutsch) ---------- */
+const DE_SIT=()=>[
+ ['Du triffst einen Freund. Was sagst du?','👋','Hallo','Wenn wir jemanden treffen, sagen wir „Hallo“.',1],
+ ['Du gehst nach Hause. Was sagst du zum Abschied?','🚶','Tschüss','Zum Abschied sagen wir „Tschüss“.',1],
+ ['Du bekommst ein Geschenk. Was sagst du?','🎁','Danke','Wenn wir etwas bekommen, sagen wir „Danke“.',2],
+ ['Du möchtest ein Stück Kuchen. Wie fragst du höflich?','🍰','Bitte','„Bitte“ ist das Zauberwort, wenn wir etwas möchten.',2],
+ ['Möchtest du ein Eis? Du freust dich und sagst:','🍦','Ja','„Ja“ heißt: Ich möchte das.',2],
+ ['Möchtest du Brokkoli zum Frühstück? Du sagst:','🥦','Nein','„Nein“ heißt: Ich möchte das nicht.',2],
+ ['Es ist früh am Morgen. Was sagst du?','🌅','Guten Morgen','Am Morgen sagen wir „Guten Morgen“.',3],
+ ['Es ist Mittag. Was sagst du?','☀️','Guten Tag','Am Tag sagen wir „Guten Tag“.',3],
+ ['Es ist Abend. Was sagst du?','🌆','Guten Abend','Am Abend sagen wir „Guten Abend“.',3],
+ ['Du gehst ins Bett. Was sagst du?','🛏️','Gute Nacht','Vor dem Schlafen sagen wir „Gute Nacht“.',3],
+ ['Du willst den Namen von einem Kind wissen. Was fragst du?','🧒','Wie heißt du?','Mit „Wie heißt du?“ fragen wir nach dem Namen.',4],
+ ['Jemand fragt: „Wie heißt du?“ Was antwortest du?','🙋',`Ich heiße ${first()}.`,'Wir antworten mit „Ich heiße …“ und unserem Namen.',4],
+ ['Du willst wissen, wie es deinem Freund geht. Was fragst du?','🙂','Wie geht’s?','„Wie geht’s?“ heißt: Wie geht es dir?',4],
+ ['Jemand fragt: „Wie geht’s?“ Dir geht es gut. Was sagst du?','😀','Mir geht’s gut.','Wenn es uns gut geht, sagen wir „Mir geht’s gut.“',4],
+ ['Ups! Du stößt jemanden aus Versehen an. Was sagst du?','😬','Entschuldigung','Wenn uns etwas leidtut, sagen wir „Entschuldigung“.',4],
+ ['Jemand fragt: „Wie alt bist du?“ Was antwortest du?','🎂','Ich bin sieben Jahre alt.','Unser Alter sagen wir so: „Ich bin … Jahre alt.“',5],
+ ['Jemand fragt: „Woher kommst du?“ Was antwortest du?','🌍','Ich komme aus der Türkei.','Unser Land sagen wir so: „Ich komme aus …“',5]
+];
+const DE_FAM=[['Deine Mama ist deine …','die Mutter'],['Dein Papa ist dein …','der Vater'],['Die Mutter von deinem Vater ist deine …','die Oma'],['Der Vater von deiner Mutter ist dein …','der Opa'],['Ein Mädchen mit denselben Eltern wie du ist deine …','die Schwester'],['Ein Junge mit denselben Eltern wie du ist dein …','der Bruder'],['Ein ganz kleines Kind ist ein …','das Baby']];
+const DE_FARBE={red:'rot',blue:'blau',green:'grün',yellow:'gelb',black:'schwarz',white:'weiß',orange:'orange',purple:'lila',pink:'rosa',brown:'braun',grey:'grau'};
 function deQ(w,l){
- const D=o=>mc(Object.assign({lang:'en-US'},o));
- if(w==='de1'){const pool=DE_PHR.filter(x=>l===5?true:x[2]===l||x[2]===l-1),[g,e]=pick(pool.length?pool:DE_PHR);
-  return Math.random()<.6?D({prompt:`What does "${g}" mean?`,ans:e,wrong:DE_PHR.map(x=>x[1]),txt:1,key:'de'+g,sayParts:[['What does','en-US'],[g,'de-DE'],['mean?','en-US']],why:`"${g}" means "${e}". Say it: ${g}!`,tipLang:'de-DE',tipWord:g})
-   :D({prompt:`How do you say "${e}" in German?`,ans:g,wrong:DE_PHR.map(x=>x[0]),txt:1,key:'en'+g,why:`"${e}" in German is "${g}".`,tipLang:'de-DE',tipWord:g})}
+ const D=o=>mc(Object.assign({lang:'de-DE'},o));
+ if(w==='de1'){const all=DE_SIT(),pool=all.filter(x=>l===5?true:x[4]===l||x[4]===l-1),[t,e,a,why]=pick(pool.length?pool:all);
+  return D({prompt:t,show:big(e),ans:a,wrong:all.map(x=>x[2]),txt:1,key:'de1'+t,why,tipLang:'de-DE',tipWord:a})}
  if(w==='de2'){
-  if(l===2||(l===5&&Math.random()<.3)){const c=pick(COLORS);return D({prompt:'Welche Farbe? Which colour is this in German?',show:swatch(c[0]),ans:c[3],wrong:COLORS.map(x=>x[3]),key:'dcol'+c[3],why:`This colour is "${c[3]}" in German and "${c[1]}" in English.`,tipLang:'de-DE',tipWord:c[3]})}
-  if(l===4){const i=R(0,6);return D({prompt:`Which day is "${DAYS_DE[i]}"?`,ans:DAYS_EN[i],wrong:DAYS_EN,key:'dday'+i,sayParts:[['Which day is','en-US'],[DAYS_DE[i],'de-DE']],why:`"${DAYS_DE[i]}" is ${DAYS_EN[i]}. Most German days end in -tag, which means "day".`,tipLang:'de-DE',tipWord:DAYS_DE[i]})}
-  const n=l===1?R(1,10):l===3?R(11,20):R(1,20);
-  return Math.random()<.5?D({prompt:`Which number is "${NUM_DE[n]}"?`,ans:String(n),wrong:[n+1,n-1,n+2,n-2,n+10].filter(x=>x>0&&x<=20).map(String),key:'dn'+n,sayParts:[['Which number is','en-US'],[NUM_DE[n],'de-DE']],why:`"${NUM_DE[n]}" is ${n}.`,tipLang:'de-DE',tipWord:NUM_DE[n]})
-   :D({prompt:`How do you say ${n} in German?`,show:String(n),ans:NUM_DE[n],wrong:NUM_DE.slice(1),key:'dw'+n,why:`${n} is "${NUM_DE[n]}" in German.${n>12&&n<20?' Teen numbers end in -zehn, which means ten.':''}`,tipLang:'de-DE',tipWord:NUM_DE[n]})}
+  if(l===2||(l===5&&Math.random()<.3)){const c=pick(COLORS),de=DE_FARBE[c[1]];return D({prompt:'Welche Farbe ist das?',show:swatch(c[0]),ans:de,wrong:Object.values(DE_FARBE),key:'dcol'+de,why:`Diese Farbe heißt „${de}“.`,tipWord:de})}
+  if(l===4){const i=R(0,6),nach=Math.random()<.5;return D({prompt:nach?`Welcher Tag kommt nach ${DAYS_DE[i]}?`:`Welcher Tag kommt vor ${DAYS_DE[i]}?`,ans:DAYS_DE[(i+(nach?1:6))%7],wrong:DAYS_DE,key:'dday'+i+nach,why:`Die Wochentage sind: ${DAYS_DE.join(', ')}.`,tip:'Fast alle Wochentage enden auf „-tag“.'})}
+  const n=l===1?R(1,10):l===3?R(11,20):R(1,20),teen=n>12&&n<20?' Die Zahlen von 13 bis 19 enden auf „-zehn“, wie dreizehn.':'';
+  return Math.random()<.5?D({prompt:`Welche Zahl ist „${NUM_DE[n]}“?`,ans:String(n),wrong:[n+1,n-1,n+2,n-2,n+10].filter(x=>x>0&&x<=20).map(String),key:'dn'+n,why:`„${NUM_DE[n]}“ ist ${n}.${teen}`,tipWord:NUM_DE[n]})
+   :D({prompt:'Wie heißt diese Zahl auf Deutsch?',show:String(n),ans:NUM_DE[n],wrong:NUM_DE.slice(1),key:'dw'+n,why:`${n} heißt „${NUM_DE[n]}“.${teen}`,tipWord:NUM_DE[n]})}
  if(w==='de3'){
-  if(l===3||(l===5&&Math.random()<.25)){const f=pick(FAM);return D({prompt:`What is "${f[0]}" in German?`,ans:f[2],wrong:FAM.map(x=>x[2]),key:'dfam'+f[2],why:`"${f[0]}" is "${f[3]} ${f[2]}" in German.`,tipLang:'de-DE',tipWord:f[3]+' '+f[2]})}
-  const cats={1:['animals'],2:['food'],4:['school','nature','transport'],5:null}[l]||null,pool=cats?VOC.filter(v=>cats.includes(v.c)):VOC,x=pick(pool);
-  return Math.random()<.5?D({prompt:'What is this in German?',show:big(x.e),ans:x.de,wrong:VOC.map(v=>v.de),key:'dpic'+x.de,why:`${x.e} is "${x.g} ${x.de}" in German. In English: "${x.en}".`,tipLang:'de-DE',tipWord:x.g+' '+x.de})
-   :D({prompt:`Which picture is "${x.de}"?`,ans:x.e,wrong:pool.map(v=>v.e).concat(VOC.map(v=>v.e)),key:'dword'+x.de,sayParts:[['Which picture is','en-US'],[x.de,'de-DE']],why:`"${x.de}" means ${x.en} ${x.e}.`,tipLang:'de-DE',tipWord:x.g+' '+x.de})}
+  if(l===3||(l===5&&Math.random()<.25)){const [t,a]=pick(DE_FAM);return D({prompt:t,ans:a,wrong:DE_FAM.map(x=>x[1]),key:'dfam'+a,why:`${t.replace(' …','')} ${a.split(' ')[1]}. Wir sagen: ${a}.`,tipWord:a})}
+  const cats={1:['animals'],2:['food'],4:['school','nature','transport'],5:null}[l]||null,pool=cats?VOC.filter(v=>cats.includes(v.c)):VOC,x=pick(pool),word=x.g+' '+x.de;
+  return Math.random()<.5?D({prompt:'Was ist das?',show:big(x.e),ans:word,wrong:VOC.map(v=>v.g+' '+v.de),txt:1,key:'dpic'+x.de,why:`Das ist ${word}. Lerne den Artikel immer mit: ${word}.`,tipWord:word})
+   :D({prompt:`Zeig mir: ${word}`,ans:x.e,wrong:pool.map(v=>v.e).concat(VOC.map(v=>v.e)),key:'dword'+x.de,why:`„${word}“ ist ${x.e}.`,tipWord:word})}
  const pool=VOC.filter(v=>l===1?v.g!=='das':l===2?v.g==='das'||Math.random()<.3:l===4?v.c==='animals':true),x=pick(pool);
- return D({prompt:`der, die or das? ___ ${x.de}`,show:big(x.e),ans:x.g,ch:['der','die','das'],key:'art'+x.de,sayParts:[['der, die or das?','en-US'],[x.de,'de-DE']],why:`It is "${x.g} ${x.de}". German nouns have an article you learn with the word.`,tip:x.de.endsWith('e')&&x.g==='die'?'Many words that end in -e use "die", like die Katze and die Blume.':'Learn the article together with the word, like a team: '+x.g+' '+x.de+'.',tipLang:'de-DE',tipWord:x.g+' '+x.de});
+ return D({prompt:`der, die oder das? ___ ${x.de}`,show:big(x.e),ans:x.g,ch:['der','die','das'],key:'art'+x.de,why:`Es heißt „${x.g} ${x.de}“. Jedes Nomen hat einen Artikel: der, die oder das.`,tip:x.de.endsWith('e')&&x.g==='die'?'Viele Wörter mit „-e“ am Ende haben „die“, zum Beispiel die Katze und die Blume.':`Lerne das Wort immer zusammen mit dem Artikel: ${x.g} ${x.de}.`,tipWord:x.g+' '+x.de});
 }
 
 for(const w of SW){const f=w.realm==='sci'?sciQ:w.realm==='geo'?geoQ:w.realm==='lit'?litQ:w.realm==='tr'?trQ:w.realm==='en'?enQ:deQ;G[w.id]=(l)=>f(w.id,l)}
 
 /* learn-it video for subject questions */
 function learnScenes(q){
- const tr=q.lang==='tr-TR',L=tr?'tr-TR':'en-US';
+ const tr=q.lang==='tr-TR',de=q.lang==='de-DE',L=tr?'tr-TR':de?'de-DE':'en-US',TXT=tr?['Hadi öğrenelim! ','Doğru cevap: ','Şimdi sen de biliyorsun. Hadi devam!','SÜPER!']:de?['Lass uns lernen! ','Die richtige Antwort ist: ','Super! Jetzt weißt du es. Weiter geht’s!','SUPER!']:['Let\'s learn it! ','The answer is: ','Now you know it. Let\'s keep going!','SUPER!'];
  const head=q.vis&&/^geo/.test(q.w||'')&&/geobox/.test(q.vis)?`<div class="gv">${q.vis}</div>`:q.show?vRow(vHero('wow'),`<div class="veq pop">${q.show}</div>`):vRow(vHero('wow'),vEq(esc(q.prompt.length>60?q.prompt.slice(0,57)+'…':q.prompt),0,'sm'));
- const sc=[{cap:(tr?'Hadi öğrenelim! ':'Let\'s learn it! ')+q.prompt,art:head,lang:L},
-  {cap:(tr?'Doğru cevap: ':'The answer is: ')+q.ans,art:vRow(vHero('happy'),vStamp(esc(q.ans))),lang:L},
+ const sc=[{cap:TXT[0]+q.prompt,art:head,lang:L},
+  {cap:TXT[1]+(/^[\p{Extended_Pictographic}\uFE0F\u200D]+$/u.test(q.ans)&&q.tipWord?q.tipWord:q.ans),art:vRow(vHero('happy'),vStamp(esc(q.ans))),lang:L},
   q.gv?{cap:q.why||'',art:'<div class="geobox gv"></div>',geo:q.gv,lang:L}:{cap:q.why||'',art:vRow(`<div class="veq sm pop" style="max-width:90%">${esc(q.why||'')}</div>`),lang:L}];
  if(q.tipWord)sc.push({cap:q.tipWord,art:vRow(vHero('happy'),vEq('🔊 '+esc(q.tipWord))),lang:q.tipLang||L});
  if(q.tip)sc.push({cap:q.tip,art:vRow(vHero('happy'),`<div class="veq sm pop">${esc(q.tip)}</div>`),lang:L});
- sc.push({cap:tr?'Şimdi sen de biliyorsun. Hadi devam!':'Now you know it. Let\'s keep going!',art:vRow(vHero('happy'),`<div class="vbox gold pop" style="animation-delay:.3s">${tr?'SÜPER!':'SUPER!'}</div>`),lang:L});
+ sc.push({cap:TXT[2],art:vRow(vHero('happy'),`<div class="vbox gold pop" style="animation-delay:.3s">${TXT[3]}</div>`),lang:L});
  return sc.filter(x=>x.cap);
 }
 const subjectStats=()=>Object.fromEntries(SUBJ.filter(s=>s.id!=='math').map(s=>{let q=0,c=0;for(const w of SW.filter(x=>x.realm===s.id)){const st=S.stats[w.id];if(st){q+=st.q;c+=st.c}}return [s.id,{q,pct:q?Math.round(c/q*100):null}]}));
@@ -1877,7 +1896,7 @@ function renderParents(){
  <h3>Put it on the home screen</h3><ol class="howto"><li>iPhone or iPad: open this page in Safari, tap Share, then Add to Home Screen.</li><li>Android: open it in Chrome, tap the ⋮ menu, then Add to Home screen.</li><li>Windows: open it in Edge or Chrome, then use the menu to install it or pin the tab.</li></ol>
  <p class="note">Progress is saved in the browser on each device separately.</p>
  <div class="row" style="justify-content:flex-start;margin-top:22px"><button class="btn sm red" id="pReset">Reset all progress</button></div></section>`;
- const upd=()=>{S.name=$('#pName').value.trim()||'Recep Ateş';S.breakEvery=+$('#pEvery').value;S.breakLen=+$('#pLen').value;S.passMark=+$('#pPass').value;S.skyUnlocked=$('#pSky').checked;S.autoVideo=$('#pAuto').checked;S.narrate=$('#pNar').checked;S.speech=$('#pSp').checked;S.sound=$('#pSo').checked;save();bar()};
+ const upd=()=>{S.name=$('#pName').value.trim()||'Ateş';S.breakEvery=+$('#pEvery').value;S.breakLen=+$('#pLen').value;S.passMark=+$('#pPass').value;S.skyUnlocked=$('#pSky').checked;S.autoVideo=$('#pAuto').checked;S.narrate=$('#pNar').checked;S.speech=$('#pSp').checked;S.sound=$('#pSo').checked;save();bar()};
  $('#pName').oninput=upd;['pEvery','pLen','pPass','pSky','pAuto','pNar','pSp','pSo'].forEach(id=>$('#'+id).onchange=()=>{upd();toast('Saved')});
  $('#pBreak').onclick=startBreak;if($('#pSync'))$('#pSync').onclick=()=>syncNow(true);if($('#pOut'))$('#pOut').onclick=()=>logout();$('#pExport').onclick=exportProgress;$('#pImport').onchange=e=>{if(e.target.files[0])importProgress(e.target.files[0])};$('#pCheck').onclick=startCheck;
  let armed=false;$('#pReset').onclick=e=>{if(!armed){armed=true;e.target.textContent='Sure? Tap again';return}const keep={name:S.name,breakEvery:S.breakEvery,breakLen:S.breakLen};S=Object.assign(def(),keep);S.base=null;save();location.reload()};
