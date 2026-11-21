@@ -1334,7 +1334,7 @@ const ground=()=>`<div class="ground" aria-hidden="true">${tsvg('grass').repeat(
 function renderHome(){
  const td=S.today.d===dayStr()?S.today.n:0,got=STORY.filter(c=>!c.realm&&S.bosses[c.w]).length,gears=STORY.filter(c=>c.realm===2&&S.bosses[c.w]).length;
  app.innerHTML=`<section class="hero bevel"><svg class="me" viewBox="0 0 12 15" aria-hidden="true"><use href="#p-hero-happy" width="12" height="15"/></svg><div>
-  <h1>Hi, ${esc(S.name)}!</h1>${SESSION?`<p class="note" style="margin:4px 0 0">${esc(SESSION.cls||SESSION.code)} · <button class="btn sm" id="switchMe" style="min-height:36px;font-size:15px">Not ${esc(S.name.split(' ')[0])}? Switch</button> <button class="btn sm green" id="boardBtn" style="min-height:36px;font-size:15px">🏆 Class leaderboard</button></p>`:''}<p>Clear biomes, beat bosses, dig the mine and craft gear. Every right answer pays.</p>
+  <h1>${esc(greetText().hello.replace(first(),S.name))}</h1>${SESSION?`<p class="note" style="margin:4px 0 0">${esc(SESSION.cls||SESSION.code)} · <button class="btn sm" id="switchMe" style="min-height:36px;font-size:15px">Not ${esc(S.name.split(' ')[0])}? Switch</button> <button class="btn sm green" id="boardBtn" style="min-height:36px;font-size:15px">🏆 Class leaderboard</button></p>`:''}<p>Clear biomes, beat bosses, dig the mine and craft gear. Every right answer pays.</p>
   <div class="xp"><span>Daily quest</span><div class="xpbar"><b style="width:${Math.min(100,td/GOAL*100)}%"></b></div><span>${Math.min(td,GOAL)}/${GOAL}</span>${S.streak>1&&S.lastDay===dayStr()?`<span class="tag">${S.streak}-day streak</span>`:''}</div>
   ${canStore?'':'<p class="note">This browser can’t save progress, so it resets when the page closes.</p>'}</div></section>
  <section class="strip bevel" data-math>${S.realm===2?`<div class="pieces">${STORY.filter(c=>c.realm===2).map(c=>gearIco(S.bosses[c.w]?'':'no')).join('')}</div><p>Sky gears: ${gears}/6. ${gears<6?'Beat the guardians to fix the Sky Engine!':'The Sky Realm is saved!'}</p>`:`<div class="pieces">${STORY.filter(c=>!c.realm).map(c=>pieceIco(S.bosses[c.w]?'':'no')).join('')}</div><p>Crystal pieces: ${got}/7. ${got<7?'Beat the bosses to win them back!':'You saved Block World!'}</p>`}<button class="btn green" id="goQuest">Story quest</button></section>
@@ -1778,6 +1778,32 @@ function renderParents(){
  let armed=false;$('#pReset').onclick=e=>{if(!armed){armed=true;e.target.textContent='Sure? Tap again';return}const keep={name:S.name,breakEvery:S.breakEvery,breakLen:S.breakLen};S=Object.assign(def(),keep);S.base=null;save();location.reload()};
 }
 
+/* ---------- personal greeting ---------- */
+function greetText(){
+ const n=first(),h=new Date().getHours(),td=S.today.d===dayStr()?S.today.n:0;
+ const hello=h<5?`Hi, ${n}, night owl!`:h<12?`Good morning, ${n}!`:h<18?`Good afternoon, ${n}!`:`Good evening, ${n}!`;
+ const lines=[];
+ if(!S.total)lines.push(`Welcome to the Den, ${n}! The wolf pack has been waiting for you.`);
+ else lines.push(pick([`The pack is happy to see you again.`,`Ready to hunt some answers?`,`Your den missed you, ${n}.`,`Welcome back to the Den, brave wolf!`,`Let's make your brain even stronger today.`]));
+ if(S.streak>1&&S.lastDay===dayStr())lines.push(`You are on a ${S.streak}-day streak. Keep it going!`);
+ else if(S.streak>1)lines.push(`Play today to keep your ${S.streak}-day streak!`);
+ if(td>=GOAL)lines.push('You already finished today\'s daily quest. Amazing!');
+ else if(S.path&&S.path.d===dayStr()){const left=S.path.m.filter(x=>!x.done).length;if(left)lines.push(`You have ${left} mission${left>1?'s':''} left on your path today.`)}
+ else if(S.checks&&S.checks.length)lines.push('Your new missions are ready on the Path.');
+ if(h>=21||h<6)lines.push('It\'s late! Play a little, then get a good sleep.');
+ return {hello,lines};
+}
+function greet(force){
+ try{if(!force&&sessionStorage.getItem('rd_greeted'))return;sessionStorage.setItem('rd_greeted','1')}catch(e){}
+ const {hello,lines}=greetText(),m=$('#modal');
+ m.innerHTML=`<div style="text-align:center"><svg viewBox="0 0 10 8" style="width:110px;height:88px" aria-hidden="true"><use href="#p-wolf" width="10" height="8"/></svg>
+ <h2 style="font-size:clamp(28px,6vw,40px);margin:6px 0 10px">${esc(hello)}</h2>${lines.map(l=>`<p style="font-weight:700;font-size:19px;margin:6px 0">${esc(l)}</p>`).join('')}
+ <div class="row"><button class="btn green" id="gGo">Let's play!</button></div></div>`;
+ $('#veil').classList.add('on');sfx.win();
+ $('#gGo').onclick=()=>{try{speechSynthesis.cancel()}catch(e){}closeModal()};
+ setTimeout(()=>{if($('#veil').classList.contains('on'))say([hello,...lines].join(' '))},350);
+}
+
 /* ---------- pause (unplanned rest) ---------- */
 let pzTick=null,PZMS=0;
 function pauseGame(){
@@ -1918,12 +1944,12 @@ function picPad(mode,firstPick){
 }
 function loginDone(r){
  SESSION={code:LG.code,id:LG.id,name:r.name,cls:r.className,token:r.token};
- localStorage.setItem('bmq_session',JSON.stringify(SESSION));KEY=`bmq_${SESSION.code}_${SESSION.id}`;
+ try{sessionStorage.removeItem('rd_greeted')}catch(e){}localStorage.setItem('bmq_session',JSON.stringify(SESSION));KEY=`bmq_${SESSION.code}_${SESSION.id}`;
  let local=null;try{local=JSON.parse(localStorage.getItem(KEY)||'null')}catch(e){}
  const srv=r.state;S=Object.assign(def(),(srv&&(!local||(srv.savedAt||0)>=(local.savedAt||0)))?srv:(local||{}));
  normalizeS();ensureBase();save();$('#login').classList.remove('on');boot();if(!srv){dirty=true;syncNow()}
 }
-function boot(){normalizeS();ensureBase();bar();renderTabs();view='home';renderHome();if(S.breakPending)showBreak();else if(S.pausedAt)showPause()}
+function boot(){normalizeS();ensureBase();bar();renderTabs();view='home';renderHome();if(S.breakPending)showBreak();else if(S.pausedAt)showPause();else greet()}
 if(API&&!SESSION&&!localStorage.getItem('bmq_offline'))showLogin();
 else{boot();if(SESSION&&API)pullServer()}
 }
